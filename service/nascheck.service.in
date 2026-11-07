@@ -1,0 +1,12 @@
+[Unit]
+Description=nascheck disk health collector
+Documentation=https://github.com/fcelsa/nascheck
+After=local-fs.target
+
+[Service]
+ExecStart=%%PREFIX%%/sbin/nascheck daemon
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

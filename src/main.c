@@ -1,11 +1,16 @@
 /* nascheck - disk health monitor for FreeBSD and Linux. */
+#include <sys/stat.h>
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "config.h"
+#include "daemon.h"
+#include "db.h"
 #include "health.h"
 #include "smart.h"
 
@@ -23,15 +28,18 @@ static void
 usage(FILE *f)
 {
 	fprintf(f,
-	    "usage: nascheck [-hqV] [-c config] command [device ...]\n"
+	    "usage: nascheck [-hlqV] [-c config] command [device ...]\n"
 	    "\n"
 	    "commands:\n"
 	    "  scan               list the devices reported by smartctl\n"
 	    "  status [device]    table of all or the given disks\n"
 	    "  check [device]     report problems; exit 0 ok, 1 warning,\n"
 	    "                     2 critical, 3 unknown\n"
+	    "  daemon             collect data in the background (as root)\n"
+	    "  refresh            ask the daemon to read all disks now\n"
 	    "\n"
 	    "  -c config  configuration file (default " NASCHECK_CONF ")\n"
+	    "  -l         status, check: read the disks, not the database\n"
 	    "  -q         check: print the summary line only\n");
 }
 
@@ -181,6 +189,24 @@ print_disk(const struct disk *d, const struct health *h)
 	puts(line);
 }
 
+/* The disks to report on, read live or loaded from the database. */
+struct set {
+	struct disk	*disks;
+	time_t		*when;		/* report times, from the database */
+	size_t		 n;
+	time_t		 heartbeat;	/* last update by the daemon */
+	int		 from_db;	/* loaded from the database */
+	int		 partial;	/* some disk could not be read */
+};
+
+static void
+set_free(struct set *s)
+{
+	free(s->disks);
+	free(s->when);
+	memset(s, 0, sizeof(*s));
+}
+
 /* Build the disk list from the command line, or scan when it is empty. */
 static int
 get_disks(struct buf *b, char **names, size_t count, struct disk **disks,
@@ -208,35 +234,30 @@ get_disks(struct buf *b, char **names, size_t count, struct disk **disks,
 /*
  * Get the disks and read each one. Devices from a scan that are neither
  * ATA nor NVMe (USB sticks, SCSI) are dropped; named ones are kept.
- * Returns 0; 1 when some disk could not be read; 2 on a bad device name,
- * with nothing allocated (both already reported); -1 on a fatal error
- * left in errno.
+ * Returns 0; 2 on a bad device name (reported); -1 on a fatal error left
+ * in errno.
  */
 static int
-read_disks(struct buf *b, char **names, size_t count, struct disk **disks,
-    size_t *n)
+read_live(struct buf *b, char **names, size_t count, struct set *set)
 {
 	struct disk *d;
 	size_t i, kept = 0;
 	int rc;
 
-	if ((rc = get_disks(b, names, count, disks, n)) != 0)
+	if ((rc = get_disks(b, names, count, &set->disks, &set->n)) != 0)
 		return rc;
-	for (i = 0; i < *n; i++) {
-		d = &(*disks)[kept];
+	for (i = 0; i < set->n; i++) {
+		d = &set->disks[kept];
 		if (i != kept)
-			*d = (*disks)[i];
-		if (smart_read(b, d) == -1) {
+			*d = set->disks[i];
+		if (smart_read(b, d, READ_FULL) == -1) {
 			/* Without smartctl there is nothing more to try. */
-			if (errno == ENOENT) {
-				free(*disks);
-				*disks = NULL;
+			if (errno == ENOENT)
 				return -1;
-			}
 			fprintf(stderr, "nascheck: %s: %s\n", d->path,
 			    errno == EPROTO ? "smartctl output is not JSON" :
 			    strerror(errno));
-			rc = 1;
+			set->partial = 1;
 			continue;
 		}
 		if (count == 0 && d->state == READ_OK &&
@@ -244,8 +265,125 @@ read_disks(struct buf *b, char **names, size_t count, struct disk **disks,
 			continue;
 		kept++;
 	}
-	*n = kept;
+	set->n = kept;
+	return 0;
+}
+
+struct load_ctx {
+	struct set	 *set;
+	size_t		  cap;
+	char		**names;	/* only these devices, if count > 0 */
+	size_t		  count;
+};
+
+static int
+load_report(void *arg, const struct db_report *r)
+{
+	struct load_ctx *ctx = arg;
+	struct set *set = ctx->set;
+	struct disk *d;
+	void *p;
+	size_t i;
+
+	for (i = 0; i < ctx->count && strcmp(ctx->names[i], r->path) != 0; i++)
+		;
+	if (ctx->count > 0 && i == ctx->count)
+		return 0;
+	if (set->n == ctx->cap) {
+		ctx->cap = ctx->cap ? ctx->cap * 2 : 16;
+		if ((p = realloc(set->disks, ctx->cap * sizeof(*d))) == NULL)
+			return -1;
+		set->disks = p;
+		if ((p = realloc(set->when, ctx->cap * sizeof(time_t))) == NULL)
+			return -1;
+		set->when = p;
+	}
+	d = &set->disks[set->n];
+	if (r->json == NULL) {
+		/* Never read: asleep or not readable since it appeared. */
+		memset(d, 0, sizeof(*d));
+		d->state = r->state;
+		d->temp = d->temp_warn = d->temp_crit = TEMP_UNKNOWN;
+		d->power_on_hours = d->rotation_rate = -1;
+		d->smart_passed = -1;
+		if (r->error != NULL)
+			snprintf(d->error, sizeof(d->error), "%s", r->error);
+	} else {
+		snprintf(d->path, sizeof(d->path), "%s", r->path);
+		if (smart_parse(r->json, r->len, 0, d) == -1)
+			return 0;	/* a damaged report: skip the disk */
+		/* The temperature sample is fresher than the daily report. */
+		if (r->temp_time > r->time)
+			d->temp = (int16_t)r->temp;
+	}
+	snprintf(d->path, sizeof(d->path), "%s", r->path);
+	set->when[set->n++] = r->time;
+	return 0;
+}
+
+/* Load the latest report of each present disk from the database. */
+static int
+read_db(const struct config *c, char **names, size_t count, struct set *set)
+{
+	struct load_ctx ctx = { set, 0, names, count };
+	struct db db;
+	int rc = 0;
+
+	set->from_db = 1;
+	if (db_open_reader(&db, c->database) == -1 ||
+	    db_get_heartbeat(&db, &set->heartbeat) == -1 ||
+	    db_each_report(&db, load_report, &ctx) == -1) {
+		fprintf(stderr, "nascheck: %s: %s\n", c->database,
+		    db_error(&db));
+		fprintf(stderr, "nascheck: readers must be in the group set in "
+		    "nascheck.conf; -l reads the disks directly (as root)\n");
+		rc = 2;
+	}
+	db_close(&db);
 	return rc;
+}
+
+/*
+ * The database is used when it exists, unless -l asks for a live read.
+ * Only a missing file means "no daemon": a permission problem is reported.
+ */
+static int
+get_set(const struct config *c, struct buf *b, char **names, size_t count,
+    int live, struct set *set)
+{
+	struct stat st;
+
+	memset(set, 0, sizeof(*set));
+	if (live || (stat(c->database, &st) == -1 && errno == ENOENT))
+		return read_live(b, names, count, set);
+	return read_db(c, names, count, set);
+}
+
+/* Minutes since the daemon last wrote, or -1 when it looks alive. */
+static long
+daemon_silence(const struct config *c, const struct set *set, time_t now)
+{
+	time_t limit = 2 * c->temp_interval + 60;
+
+	if (!set->from_db || now - set->heartbeat <= limit)
+		return -1;
+	return set->heartbeat == 0 ? 0 : (long)(now - set->heartbeat) / 60;
+}
+
+/* Evaluate disk i; data from the database must also be recent enough. */
+static void
+judge(const struct config *c, const struct set *set, size_t i, time_t now,
+    struct health *h)
+{
+	time_t age;
+
+	health_eval(c, &set->disks[i], h);
+	if (!set->from_db || set->disks[i].state != READ_OK)
+		return;
+	age = now - set->when[i];
+	if (age > c->smart_interval + c->wake_after)
+		health_add(h, LEVEL_WARN, "SMART data is %lld h old",
+		    (long long)age / 3600);
 }
 
 /*
@@ -267,21 +405,30 @@ cmd_scan(struct buf *b)
 }
 
 static int
-cmd_status(const struct config *c, struct buf *b, char **names, size_t count)
+cmd_status(const struct config *c, struct buf *b, char **names, size_t count,
+    int live)
 {
-	struct disk *disks;
+	struct set set;
 	struct health h;
-	size_t i, n;
+	time_t now = time(NULL);
+	long silence;
+	size_t i;
 	int rc;
 
-	if ((rc = read_disks(b, names, count, &disks, &n)) == -1 || rc > 1)
-		return rc;
-	print_header();
-	for (i = 0; i < n; i++) {
-		health_eval(c, &disks[i], &h);
-		print_disk(&disks[i], &h);
+	if ((rc = get_set(c, b, names, count, live, &set)) != 0) {
+		set_free(&set);
+		return rc == 2 ? 1 : rc;
 	}
-	free(disks);
+	if ((silence = daemon_silence(c, &set, now)) >= 0)
+		fprintf(stderr, "nascheck: no update from the daemon for "
+		    "%ld min\n", silence);
+	print_header();
+	for (i = 0; i < set.n; i++) {
+		judge(c, &set, i, now, &h);
+		print_disk(&set.disks[i], &h);
+	}
+	rc = set.partial;
+	set_free(&set);
 	return rc;
 }
 
@@ -291,41 +438,48 @@ cmd_status(const struct config *c, struct buf *b, char **names, size_t count)
  */
 static int
 cmd_check(const struct config *c, struct buf *b, char **names, size_t count,
-    int quiet)
+    int live, int quiet)
 {
-	struct disk *disks;
+	struct set set;
 	struct health *h = NULL;
-	size_t i, n, nwarn = 0, ncrit = 0;
+	time_t now = time(NULL);
+	size_t i, nwarn = 0, ncrit = 0;
 	enum level worst = LEVEL_OK;
+	long silence;
 	uint8_t j;
-	int rc, code;
+	int rc, code, unknown;
 
-	if ((rc = read_disks(b, names, count, &disks, &n)) == -1)
-		return -1;
-	if (rc > 1)
-		return EXIT_UNKNOWN;
-	if (n > 0 && (h = calloc(n, sizeof(*h))) == NULL) {
-		free(disks);
+	if ((rc = get_set(c, b, names, count, live, &set)) != 0) {
+		set_free(&set);
+		return rc == 2 ? EXIT_UNKNOWN : rc;
+	}
+	if (set.n > 0 && (h = calloc(set.n, sizeof(*h))) == NULL) {
+		set_free(&set);
 		return -1;
 	}
-	for (i = 0; i < n; i++) {
-		health_eval(c, &disks[i], &h[i]);
+	for (i = 0; i < set.n; i++) {
+		judge(c, &set, i, now, &h[i]);
 		nwarn += h[i].level == LEVEL_WARN;
 		ncrit += h[i].level == LEVEL_CRIT;
 		if (h[i].level > worst)
 			worst = h[i].level;
 	}
-	/* An unreadable disk makes the result unknown, unless critical. */
-	code = worst == LEVEL_CRIT || rc == 0 ? (int)worst : EXIT_UNKNOWN;
+	/* Missing data makes the result unknown, unless already critical. */
+	silence = daemon_silence(c, &set, now);
+	unknown = set.partial || silence >= 0;
+	code = worst == LEVEL_CRIT || !unknown ? (int)worst : EXIT_UNKNOWN;
 	printf("%s: %zu disks, %zu critical, %zu warning%s\n",
-	    code == EXIT_UNKNOWN ? "UNKNOWN" : level_name(worst), n, ncrit,
-	    nwarn, rc == 1 ? ", some disks could not be read" : "");
-	for (i = 0; i < n && !quiet; i++)
+	    code == EXIT_UNKNOWN ? "UNKNOWN" : level_name(worst), set.n, ncrit,
+	    nwarn, set.partial ? ", some disks could not be read" : "");
+	if (!quiet && silence >= 0)
+		printf("%-8s %-8s no update from the daemon for %ld min\n",
+		    "-", "UNKNOWN", silence);
+	for (i = 0; i < set.n && !quiet; i++)
 		for (j = 0; j < h[i].n; j++)
-			printf("%-8s %-8s %s\n", short_name(&disks[i]),
+			printf("%-8s %-8s %s\n", short_name(&set.disks[i]),
 			    level_name(h[i].f[j].level), h[i].f[j].text);
 	free(h);
-	free(disks);
+	set_free(&set);
 	return code;
 }
 
@@ -335,9 +489,9 @@ main(int argc, char **argv)
 	struct config cfg;
 	struct buf b = { 0 };
 	const char *cmd, *conf = NULL;
-	int ch, quiet = 0, is_check, rc;
+	int ch, live = 0, quiet = 0, optional, rc;
 
-	while ((ch = getopt(argc, argv, "c:hqV")) != -1) {
+	while ((ch = getopt(argc, argv, "c:hlqV")) != -1) {
 		switch (ch) {
 		case 'c':
 			conf = optarg;
@@ -345,6 +499,9 @@ main(int argc, char **argv)
 		case 'h':
 			usage(stdout);
 			return 0;
+		case 'l':
+			live = 1;
+			break;
 		case 'q':
 			quiet = 1;
 			break;
@@ -363,33 +520,45 @@ main(int argc, char **argv)
 		return EXIT_USAGE;
 	}
 	cmd = argv[0];
-	is_check = strcmp(cmd, "check") == 0;
-	if (!is_check && strcmp(cmd, "status") != 0 &&
-	    (strcmp(cmd, "scan") != 0 || argc != 1)) {
+
+	if (strcmp(cmd, "scan") == 0 && argc == 1) {
+		rc = cmd_scan(&b);
+		goto out;
+	}
+	if (strcmp(cmd, "status") != 0 && strcmp(cmd, "check") != 0 &&
+	    ((strcmp(cmd, "daemon") != 0 && strcmp(cmd, "refresh") != 0) ||
+	    argc != 1)) {
 		usage(stderr);
 		return EXIT_USAGE;
 	}
 
-	if (strcmp(cmd, "scan") == 0) {
-		rc = cmd_scan(&b);
-	} else {
-		/* The default file is optional, one given with -c is not. */
-		config_defaults(&cfg);
-		if (config_load(&cfg, conf != NULL ? conf : NASCHECK_CONF,
-		    conf == NULL) == -1)
-			return is_check ? EXIT_UNKNOWN : 1;
-		if (is_check)
-			rc = cmd_check(&cfg, &b, argv + 1, (size_t)argc - 1,
-			    quiet);
-		else
-			rc = cmd_status(&cfg, &b, argv + 1, (size_t)argc - 1);
+	/* The default file is optional, one given with -c is not. */
+	config_defaults(&cfg);
+	optional = conf == NULL;
+	if (optional)
+		conf = NASCHECK_CONF;
+	if (config_load(&cfg, conf, optional) == -1)
+		return strcmp(cmd, "check") == 0 ? EXIT_UNKNOWN : 1;
+
+	if (strcmp(cmd, "daemon") == 0)
+		return daemon_run(&cfg, conf);
+	if (strcmp(cmd, "refresh") == 0)
+		return daemon_refresh(&cfg) == 0 ? 0 : 1;
+	if (strcmp(cmd, "check") == 0) {
+		rc = cmd_check(&cfg, &b, argv + 1, (size_t)argc - 1, live,
+		    quiet);
+		if (rc == -1)
+			fprintf(stderr, "nascheck: cannot use smartctl: %s\n",
+			    strerror(errno));
+		buf_free(&b);
+		return rc == -1 ? EXIT_UNKNOWN : rc;
 	}
+	rc = cmd_status(&cfg, &b, argv + 1, (size_t)argc - 1, live);
+out:
 	if (rc == -1)
 		fprintf(stderr, "nascheck: cannot use smartctl: %s\n",
 		    errno == EPROTO ? "output is not JSON (smartmontools 7.0 "
 		    "or later is required)" : strerror(errno));
 	buf_free(&b);
-	if (is_check)
-		return rc == -1 ? EXIT_UNKNOWN : rc;
 	return rc == 0 ? 0 : 1;
 }

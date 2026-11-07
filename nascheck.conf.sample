@@ -5,6 +5,29 @@
 #
 # A limit is "warning [critical]": a value at or above it raises that
 # level. "-" means no limit; a single value leaves the critical level off.
+# Durations take a suffix: s, m, h or d.
+
+# --- Daemon ---------------------------------------------------------------
+# Changes here need "service nascheck restart"; the rules below only
+# "service nascheck reload".
+
+# Where the daemon keeps its data, and the socket for "nascheck refresh".
+# Defaults: /var/db/nascheck/nascheck.db on FreeBSD,
+# /var/lib/nascheck/nascheck.db on Linux.
+#database		/var/db/nascheck/nascheck.db
+#socket			/var/run/nascheck.sock
+
+# Members of this group can read the database and ask for a refresh,
+# without root. Unset: only root's group (wheel on FreeBSD).
+#group			operator
+
+smart_interval		1d	# full SMART report of every disk
+temp_interval		5m	# temperature samples, for the graphs
+standby_retry		1h	# a disk in standby is tried again after this
+wake_after		7d	# then woken up if its report is older
+temp_keep		90d	# temperature samples older than this are deleted
+
+# --- Rules ----------------------------------------------------------------
 
 # Temperature in Celsius. "auto" uses the limits the disk reports itself
 # (NVMe: warning and critical composite temperature).

@@ -21,7 +21,20 @@ struct ata_rule {
 	uint8_t		id;
 };
 
+#define CONFIG_PATH_MAX	256
+
 struct config {
+	/* Daemon */
+	char		database[CONFIG_PATH_MAX];
+	char		socket[CONFIG_PATH_MAX];
+	char		group[32];	/* may read the database, "" = root's */
+	int64_t		smart_interval;	/* seconds between full reports */
+	int64_t		temp_interval;	/* seconds between temperature samples */
+	int64_t		standby_retry;	/* retry a sleeping disk after this */
+	int64_t		wake_after;	/* then wake it if its report is older */
+	int64_t		temp_keep;	/* temperature samples kept this long */
+
+	/* Rules */
 	struct limit	temp_hdd;		/* Celsius */
 	struct limit	temp_ssd;
 	struct limit	temp_nvme;

@@ -4,20 +4,20 @@ Disk health monitor for FreeBSD and Linux, in the terminal.
 It reads SMART data of SATA (HDD and SSD) and NVMe disks through
 `smartctl`, and the state of ZFS pools through `zpool`.
 
-> **Status: early development (phase 2).** nascheck reads the disks, judges
-> them against configurable rules and reports problems. The daemon, the
-> history, ZFS and the ncurses interface come next; see the roadmap below.
+> **Status: early development (phase 3).** A daemon collects SMART data and
+> temperatures into a local database; `status` and `check` report on it
+> without root. ZFS and the ncurses interface come next; see the roadmap.
 
 ## Requirements
 
 - FreeBSD 14 or later, or Linux
 - smartmontools 7.0 or later (JSON output)
+- SQLite 3.35 or later
 - a C11 compiler and `make` (BSD make or GNU make)
 
-On FreeBSD everything but smartmontools is in the base system:
-
 ```sh
-pkg install smartmontools
+pkg install smartmontools sqlite3                 # FreeBSD
+apt install smartmontools libsqlite3-dev         # Debian, Ubuntu
 ```
 
 ## Build
@@ -25,15 +25,40 @@ pkg install smartmontools
 ```sh
 make
 make test        # runs against recorded smartctl output, no disks needed
-make install     # into /usr/local/sbin and /usr/local/etc;
-                 # PREFIX, SYSCONFDIR and DESTDIR are honored
+make install     # program, sample configuration, rc.d script or
+                 # systemd unit; PREFIX, SYSCONFDIR, DESTDIR honored
 ```
 
 `make sanitize` rebuilds with AddressSanitizer and UBSan and runs the tests.
 
+## The daemon
+
+Only the daemon runs as root. It reads every disk once a day, samples the
+temperatures every 5 minutes, and keeps both in a SQLite database. Then
+`status` and `check` read the database as a normal user.
+
+```sh
+# FreeBSD
+sysrc nascheck_enable=YES
+service nascheck start
+
+# Linux with systemd
+systemctl enable --now nascheck
+```
+
+To let users read the data, choose a group in `nascheck.conf` (`group
+operator`, say) and restart the daemon: the database and the socket become
+readable by that group. Changed rules are applied with
+`service nascheck reload` (SIGHUP). Messages go to syslog.
+
+Disks in standby are not woken up: the daemon tries again every hour, and
+wakes a disk only when its report is older than a week (`wake_after`).
+
 ## Usage
 
-Reading SMART data requires root (`su`, or `sudo`/`doas` if installed).
+`status` and `check` read the daemon's database when it exists. Without
+it, or with `-l`, they read the disks directly, which requires root
+(`su`, or `sudo`/`doas` if installed).
 
 ```console
 # nascheck status
@@ -57,13 +82,16 @@ ada2     WARNING  last self-test 15088 h ago (limit 720)
 | `nascheck scan` | list the devices reported by `smartctl --scan` |
 | `nascheck status [device ...]` | table of all disks, or of the given ones |
 | `nascheck check [device ...]` | summary line, then one line per problem |
+| `nascheck daemon` | collect in the foreground (rc.d and systemd run it) |
+| `nascheck refresh` | ask the daemon to read all disks now |
 
 `TEST` is the number of power-on hours since the last SMART self-test.
 Disks in standby are not woken up (`smartctl -n standby`). Devices that are
 neither ATA nor NVMe, such as USB sticks, are left out of the scan.
 
 Options go before the command: `-c file` reads another configuration,
-`-q` makes `check` print the summary line only.
+`-l` reads the disks instead of the database, `-q` makes `check` print the
+summary line only.
 
 ### Exit codes of `check`
 
@@ -74,7 +102,7 @@ Compatible with Nagios, Icinga and Zabbix plugins, and handy in cron:
 | 0 | all disks OK |
 | 1 | at least one warning |
 | 2 | at least one critical problem |
-| 3 | unknown: smartctl missing, bad configuration, unreadable disk |
+| 3 | unknown: smartctl missing, bad configuration, unreadable disk, daemon not updating the database |
 
 ### Rules
 
@@ -84,6 +112,7 @@ Compatible with Nagios, Icinga and Zabbix plugins, and handy in cron:
 | all | last self-test failed | critical |
 | all | temperature at or above the limits | warning, critical |
 | all | no self-test, or the last one older than `selftest_max_age` | warning |
+| all | report in the database older than `smart_interval` + `wake_after` | warning |
 | ATA | attribute failing now, by the disk's own threshold | critical if pre-failure, else warning |
 | ATA | raw value of attributes 5, 187, 197, 198 above zero | warning |
 | NVMe | critical warning bit set | critical |
@@ -98,7 +127,7 @@ the keywords and the defaults used when the file does not exist.
 
 1. Disk discovery, `smartctl` JSON parsing, status table — **done**
 2. Health rules from a config file, `nascheck check` with exit codes — **done**
-3. Daemon: daily SMART snapshot and frequent temperature samples in SQLite
+3. Daemon: daily SMART report, temperature samples, SQLite, rc.d — **done**
 4. ZFS pools: state, errors, scrub, vdev to disk mapping
 5. ncurses interface: devices, details, history
 6. Temperature graphs

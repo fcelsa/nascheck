@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# PROVIDE: nascheck
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+#
+# Add to /etc/rc.conf to collect disk health data in the background:
+#
+#   nascheck_enable="YES"
+#
+# The configuration is read from %%SYSCONFDIR%%/nascheck.conf.
+# "service nascheck reload" applies changed rules without a restart.
+
+. /etc/rc.subr
+
+name="nascheck"
+rcvar="nascheck_enable"
+
+load_rc_config $name
+
+: ${nascheck_enable:="NO"}
+
+pidfile="/var/run/${name}.pid"
+procname="%%PREFIX%%/sbin/nascheck"
+command="/usr/sbin/daemon"
+command_args="-p ${pidfile} ${procname} daemon"
+extra_commands="reload"
+sig_reload="HUP"
+
+run_rc_command "$1"

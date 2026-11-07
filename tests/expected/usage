@@ -1,11 +1,14 @@
-usage: nascheck [-hqV] [-c config] command [device ...]
+usage: nascheck [-hlqV] [-c config] command [device ...]
 
 commands:
   scan               list the devices reported by smartctl
   status [device]    table of all or the given disks
   check [device]     report problems; exit 0 ok, 1 warning,
                      2 critical, 3 unknown
+  daemon             collect data in the background (as root)
+  refresh            ask the daemon to read all disks now
 
   -c config  configuration file (default /usr/local/etc/nascheck.conf)
+  -l         status, check: read the disks, not the database
   -q         check: print the summary line only
 exit 64

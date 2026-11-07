@@ -1,16 +1,36 @@
 /* config.c - nascheck configuration file. */
 #include <errno.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "config.h"
 
-#define LINE_MAX_LEN	256
+#define LINE_MAX_LEN	512
+
+#ifdef __linux__
+#define DEFAULT_DATABASE	"/var/lib/nascheck/nascheck.db"
+#else
+#define DEFAULT_DATABASE	"/var/db/nascheck/nascheck.db"
+#endif
+#define DEFAULT_SOCKET		"/var/run/nascheck.sock"
+
+#define MINUTE	60
+#define HOUR	(60 * MINUTE)
+#define DAY	(24 * HOUR)
 #define MAX_TOKENS	4	/* keyword and up to three values */
 
 /* Keep in sync with nascheck.conf.sample. */
 static const struct config defaults = {
+	.database = DEFAULT_DATABASE,
+	.socket = DEFAULT_SOCKET,
+	.group = "",
+	.smart_interval = DAY,
+	.temp_interval = 5 * MINUTE,
+	.standby_retry = HOUR,
+	.wake_after = 7 * DAY,
+	.temp_keep = 90 * DAY,
 	.temp_hdd = { 45, 55 },
 	.temp_ssd = { 60, 70 },
 	.temp_nvme = { LIMIT_AUTO, LIMIT_AUTO },
@@ -54,6 +74,51 @@ parse_value(const char *s, int allow_auto, int64_t *v)
 	if (errno != 0 || end == s || *end != '\0' || n < 0 || n > INT32_MAX)
 		return "expected a number, \"-\" or \"auto\"";
 	*v = n;
+	return NULL;
+}
+
+/* A duration: a number with an s, m, h or d suffix; seconds without. */
+static const char *
+parse_duration(const char *s, int64_t *v)
+{
+	char *end;
+	long long n;
+
+	errno = 0;
+	n = strtoll(s, &end, 10);
+	if (errno != 0 || end == s || n <= 0 || n > INT32_MAX)
+		return "expected a positive duration such as 30s, 5m, 1h, 7d";
+	switch (*end) {
+	case '\0':
+	case 's':
+		break;
+	case 'm':
+		n *= MINUTE;
+		break;
+	case 'h':
+		n *= HOUR;
+		break;
+	case 'd':
+		n *= DAY;
+		break;
+	default:
+		return "expected a positive duration such as 30s, 5m, 1h, 7d";
+	}
+	if (*end != '\0' && end[1] != '\0')
+		return "expected a positive duration such as 30s, 5m, 1h, 7d";
+	*v = n;
+	return NULL;
+}
+
+/* A string value that must fit in its field. */
+static const char *
+parse_string(char **tok, int n, char *dst, size_t size)
+{
+	if (n != 1)
+		return "expected one value";
+	if (strlen(tok[0]) >= size)
+		return "value too long";
+	memcpy(dst, tok[0], strlen(tok[0]) + 1);
 	return NULL;
 }
 
@@ -112,7 +177,18 @@ parse_ata(struct config *c, char **tok, int n, int *replaced)
 static const char *
 parse_line(struct config *c, char *line, int *ata_replaced, const char **key)
 {
+	static const struct {
+		const char	*key;
+		size_t		 off;
+	} durations[] = {
+		{ "smart_interval", offsetof(struct config, smart_interval) },
+		{ "temp_interval", offsetof(struct config, temp_interval) },
+		{ "standby_retry", offsetof(struct config, standby_retry) },
+		{ "wake_after", offsetof(struct config, wake_after) },
+		{ "temp_keep", offsetof(struct config, temp_keep) },
+	};
 	char *tok[MAX_TOKENS], *p, *save;
+	size_t i;
 	int n = 0;
 
 	if ((p = strchr(line, '#')) != NULL)
@@ -127,6 +203,22 @@ parse_line(struct config *c, char *line, int *ata_replaced, const char **key)
 		return NULL;
 	*key = tok[0];
 
+	if (strcmp(tok[0], "database") == 0)
+		return parse_string(tok + 1, n - 1, c->database,
+		    sizeof(c->database));
+	if (strcmp(tok[0], "socket") == 0)
+		return parse_string(tok + 1, n - 1, c->socket,
+		    sizeof(c->socket));
+	if (strcmp(tok[0], "group") == 0)
+		return parse_string(tok + 1, n - 1, c->group, sizeof(c->group));
+	for (i = 0; i < sizeof(durations) / sizeof(durations[0]); i++) {
+		if (strcmp(tok[0], durations[i].key) != 0)
+			continue;
+		if (n != 2)
+			return "expected one value";
+		return parse_duration(tok[1],
+		    (int64_t *)(void *)((char *)c + durations[i].off));
+	}
 	if (strcmp(tok[0], "temp_hdd") == 0)
 		return parse_limit(tok + 1, n - 1, 1, &c->temp_hdd);
 	if (strcmp(tok[0], "temp_ssd") == 0)

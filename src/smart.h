@@ -24,6 +24,13 @@ enum proto {
 	PROTO_NVME
 };
 
+/* What to read. */
+enum read_mode {
+	READ_FULL,		/* the whole report: smartctl -a */
+	READ_FULL_WAKE,		/* the same, waking a disk in standby */
+	READ_TEMP		/* identity and attributes only: -i -A */
+};
+
 /* Result of reading a device. */
 enum read_state {
 	READ_OK,		/* SMART data available */
@@ -94,11 +101,20 @@ struct disk {
 int	smart_scan(struct buf *b, struct disk **disks, size_t *n);
 
 /*
- * Read SMART data for d->path, without waking a disk in standby.
- * Returns 0 when smartctl produced a report (d->state tells what it holds),
- * -1 with errno set when smartctl could not be run or its output is not JSON.
+ * Read SMART data for d->path, without waking a disk in standby unless
+ * mode is READ_FULL_WAKE. The raw
+ * JSON report stays in b. Returns 0 when smartctl produced a report
+ * (d->state tells what it holds), -1 with errno set when smartctl could not
+ * be run or its output is not JSON (EPROTO).
  */
-int	smart_read(struct buf *b, struct disk *d);
+int	smart_read(struct buf *b, struct disk *d, enum read_mode mode);
+
+/*
+ * Fill d from a smartctl JSON report, keeping d->path. `code` is the exit
+ * status to assume when the report does not carry one.
+ * Returns 0, or -1 with errno EPROTO if the text is not JSON.
+ */
+int	smart_parse(const char *json, size_t len, int code, struct disk *d);
 
 /* Find an ATA attribute by id, NULL if the disk does not report it. */
 const struct ata_attr *smart_ata_attr(const struct disk *d, uint8_t id);

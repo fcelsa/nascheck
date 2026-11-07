@@ -20,16 +20,15 @@ smartctl(void)
 	return p != NULL && *p != '\0' ? p : "smartctl";
 }
 
-/* Run smartctl with args and parse its JSON in place inside b. */
+/* Run smartctl with args and parse its JSON output. */
 static yyjson_doc *
 smartctl_json(struct buf *b, char *const argv[], int *code)
 {
 	yyjson_doc *doc;
 
-	if (run_capture(argv, b, YYJSON_PADDING_SIZE, code) == -1)
+	if (run_capture(argv, b, 1, code) == -1)
 		return NULL;
-	doc = yyjson_read_opts(b->data, b->len, YYJSON_READ_INSITU, NULL, NULL);
-	if (doc == NULL)
+	if ((doc = yyjson_read(b->data, b->len, 0)) == NULL)
 		errno = EPROTO;
 	return doc;
 }
@@ -221,16 +220,20 @@ parse_nvme(yyjson_val *root, struct disk *d)
 }
 
 int
-smart_read(struct buf *b, struct disk *d)
+smart_parse(const char *json, size_t len, int code, struct disk *d)
 {
-	char *argv[] = { (char *)smartctl(), "-a", "-j", "-n", "standby",
-	    d->path, NULL };
 	char path[sizeof(d->path)];
 	const struct ata_attr *a;
 	const char *proto, *pm;
 	yyjson_doc *doc;
 	yyjson_val *root;
-	int code;
+
+	/* Not in place: the caller may still need the text (to store it). */
+	if ((doc = yyjson_read(json, len, 0)) == NULL) {
+		errno = EPROTO;
+		return -1;
+	}
+	root = yyjson_doc_get_root(doc);
 
 	/* Start from a clean record, keeping only the device path. */
 	memcpy(path, d->path, sizeof(path));
@@ -241,10 +244,6 @@ smart_read(struct buf *b, struct disk *d)
 	d->temp = d->temp_warn = d->temp_crit = TEMP_UNKNOWN;
 	d->smart_passed = -1;
 	d->last_test.passed = -1;
-
-	if ((doc = smartctl_json(b, argv, &code)) == NULL)
-		return -1;
-	root = yyjson_doc_get_root(doc);
 
 	/* smartctl reports a non-zero status also for healthy disks. */
 	d->exit_status = clamp_u8(get_int(root, "/smartctl/exit_status", code));
@@ -300,6 +299,33 @@ smart_read(struct buf *b, struct disk *d)
 	}
 	yyjson_doc_free(doc);
 	return 0;
+}
+
+int
+smart_read(struct buf *b, struct disk *d, enum read_mode mode)
+{
+	char *argv[8];
+	int code, n = 0;
+
+	argv[n++] = (char *)smartctl();
+	argv[n++] = "-j";
+	if (mode != READ_FULL_WAKE) {
+		argv[n++] = "-n";
+		argv[n++] = "standby";
+	}
+	if (mode != READ_TEMP) {
+		argv[n++] = "-a";
+	} else {
+		/* Identity and attributes: a light read for sampling. */
+		argv[n++] = "-i";
+		argv[n++] = "-A";
+	}
+	argv[n++] = d->path;
+	argv[n] = NULL;
+
+	if (run_capture(argv, b, 1, &code) == -1)
+		return -1;
+	return smart_parse(b->data, b->len, code, d);
 }
 
 const struct ata_attr *

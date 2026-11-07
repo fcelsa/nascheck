@@ -10,6 +10,8 @@ jobs:
         cc: [gcc, clang]
     steps:
       - uses: actions/checkout@v4
+      - name: Dependencies
+        run: sudo apt-get install -y libsqlite3-dev
       - name: Build and test
         run: make CC=${{ matrix.cc }} CFLAGS="-O2 -Werror" test
       - name: Sanitizers
@@ -19,14 +21,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build and test on FreeBSD
+      - name: Build, test and run the service on FreeBSD
         uses: vmactions/freebsd-vm@v1
         with:
           release: "15.1"
-          prepare: pkg install -y smartmontools
+          prepare: pkg install -y smartmontools sqlite3
           run: |
             freebsd-version
             make CFLAGS="-O2 -Werror" test
-            # Smoke test against the real smartctl (VM disks).
-            ./nascheck scan
-            ./nascheck status || true
+            # Install and run the rc.d service against the VM's disks.
+            make install
+            sysrc nascheck_enable=YES
+            service nascheck start
+            sleep 2
+            service nascheck status
+            nascheck refresh
+            nascheck status
+            nascheck check || true
+            service nascheck reload
+            service nascheck stop
+            ls -l /var/db/nascheck
+            tail -n 5 /var/log/messages

@@ -11,8 +11,8 @@ level_name(enum level l)
 }
 
 /* Record a finding; the worst level is tracked even when the list is full. */
-static void
-add(struct health *h, enum level l, const char *fmt, ...)
+void
+health_add(struct health *h, enum level l, const char *fmt, ...)
 {
 	va_list ap;
 
@@ -45,7 +45,7 @@ check_limit(struct health *h, const struct limit *lim, int64_t v,
 	enum level l = over(v, lim);
 
 	if (l != LEVEL_OK)
-		add(h, l, "%s %lld%s (limit %lld)", what, (long long)v, unit,
+		health_add(h, l, "%s %lld%s (limit %lld)", what, (long long)v, unit,
 		    (long long)(l == LEVEL_CRIT ? lim->crit : lim->warn));
 }
 
@@ -59,7 +59,7 @@ eval_ata(const struct config *c, const struct disk *d, struct health *h)
 	for (i = 0; i < d->u.ata.nattr; i++) {
 		a = &d->u.ata.attr[i];
 		if (a->failed == 2)
-			add(h, a->prefail ? LEVEL_CRIT : LEVEL_WARN,
+			health_add(h, a->prefail ? LEVEL_CRIT : LEVEL_WARN,
 			    "%s failing now (value %u, threshold %u)",
 			    a->name, a->value, a->thresh);
 	}
@@ -86,7 +86,7 @@ eval_nvme(const struct config *c, const struct disk *d, struct health *h)
 
 	for (i = 0; i < sizeof(bits) / sizeof(bits[0]); i++)
 		if (nv->critical_warning & (1u << i))
-			add(h, LEVEL_CRIT, "critical warning: %s", bits[i]);
+			health_add(h, LEVEL_CRIT, "critical warning: %s", bits[i]);
 	check_limit(h, &c->nvme_used, nv->percentage_used, "wear", "%");
 	check_limit(h, &c->nvme_media_errors, nv->media_errors,
 	    "media errors", "");
@@ -131,13 +131,13 @@ eval_selftest(const struct config *c, const struct disk *d, struct health *h)
 	struct limit lim = { c->selftest_max_age, LIMIT_OFF };
 
 	if (t->valid && t->passed == 0) {
-		add(h, LEVEL_CRIT, "last self-test failed (%s)", t->type);
+		health_add(h, LEVEL_CRIT, "last self-test failed (%s)", t->type);
 		return;
 	}
 	if (c->selftest_max_age == LIMIT_OFF)
 		return;
 	if (!t->valid)
-		add(h, LEVEL_WARN, "no self-test in the log");
+		health_add(h, LEVEL_WARN, "no self-test in the log");
 	else if (d->power_on_hours >= 0 && t->hours >= 0)
 		check_limit(h, &lim, health_selftest_age(d), "last self-test", " h ago");
 }
@@ -149,14 +149,14 @@ health_eval(const struct config *c, const struct disk *d, struct health *h)
 	h->level = LEVEL_OK;
 
 	if (d->state == READ_ERROR) {
-		add(h, LEVEL_WARN, "cannot read SMART data: %s", d->error);
+		health_add(h, LEVEL_WARN, "cannot read SMART data: %s", d->error);
 		return;
 	}
 	/* Standby disks have no new data; other protocols are not judged. */
 	if (d->state != READ_OK || d->proto == PROTO_OTHER)
 		return;
 	if (d->smart_passed == 0)
-		add(h, LEVEL_CRIT, "SMART overall health test FAILED");
+		health_add(h, LEVEL_CRIT, "SMART overall health test FAILED");
 	if (d->proto == PROTO_ATA)
 		eval_ata(c, d, h);
 	else

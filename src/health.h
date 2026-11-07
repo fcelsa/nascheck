@@ -29,6 +29,9 @@ struct health {
 void		health_eval(const struct config *c, const struct disk *d,
 		    struct health *h);
 
+/* Add a finding with a printf-style text. */
+void		health_add(struct health *h, enum level l, const char *fmt, ...);
+
 /* Power-on hours since the last self-test; the test and the power-on
  * hours must be known. */
 int64_t		health_selftest_age(const struct disk *d);
