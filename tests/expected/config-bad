@@ -1,0 +1,2 @@
+nascheck: tests/conf/bad.conf:2: temp_sdd: unknown keyword
+exit 3

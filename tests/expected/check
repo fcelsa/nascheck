@@ -1,0 +1,4 @@
+WARNING: 4 disks, 0 critical, 2 warning
+ada0     WARNING  Reallocated_Sector_Ct 8 (limit 1)
+ada1     WARNING  no self-test in the log
+exit 1

@@ -1,0 +1,17 @@
+CRITICAL: 4 disks, 2 critical, 1 warning
+ada4     CRITICAL SMART overall health test FAILED
+ada4     WARNING  Start_Stop_Count failing now (value 90, threshold 95)
+ada4     CRITICAL Reallocated_Sector_Ct failing now (value 30, threshold 36)
+ada4     WARNING  Reallocated_Sector_Ct 3200 (limit 1)
+ada4     WARNING  Current_Pending_Sector 120 (limit 1)
+ada4     CRITICAL temperature 58C (limit 55)
+ada4     CRITICAL last self-test failed (Extended offline)
+nvme1    CRITICAL SMART overall health test FAILED
+nvme1    CRITICAL critical warning: available spare below threshold
+nvme1    CRITICAL critical warning: reliability degraded
+nvme1    CRITICAL wear 104% (limit 100)
+nvme1    WARNING  media errors 12 (limit 1)
+nvme1    CRITICAL temperature 86C (limit 85)
+nvme1    CRITICAL last self-test failed (Extended)
+ada3     WARNING  cannot read SMART data: Smartctl open device: /dev/ada3 failed: Permission denied
+exit 2

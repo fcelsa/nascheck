@@ -1,0 +1,105 @@
+{
+  "json_format_version": [
+    1,
+    0
+  ],
+  "smartctl": {
+    "version": [
+      7,
+      4
+    ],
+    "pre_release": false,
+    "svn_revision": "5530",
+    "platform_info": "FreeBSD 15.1-RELEASE-p6 amd64",
+    "build_info": "(local build)",
+    "argv": [
+      "smartctl",
+      "-a",
+      "-j",
+      "-n",
+      "standby",
+      "/dev/nvme1"
+    ],
+    "exit_status": 8
+  },
+  "device": {
+    "name": "/dev/nvme1",
+    "info_name": "/dev/nvme1",
+    "type": "nvme",
+    "protocol": "NVMe"
+  },
+  "model_name": "WDC WDS500G2B0C-00PXH0",
+  "serial_number": "2049WORN",
+  "firmware_version": "211070WD",
+  "nvme_pci_vendor": {
+    "id": 5197,
+    "subsystem_id": 5197
+  },
+  "nvme_total_capacity": 1000204886016,
+  "nvme_number_of_namespaces": 1,
+  "smart_support": {
+    "available": true,
+    "enabled": true
+  },
+  "smart_status": {
+    "passed": false,
+    "nvme": {
+      "value": 5,
+      "spare_below_threshold": true,
+      "reliability_degraded": true
+    }
+  },
+  "nvme_smart_health_information_log": {
+    "critical_warning": 5,
+    "temperature": 86,
+    "available_spare": 5,
+    "available_spare_threshold": 10,
+    "percentage_used": 104,
+    "data_units_read": 40123456,
+    "data_units_written": 51234567,
+    "host_reads": 512345678,
+    "host_writes": 812345678,
+    "controller_busy_time": 1234,
+    "power_cycles": 210,
+    "power_on_hours": 8123,
+    "unsafe_shutdowns": 17,
+    "media_errors": 12,
+    "num_err_log_entries": 40,
+    "warning_temp_time": 0,
+    "critical_comp_time": 0,
+    "temperature_sensors": [
+      47,
+      52
+    ]
+  },
+  "temperature": {
+    "current": 86,
+    "op_limit_max": 82,
+    "critical_limit_max": 85
+  },
+  "power_cycle_count": 210,
+  "power_on_time": {
+    "hours": 8123
+  },
+  "nvme_self_test_log": {
+    "nsid": -1,
+    "current_self_test_operation": {
+      "value": 0,
+      "string": "No self-test in progress"
+    },
+    "table": [
+      {
+        "self_test_code": {
+          "value": 2,
+          "string": "Extended"
+        },
+        "self_test_result": {
+          "value": 7,
+          "string": "Completed: failed segments"
+        },
+        "power_on_hours": 8120,
+        "segment": 3
+      }
+    ]
+  }
+}

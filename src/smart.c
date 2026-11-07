@@ -167,6 +167,7 @@ parse_ata(yyjson_val *root, struct disk *d)
 		wf = yyjson_get_str(yyjson_obj_get(a, "when_failed"));
 		at->failed = wf == NULL ? 0 : strcmp(wf, "now") == 0 ? 2 :
 		    strcmp(wf, "past") == 0 ? 1 : 0;
+		at->prefail = get_bool(a, "/flags/prefailure") == 1;
 	}
 
 	/* The newest self-test is the first entry of the log. */
@@ -237,7 +238,7 @@ smart_read(struct buf *b, struct disk *d)
 	memcpy(d->path, path, sizeof(path));
 	d->power_on_hours = -1;
 	d->rotation_rate = -1;
-	d->temp = TEMP_UNKNOWN;
+	d->temp = d->temp_warn = d->temp_crit = TEMP_UNKNOWN;
 	d->smart_passed = -1;
 	d->last_test.passed = -1;
 
@@ -275,6 +276,11 @@ smart_read(struct buf *b, struct disk *d)
 	    get_int(root, "/nvme_total_capacity", 0));
 	d->power_on_hours = get_int(root, "/power_on_time/hours", -1);
 	d->temp = (int16_t)get_int(root, "/temperature/current", TEMP_UNKNOWN);
+	/* NVMe: WCTEMP and CCTEMP; ATA disks rarely report them. */
+	d->temp_warn = (int16_t)get_int(root, "/temperature/op_limit_max",
+	    TEMP_UNKNOWN);
+	d->temp_crit = (int16_t)get_int(root, "/temperature/critical_limit_max",
+	    TEMP_UNKNOWN);
 	d->smart_passed = get_bool(root, "/smart_status/passed");
 
 	if (d->proto == PROTO_ATA) {

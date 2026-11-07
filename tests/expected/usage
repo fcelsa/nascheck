@@ -1,0 +1,11 @@
+usage: nascheck [-hqV] [-c config] command [device ...]
+
+commands:
+  scan               list the devices reported by smartctl
+  status [device]    table of all or the given disks
+  check [device]     report problems; exit 0 ok, 1 warning,
+                     2 critical, 3 unknown
+
+  -c config  configuration file (default /usr/local/etc/nascheck.conf)
+  -q         check: print the summary line only
+exit 64

@@ -1,0 +1,2 @@
+nascheck: tests/conf/missing.conf: No such file or directory
+exit 1

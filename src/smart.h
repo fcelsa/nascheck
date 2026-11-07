@@ -14,6 +14,7 @@
 /* ATA attributes used by nascheck. */
 #define ATTR_SPIN_UP_TIME	3	/* only spinning disks measure it */
 #define ATTR_REALLOC		5	/* Reallocated_Sector_Ct */
+#define ATTR_REPORTED_UNCORRECT	187	/* Reported_Uncorrect */
 #define ATTR_PENDING		197	/* Current_Pending_Sector */
 #define ATTR_OFFLINE		198	/* Offline_Uncorrectable */
 
@@ -38,6 +39,7 @@ struct ata_attr {
 	uint8_t	 worst;
 	uint8_t	 thresh;
 	uint8_t	 failed;	/* 0 never, 1 in the past, 2 now */
+	uint8_t	 prefail;	/* failing predicts a disk failure */
 };
 
 struct nvme_health {
@@ -68,6 +70,8 @@ struct disk {
 	int64_t		 power_on_hours;	/* -1 if unknown */
 	int32_t		 rotation_rate;	/* rpm, 0 solid state, -1 unknown */
 	int16_t		 temp;		/* Celsius or TEMP_UNKNOWN */
+	int16_t		 temp_warn;	/* limits reported by the disk, */
+	int16_t		 temp_crit;	/* or TEMP_UNKNOWN */
 	int8_t		 smart_passed;	/* 1 passed, 0 failing, -1 unknown */
 	uint8_t		 exit_status;	/* smartctl exit bit mask */
 	enum proto	 proto;

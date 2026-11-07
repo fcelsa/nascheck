@@ -1,0 +1,8 @@
+CRITICAL: 12 disks, 3 critical, 3 warning
+ada0     CRITICAL temperature 32C (limit 32)
+ada1     WARNING  temperature 30C (limit 30)
+ada2     CRITICAL Current_Pending_Sector 28 (limit 20)
+ada3     WARNING  temperature 31C (limit 30)
+ada4     WARNING  temperature 31C (limit 30)
+ada5     CRITICAL temperature 32C (limit 32)
+exit 2

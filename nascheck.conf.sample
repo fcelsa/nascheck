@@ -1,0 +1,29 @@
+# nascheck configuration.
+#
+# Copy to nascheck.conf in the same directory and edit. Without that file
+# nascheck uses the values below, which are its built-in defaults.
+#
+# A limit is "warning [critical]": a value at or above it raises that
+# level. "-" means no limit; a single value leaves the critical level off.
+
+# Temperature in Celsius. "auto" uses the limits the disk reports itself
+# (NVMe: warning and critical composite temperature).
+temp_hdd		45 55
+temp_ssd		60 70
+temp_nvme		auto
+
+# Power-on hours since the last SMART self-test, short or extended.
+# 720 is a month for a disk that never sleeps; "-" disables the check.
+selftest_max_age	720
+
+# NVMe wear estimate (percentage_used, may exceed 100) and media errors.
+nvme_used		80 100
+nvme_media_errors	1 -
+
+# ATA attributes: id, then limits on the raw value. The first ata_attr
+# line replaces this whole list.
+ata_attr 5   1 -	# Reallocated_Sector_Ct
+ata_attr 187 1 -	# Reported_Uncorrect
+ata_attr 197 1 -	# Current_Pending_Sector
+ata_attr 198 1 -	# Offline_Uncorrectable
+# ata_attr 188 1 -	# Command_Timeout: vendor specific, noisy on Seagate
