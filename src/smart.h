@@ -9,6 +9,13 @@
 
 #define ATA_MAX_ATTRS	30	/* the ATA attribute table holds 30 entries */
 #define TEMP_UNKNOWN	INT16_MIN
+#define ROTATION_SPINNING 1	/* rotation_rate: spinning, rpm not reported */
+
+/* ATA attributes used by nascheck. */
+#define ATTR_SPIN_UP_TIME	3	/* only spinning disks measure it */
+#define ATTR_REALLOC		5	/* Reallocated_Sector_Ct */
+#define ATTR_PENDING		197	/* Current_Pending_Sector */
+#define ATTR_OFFLINE		198	/* Offline_Uncorrectable */
 
 enum proto {
 	PROTO_OTHER,		/* SCSI, USB without SAT, unknown: not handled */

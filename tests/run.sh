@@ -26,5 +26,10 @@ check scan scan
 check status status
 check status-named status /dev/ada0 /dev/ada3 /dev/da0 /dev/missing
 
+# Reports recorded on a real FreeBSD 15.1 NAS (12 SATA disks, ZFS).
+NASCHECK_FIXTURES=$dir/fixtures/openas
+export NASCHECK_FIXTURES
+check openas-status status
+
 [ "$fail" -eq 0 ] && rm -f "$dir"/*.out
 exit "$fail"

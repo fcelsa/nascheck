@@ -1,8 +1,9 @@
 #!/bin/sh
 # Stand-in for smartctl: replays the JSON reports in tests/fixtures,
-# with the exit status recorded in each report.
+# with the exit status recorded in each report. NASCHECK_FIXTURES selects
+# another set of reports.
 
-dir=$(dirname "$0")/fixtures
+dir=${NASCHECK_FIXTURES:-$(dirname "$0")/fixtures}
 
 for arg; do dev=$arg; done	# the device is the last argument
 case " $* " in

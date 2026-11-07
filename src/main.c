@@ -11,11 +11,6 @@
 #define NASCHECK_VERSION "dev"
 #endif
 
-/* ATA attributes most correlated with failures (Backblaze data). */
-#define ATTR_REALLOC	5	/* Reallocated_Sector_Ct */
-#define ATTR_PENDING	197	/* Current_Pending_Sector */
-#define ATTR_OFFLINE	198	/* Offline_Uncorrectable */
-
 static void
 usage(FILE *f)
 {

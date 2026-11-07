@@ -79,16 +79,17 @@ clamp_u8(int64_t v)
 }
 
 /*
- * smartctl --scan also lists optical, tape and changer devices (FreeBSD CAM
- * reports every peripheral). They cannot be told apart from a sleeping disk
- * without waking the disks, so they are recognized by driver name.
+ * smartctl --scan also lists optical, tape, changer and enclosure devices
+ * (FreeBSD CAM reports every peripheral). With -n standby they look like a
+ * sleeping disk and cannot be told apart without waking the disks, so they
+ * are recognized by driver name.
  */
 static int
 is_disk_node(const char *path)
 {
 	static const char *const skip[] = {
-		"cd", "sa", "nsa", "esa", "ch",	/* FreeBSD */
-		"sr", "st", "nst",		/* Linux */
+		"cd", "sa", "nsa", "esa", "ch", "ses",	/* FreeBSD */
+		"sr", "st", "nst",			/* Linux */
 	};
 	const char *base = strrchr(path, '/');
 	size_t i, len;
@@ -224,6 +225,7 @@ smart_read(struct buf *b, struct disk *d)
 	char *argv[] = { (char *)smartctl(), "-a", "-j", "-n", "standby",
 	    d->path, NULL };
 	char path[sizeof(d->path)];
+	const struct ata_attr *a;
 	const char *proto, *pm;
 	yyjson_doc *doc;
 	yyjson_val *root;
@@ -278,6 +280,14 @@ smart_read(struct buf *b, struct disk *d)
 	if (d->proto == PROTO_ATA) {
 		d->rotation_rate = (int32_t)get_int(root, "/rotation_rate", -1);
 		parse_ata(root, d);
+		/*
+		 * Disks older than ACS-2 do not report the rotation rate;
+		 * a measured spin-up time still tells a spinning disk.
+		 */
+		if (d->rotation_rate < 0 &&
+		    (a = smart_ata_attr(d, ATTR_SPIN_UP_TIME)) != NULL &&
+		    a->raw > 0)
+			d->rotation_rate = ROTATION_SPINNING;
 	} else if (d->proto == PROTO_NVME) {
 		d->rotation_rate = 0;
 		parse_nvme(root, d);

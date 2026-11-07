@@ -1,0 +1,14 @@
+DEVICE   TYPE MODEL                    SERIAL                 SIZE  TEMP   HOURS SMART   TEST NOTES
+ada0     HDD  TOSHIBA DT01ACA050       MASKED                 500G   32C   66998 PASSED  ok   realloc 0, pending 0, uncorr 0
+ada1     HDD  TOSHIBA DT01ACA050       MASKED                 500G   30C   66980 PASSED  ok   realloc 0, pending 0, uncorr 0
+ada2     HDD  WDC WD5000AADS-00S9B0    MASKED                 500G   29C   61431 PASSED  ok   realloc 0, pending 28, uncorr 10
+ada3     HDD  TOSHIBA DT01ACA050       MASKED                 500G   31C   65679 PASSED  ok   realloc 0, pending 0, uncorr 0
+ada4     HDD  TOSHIBA DT01ACA050       MASKED                 500G   31C   35059 PASSED  -    realloc 0, pending 0, uncorr 0
+ada5     HDD  TOSHIBA DT01ACA050       MASKED                 500G   32C   68755 PASSED  ok   realloc 0, pending 0, uncorr 0
+ada6     HDD  TOSHIBA HDWD110          MASKED                 1.0T   24C   48233 PASSED  -    realloc 0, pending 0, uncorr 0
+ada7     HDD  WDC WD1003FBYX-01Y7B1    MASKED                 1.0T   28C   35093 PASSED  -    realloc 93, pending 0, uncorr 0
+ada8     SSD  SanDisk SSD PLUS 120 GB  MASKED                 120G   25C   20551 PASSED  ok   realloc 0
+ada9     HDD  WDC WD64PURZ-74BWUY0     MASKED                 6.0T   22C   11237 PASSED  -    realloc 0, pending 0, uncorr 0
+ada10    HDD  WDC WD1003FZEX-00MK2A0   MASKED                 1.0T   23C   32895 PASSED  -    realloc 0, pending 0, uncorr 0
+ada11    HDD  TOSHIBA HDWD110          MASKED                 1.0T   23C   29672 PASSED  -    realloc 0, pending 0, uncorr 0
+exit 0
