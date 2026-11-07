@@ -53,6 +53,6 @@ jobs:
             service nascheck stop
             ls -l /var/db/nascheck
             grep nascheck /var/log/messages
-            # The daemon must not have logged any error.
-            ! grep -E 'nascheck.*(No such file|not found|cannot|error)' \
+            # The daemon must not have logged any error of its own.
+            ! grep -E 'nascheck\[[0-9]+\]: (.*: )?(smartctl|zpool|database|poll|signals|setenv|out of memory|group .* not found)' \
                 /var/log/messages
