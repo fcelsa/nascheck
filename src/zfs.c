@@ -58,7 +58,9 @@ add_vdev(struct pool *p, size_t *cap, yyjson_val *v, uint8_t depth,
 	vd->depth = depth;
 	vd->section = section;
 
-	kids = yyjson_obj_get(v, "vdevs");
+	/* yyjson_obj_foreach must not see NULL: it computes NULL + 1. */
+	if (!yyjson_is_obj(kids = yyjson_obj_get(v, "vdevs")))
+		return 0;	/* a leaf */
 	yyjson_obj_foreach(kids, idx, max, key, kid) {
 		if (add_vdev(p, cap, kid, depth + 1, section) == -1)
 			return -1;
@@ -95,13 +97,15 @@ parse_pool(yyjson_val *pv, struct pool *p)
 	root = yyjson_obj_get(yyjson_obj_get(pv, "vdevs"), p->name);
 	p->alloc = json_int(root, "/alloc_space", 0);
 	p->size = json_int(root, "/total_space", 0);
-	top = yyjson_obj_get(root, "vdevs");
-	yyjson_obj_foreach(top, idx, max, key, v) {
-		if (add_vdev(p, &cap, v, 0, SECTION_DATA) == -1)
-			return -1;
+	if (yyjson_is_obj(top = yyjson_obj_get(root, "vdevs"))) {
+		yyjson_obj_foreach(top, idx, max, key, v) {
+			if (add_vdev(p, &cap, v, 0, SECTION_DATA) == -1)
+				return -1;
+		}
 	}
 	for (i = 0; i < sizeof(groups) / sizeof(groups[0]); i++) {
-		top = yyjson_obj_get(pv, groups[i].key);
+		if (!yyjson_is_obj(top = yyjson_obj_get(pv, groups[i].key)))
+			continue;
 		yyjson_obj_foreach(top, idx, max, key, v) {
 			if (add_vdev(p, &cap, v, 0, groups[i].section) == -1)
 				return -1;
@@ -128,11 +132,13 @@ zfs_parse(const char *json, size_t len, struct zfs *z)
 	if ((max = yyjson_obj_size(pools)) > 0 &&
 	    (z->pools = calloc(max, sizeof(*z->pools))) == NULL)
 		rc = -1;
-	yyjson_obj_foreach(pools, idx, max, key, pv) {
-		if (rc == -1)
-			break;
-		rc = parse_pool(pv, &z->pools[z->n]);
-		z->n++;		/* also on error, so zfs_free() releases it */
+	if (max > 0) {
+		yyjson_obj_foreach(pools, idx, max, key, pv) {
+			if (rc == -1)
+				break;
+			rc = parse_pool(pv, &z->pools[z->n]);
+			z->n++;	/* also on error, so zfs_free() releases it */
+		}
 	}
 	yyjson_doc_free(doc);
 	if (rc == -1)
