@@ -32,10 +32,10 @@ make install     # into /usr/local/sbin, PREFIX and DESTDIR are honored
 
 ## Usage
 
-Reading SMART data requires root.
+Reading SMART data requires root (`su`, or `sudo`/`doas` if installed).
 
 ```console
-$ doas nascheck status
+# nascheck status
 DEVICE   TYPE MODEL                    SERIAL                 SIZE  TEMP   HOURS SMART   TEST NOTES
 ada0     HDD  WDC WD40EFRX-68N32N0     WD-WCC7K1ABCDEF        4.0T   41C   31204 PASSED  ok   realloc 8, pending 0, uncorr 0
 ada1     SSD  Samsung SSD 870 EVO 1TB  S6PUNX0T123456A        1.0T   33C    9120 PASSED  -    realloc 0
@@ -68,7 +68,7 @@ whole program runs without disks. To record reports from a real machine
 (serial numbers are masked):
 
 ```sh
-doas sh scripts/capture-fixtures.sh
+sh scripts/capture-fixtures.sh   # as root
 ```
 
 ## License

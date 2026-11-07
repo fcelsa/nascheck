@@ -1,7 +1,8 @@
 #!/bin/sh
 # Save the raw output of smartctl and zpool from this machine, to be used
 # as test fixtures. Serial numbers and WWNs are masked.
-# usage: doas sh scripts/capture-fixtures.sh [outdir]
+# Run it as root.
+# usage: sh scripts/capture-fixtures.sh [outdir]
 
 out=${1:-fixtures-$(hostname -s)}
 mkdir -p "$out" || exit 1
