@@ -32,6 +32,17 @@ buf_reserve(struct buf *b, size_t need)
 	return 0;
 }
 
+int
+buf_set(struct buf *b, const char *data, size_t len)
+{
+	if (buf_reserve(b, len + 1) == -1)
+		return -1;
+	memcpy(b->data, data, len);
+	b->data[len] = '\0';
+	b->len = len;
+	return 0;
+}
+
 void
 buf_free(struct buf *b)
 {

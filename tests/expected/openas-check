@@ -1,4 +1,4 @@
-WARNING: 12 disks, 0 critical, 12 warning
+WARNING: 12 disks, 4 pools, 0 critical, 16 warning
 ada0     WARNING  last self-test 51956 h ago (limit 720)
 ada1     WARNING  last self-test 51835 h ago (limit 720)
 ada2     WARNING  Current_Pending_Sector 28 (limit 1)
@@ -15,4 +15,8 @@ ada8     WARNING  last self-test 3924 h ago (limit 720)
 ada9     WARNING  no self-test in the log
 ada10    WARNING  no self-test in the log
 ada11    WARNING  no self-test in the log
+datastore WARNING  no completed scrub on record
+openasrz WARNING  no completed scrub on record (last scan was a resilver)
+wdpu6    WARNING  no completed scrub on record
+zroot    WARNING  no completed scrub on record
 exit 1

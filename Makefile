@@ -11,7 +11,7 @@ CFLAGS?=	-O2 -pipe
 # that includes yyjson.h.
 YYJSON=		-DYYJSON_DISABLE_WRITER=1 -DYYJSON_DISABLE_INCR_READER=1 \
 		-DYYJSON_DISABLE_FILE=1 -DYYJSON_DISABLE_NON_STANDARD=1
-NC_CPPFLAGS=	-D_POSIX_C_SOURCE=200809L -DNASCHECK_VERSION=\"${VERSION}\" \
+NC_CPPFLAGS=	-D_XOPEN_SOURCE=700 -DNASCHECK_VERSION=\"${VERSION}\" \
 		-DNASCHECK_CONF=\"${SYSCONFDIR}/nascheck.conf\" \
 		-Ivendor/yyjson ${YYJSON} ${SQLITE_CPPFLAGS}
 NC_CFLAGS=	-std=c11 -Wall -Wextra
@@ -22,7 +22,7 @@ SQLITE_CPPFLAGS=	-I${LOCALBASE}/include
 SQLITE_LIBS=	-L${LOCALBASE}/lib -lsqlite3
 
 SRCS=		src/main.c src/config.c src/daemon.c src/db.c src/health.c \
-		src/run.c src/smart.c
+		src/json.c src/run.c src/smart.c src/zfs.c
 OBJS=		${SRCS:.c=.o} vendor/yyjson/yyjson.o
 
 # Debug build with AddressSanitizer and UndefinedBehaviorSanitizer.
@@ -37,8 +37,8 @@ ${PROG}: ${OBJS}
 .c.o:
 	${CC} ${NC_CPPFLAGS} ${NC_CFLAGS} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
 
-${OBJS}: src/config.h src/daemon.h src/db.h src/health.h src/run.h \
-		src/smart.h \
+${OBJS}: src/config.h src/daemon.h src/db.h src/health.h src/json.h \
+		src/run.h src/smart.h src/zfs.h \
 		vendor/yyjson/yyjson.h
 
 test: ${PROG}

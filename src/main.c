@@ -13,6 +13,7 @@
 #include "db.h"
 #include "health.h"
 #include "smart.h"
+#include "zfs.h"
 
 #ifndef NASCHECK_VERSION
 #define NASCHECK_VERSION "dev"
@@ -189,14 +190,17 @@ print_disk(const struct disk *d, const struct health *h)
 	puts(line);
 }
 
-/* The disks to report on, read live or loaded from the database. */
+/* The disks and pools to report on, read live or from the database. */
 struct set {
 	struct disk	*disks;
 	time_t		*when;		/* report times, from the database */
 	size_t		 n;
+	struct zfs	 zfs;		/* pools, when no device was named */
+	struct health	*dh;		/* evaluation of each disk */
+	struct health	*ph;		/* and of each pool */
 	time_t		 heartbeat;	/* last update by the daemon */
 	int		 from_db;	/* loaded from the database */
-	int		 partial;	/* some disk could not be read */
+	int		 partial;	/* some data could not be read */
 };
 
 static void
@@ -204,6 +208,9 @@ set_free(struct set *s)
 {
 	free(s->disks);
 	free(s->when);
+	free(s->dh);
+	free(s->ph);
+	zfs_free(&s->zfs);
 	memset(s, 0, sizeof(*s));
 }
 
@@ -266,6 +273,12 @@ read_live(struct buf *b, char **names, size_t count, struct set *set)
 		kept++;
 	}
 	set->n = kept;
+	if (count == 0 && zfs_read(b, &set->zfs) == -1) {
+		fprintf(stderr, "nascheck: zpool: %s\n", errno == EPROTO ?
+		    "no JSON output (OpenZFS 2.3 or later is required)" :
+		    strerror(errno));
+		set->partial = 1;
+	}
 	return 0;
 }
 
@@ -321,9 +334,10 @@ load_report(void *arg, const struct db_report *r)
 	return 0;
 }
 
-/* Load the latest report of each present disk from the database. */
+/* Load the latest report of each present disk and the pools. */
 static int
-read_db(const struct config *c, char **names, size_t count, struct set *set)
+read_db(const struct config *c, struct buf *b, char **names, size_t count,
+    struct set *set)
 {
 	struct load_ctx ctx = { set, 0, names, count };
 	struct db db;
@@ -332,12 +346,16 @@ read_db(const struct config *c, char **names, size_t count, struct set *set)
 	set->from_db = 1;
 	if (db_open_reader(&db, c->database) == -1 ||
 	    db_get_heartbeat(&db, &set->heartbeat) == -1 ||
-	    db_each_report(&db, load_report, &ctx) == -1) {
+	    db_each_report(&db, load_report, &ctx) == -1 ||
+	    (count == 0 && db_get_zfs(&db, b) == -1)) {
 		fprintf(stderr, "nascheck: %s: %s\n", c->database,
 		    db_error(&db));
 		fprintf(stderr, "nascheck: readers must be in the group set in "
 		    "nascheck.conf; -l reads the disks directly (as root)\n");
 		rc = 2;
+	} else if (count == 0 && b->len > 0 &&
+	    zfs_parse(b->data, b->len, &set->zfs) == -1) {
+		set->partial = 1;	/* a damaged pool report */
 	}
 	db_close(&db);
 	return rc;
@@ -352,11 +370,16 @@ get_set(const struct config *c, struct buf *b, char **names, size_t count,
     int live, struct set *set)
 {
 	struct stat st;
+	int rc;
 
 	memset(set, 0, sizeof(*set));
 	if (live || (stat(c->database, &st) == -1 && errno == ENOENT))
-		return read_live(b, names, count, set);
-	return read_db(c, names, count, set);
+		rc = read_live(b, names, count, set);
+	else
+		rc = read_db(c, b, names, count, set);
+	if (rc == 0 && set->zfs.n > 0)
+		zfs_map_disks(b, &set->zfs);
+	return rc;
 }
 
 /* Minutes since the daemon last wrote, or -1 when it looks alive. */
@@ -370,20 +393,118 @@ daemon_silence(const struct config *c, const struct set *set, time_t now)
 	return set->heartbeat == 0 ? 0 : (long)(now - set->heartbeat) / 60;
 }
 
-/* Evaluate disk i; data from the database must also be recent enough. */
-static void
-judge(const struct config *c, const struct set *set, size_t i, time_t now,
-    struct health *h)
+/*
+ * Evaluate every disk and pool into set->dh and set->ph. Data from the
+ * database must also be recent enough. Returns 0 or -1 (ENOMEM).
+ */
+static int
+evaluate(const struct config *c, struct set *set, time_t now)
 {
 	time_t age;
+	size_t i;
 
-	health_eval(c, &set->disks[i], h);
-	if (!set->from_db || set->disks[i].state != READ_OK)
-		return;
-	age = now - set->when[i];
-	if (age > c->smart_interval + c->wake_after)
-		health_add(h, LEVEL_WARN, "SMART data is %lld h old",
-		    (long long)age / 3600);
+	if ((set->n > 0 && (set->dh = calloc(set->n, sizeof(*set->dh))) ==
+	    NULL) || (set->zfs.n > 0 &&
+	    (set->ph = calloc(set->zfs.n, sizeof(*set->ph))) == NULL))
+		return -1;
+	for (i = 0; i < set->n; i++) {
+		health_eval(c, &set->disks[i], &set->dh[i]);
+		if (!set->from_db || set->disks[i].state != READ_OK)
+			continue;
+		age = now - set->when[i];
+		if (age > c->smart_interval + c->wake_after)
+			health_add(&set->dh[i], LEVEL_WARN,
+			    "SMART data is %lld h old", (long long)age / 3600);
+	}
+	for (i = 0; i < set->zfs.n; i++)
+		health_pool(c, &set->zfs.pools[i], now, &set->ph[i]);
+	return 0;
+}
+
+static const char *
+level_word(enum level l)
+{
+	return l == LEVEL_CRIT ? "CRIT" : l == LEVEL_WARN ? "WARN" : "OK";
+}
+
+/* Short summary of a pool: size, use and last scan. */
+static void
+pool_notes(const struct pool *p, char *buf, size_t size)
+{
+	char total[16], day[16];
+	struct tm tm;
+	time_t end = (time_t)p->scan_end;
+	size_t len;
+
+	snprintf(buf, size, "%s, %lld%% used", fmt_size((uint64_t)p->size,
+	    total, sizeof(total)), p->size > 0 ?
+	    (long long)(p->alloc * 100 / p->size) : 0LL);
+	len = strlen(buf);
+	if (strcmp(p->scan_state, "SCANNING") == 0) {
+		snprintf(buf + len, size - len, ", %s running",
+		    strcmp(p->scan_func, "SCRUB") == 0 ? "scrub" : "resilver");
+	} else if (p->scan_func[0] != '\0' && end > 0) {
+		localtime_r(&end, &tm);
+		strftime(day, sizeof(day), "%Y-%m-%d", &tm);
+		snprintf(buf + len, size - len, ", %s %s",
+		    strcmp(p->scan_func, "SCRUB") == 0 ? "scrub" : "resilver",
+		    day);
+	} else {
+		snprintf(buf + len, size - len, ", never scrubbed");
+	}
+}
+
+/* zpool status layout, with the disk under each leaf and its health. */
+static void
+print_pools(const struct set *set)
+{
+	static const char *const sections[] = { "", "logs", "cache", "spares" };
+	const struct pool *p;
+	const struct vdev *v;
+	const char *disk, *health;
+	char name[96], notes[160];
+	enum vdev_section section;
+	size_t i, j, k;
+
+	printf("\n%-30s %-8s %5s %5s %5s %-6s %-6s %s\n", "POOL / VDEV",
+	    "STATE", "READ", "WRITE", "CKSUM", "DISK", "HEALTH", "NOTES");
+	for (i = 0; i < set->zfs.n; i++) {
+		p = &set->zfs.pools[i];
+		pool_notes(p, notes, sizeof(notes));
+		printf("%-30.30s %-8s %5s %5s %5s %-6s %-6s %s\n", p->name,
+		    p->state, "", "", "", "", level_word(set->ph[i].level),
+		    notes);
+		section = SECTION_DATA;
+		for (j = 0; j < p->nvdev; j++) {
+			v = &p->vdevs[j];
+			/* Section headers line up with the pool, as in zpool. */
+			if (v->section != section) {
+				section = v->section;
+				printf("%s\n", sections[section]);
+			}
+			/* The disk under a leaf, with its own health. */
+			disk = health = "";
+			for (k = 0; v->disk[0] != '\0' && k < set->n; k++) {
+				if (strcmp(set->disks[k].path, v->disk) != 0)
+					continue;
+				disk = short_name(&set->disks[k]);
+				health = level_short(&set->disks[k],
+				    &set->dh[k]);
+				break;
+			}
+			snprintf(name, sizeof(name), "%*s%s",
+			    2 * (v->depth + 1), "", v->name);
+			snprintf(notes, sizeof(notes), "%-30.30s %-8s %5lld "
+			    "%5lld %5lld %-6s %s", name, v->state,
+			    (long long)v->read_errors,
+			    (long long)v->write_errors,
+			    (long long)v->checksum_errors, disk, health);
+			for (k = strlen(notes); k > 0 && notes[k - 1] == ' ';
+			    k--)
+				notes[k - 1] = '\0';
+			puts(notes);
+		}
+	}
 }
 
 /*
@@ -409,13 +530,13 @@ cmd_status(const struct config *c, struct buf *b, char **names, size_t count,
     int live)
 {
 	struct set set;
-	struct health h;
 	time_t now = time(NULL);
 	long silence;
 	size_t i;
 	int rc;
 
-	if ((rc = get_set(c, b, names, count, live, &set)) != 0) {
+	if ((rc = get_set(c, b, names, count, live, &set)) != 0 ||
+	    (rc = evaluate(c, &set, now)) != 0) {
 		set_free(&set);
 		return rc == 2 ? 1 : rc;
 	}
@@ -423,10 +544,10 @@ cmd_status(const struct config *c, struct buf *b, char **names, size_t count,
 		fprintf(stderr, "nascheck: no update from the daemon for "
 		    "%ld min\n", silence);
 	print_header();
-	for (i = 0; i < set.n; i++) {
-		judge(c, &set, i, now, &h);
-		print_disk(&set.disks[i], &h);
-	}
+	for (i = 0; i < set.n; i++)
+		print_disk(&set.disks[i], &set.dh[i]);
+	if (set.zfs.n > 0)
+		print_pools(&set);
 	rc = set.partial;
 	set_free(&set);
 	return rc;
@@ -436,49 +557,58 @@ cmd_status(const struct config *c, struct buf *b, char **names, size_t count,
  * Summary line first, as monitoring systems read it, then one line per
  * finding. Returns the exit code: the worst level, or EXIT_UNKNOWN.
  */
+/* One line per finding of a disk or pool. */
+static void
+print_findings(const char *subject, const struct health *h)
+{
+	uint8_t j;
+
+	for (j = 0; j < h->n; j++)
+		printf("%-8s %-8s %s\n", subject, level_name(h->f[j].level),
+		    h->f[j].text);
+}
+
 static int
 cmd_check(const struct config *c, struct buf *b, char **names, size_t count,
     int live, int quiet)
 {
 	struct set set;
-	struct health *h = NULL;
 	time_t now = time(NULL);
 	size_t i, nwarn = 0, ncrit = 0;
-	enum level worst = LEVEL_OK;
+	enum level l, worst = LEVEL_OK;
 	long silence;
-	uint8_t j;
-	int rc, code, unknown;
+	int rc, code;
 
-	if ((rc = get_set(c, b, names, count, live, &set)) != 0) {
+	if ((rc = get_set(c, b, names, count, live, &set)) != 0 ||
+	    (rc = evaluate(c, &set, now)) != 0) {
 		set_free(&set);
 		return rc == 2 ? EXIT_UNKNOWN : rc;
 	}
-	if (set.n > 0 && (h = calloc(set.n, sizeof(*h))) == NULL) {
-		set_free(&set);
-		return -1;
+	for (i = 0; i < set.n + set.zfs.n; i++) {
+		l = i < set.n ? set.dh[i].level : set.ph[i - set.n].level;
+		nwarn += l == LEVEL_WARN;
+		ncrit += l == LEVEL_CRIT;
+		if (l > worst)
+			worst = l;
 	}
-	for (i = 0; i < set.n; i++) {
-		judge(c, &set, i, now, &h[i]);
-		nwarn += h[i].level == LEVEL_WARN;
-		ncrit += h[i].level == LEVEL_CRIT;
-		if (h[i].level > worst)
-			worst = h[i].level;
-	}
+
 	/* Missing data makes the result unknown, unless already critical. */
 	silence = daemon_silence(c, &set, now);
-	unknown = set.partial || silence >= 0;
-	code = worst == LEVEL_CRIT || !unknown ? (int)worst : EXIT_UNKNOWN;
-	printf("%s: %zu disks, %zu critical, %zu warning%s\n",
-	    code == EXIT_UNKNOWN ? "UNKNOWN" : level_name(worst), set.n, ncrit,
-	    nwarn, set.partial ? ", some disks could not be read" : "");
-	if (!quiet && silence >= 0)
-		printf("%-8s %-8s no update from the daemon for %ld min\n",
-		    "-", "UNKNOWN", silence);
-	for (i = 0; i < set.n && !quiet; i++)
-		for (j = 0; j < h[i].n; j++)
-			printf("%-8s %-8s %s\n", short_name(&set.disks[i]),
-			    level_name(h[i].f[j].level), h[i].f[j].text);
-	free(h);
+	code = worst == LEVEL_CRIT || (!set.partial && silence < 0) ?
+	    (int)worst : EXIT_UNKNOWN;
+	printf("%s: %zu disks, %zu pools, %zu critical, %zu warning%s\n",
+	    code == EXIT_UNKNOWN ? "UNKNOWN" : level_name(worst), set.n,
+	    set.zfs.n, ncrit, nwarn,
+	    set.partial ? ", some data could not be read" : "");
+	if (!quiet) {
+		if (silence >= 0)
+			printf("%-8s %-8s no update from the daemon for "
+			    "%ld min\n", "-", "UNKNOWN", silence);
+		for (i = 0; i < set.n; i++)
+			print_findings(short_name(&set.disks[i]), &set.dh[i]);
+		for (i = 0; i < set.zfs.n; i++)
+			print_findings(set.zfs.pools[i].name, &set.ph[i]);
+	}
 	set_free(&set);
 	return code;
 }

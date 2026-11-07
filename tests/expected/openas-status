@@ -11,4 +11,24 @@ ada8     WARN   SSD  SanDisk SSD PLUS 120 GB  MASKED                 120G   25C 
 ada9     WARN   HDD  WDC WD64PURZ-74BWUY0     MASKED                 6.0T   22C   11237 PASSED       - realloc 0, pending 0, uncorr 0
 ada10    WARN   HDD  WDC WD1003FZEX-00MK2A0   MASKED                 1.0T   23C   32895 PASSED       - realloc 0, pending 0, uncorr 0
 ada11    WARN   HDD  TOSHIBA HDWD110          MASKED                 1.0T   23C   29672 PASSED       - realloc 0, pending 0, uncorr 0
+
+POOL / VDEV                    STATE     READ WRITE CKSUM DISK   HEALTH NOTES
+datastore                      ONLINE                            WARN   4.0T, 5% used, never scrubbed
+  raidz1-0                     ONLINE       0     0     0
+    gpt/478L83VFS              ONLINE       0     0     0 ada6   WARN
+    gpt/WD-WCC3F2267722        ONLINE       0     0     0 ada10  WARN
+    gpt/WD-WMAW31236855        ONLINE       0     0     0 ada7   WARN
+    gpt/283XLPKNS              ONLINE       0     0     0 ada11  WARN
+openasrz                       ONLINE                            WARN   3.0T, 34% used, resilver 2026-10-25
+  raidz2-0                     ONLINE       0     0     0
+    gpt/zfs-90eae6ca820c426b   ONLINE       0     0     0 ada5   WARN
+    gpt/zfs-5f966b29ab9b3ddc   ONLINE       0     0     0 ada2   WARN
+    gpt/zfs-c5ccf4e289db396c   ONLINE       0     0     0 ada0   WARN
+    gpt/zfs-107012a0c44e7eba   ONLINE       0     0     0 ada3   WARN
+    gpt/zfs-7e8967af2db4e8f5   ONLINE       0     0     0 ada4   WARN
+    gpt/zfs-710ee34411989525   ONLINE       0     0     0 ada1   WARN
+wdpu6                          ONLINE                            WARN   6.0T, 0% used, never scrubbed
+  ada9                         ONLINE       0     0     0 ada9   WARN
+zroot                          ONLINE                            WARN   117G, 18% used, never scrubbed
+  ada8p3                       ONLINE       0     0     0 ada8   WARN
 exit 0

@@ -7,7 +7,9 @@
 #include <time.h>
 
 #include "health.h"
+#include "run.h"
 #include "smart.h"
+#include "zfs.h"
 
 /* NVMe counters stored in the attribute table, after the ATA ids. */
 #define NVME_ID_USED		1001	/* percentage_used */
@@ -25,7 +27,7 @@ enum db_stmt {
 	ST_BEGIN, ST_COMMIT, ST_ROLLBACK,
 	ST_DISK, ST_CLEAR_PATH, ST_REPORT, ST_SNAPSHOT, ST_ATTR, ST_TEMP,
 	ST_SEEN_RESET, ST_SEEN_PATH, ST_DROP_UNSEEN, ST_HEARTBEAT, ST_PRUNE,
-	ST_NODE, ST_NODE_CLEAR,
+	ST_NODE, ST_NODE_CLEAR, ST_ZFS, ST_POOL,
 	ST_COUNT
 };
 
@@ -70,6 +72,16 @@ int	db_store_report(struct db *db, const struct disk *d, enum level level,
 
 /* Store a temperature sample of a disk read with READ_TEMP. */
 int	db_store_temp(struct db *db, const struct disk *d, time_t now);
+
+/*
+ * Store the latest `zpool status -j` report; with `history`, also a
+ * history row per pool (once per full collection).
+ */
+int	db_store_zfs(struct db *db, const struct zfs *z, const char *json,
+	    size_t len, int history, time_t now);
+
+/* Reader: the latest zpool report into b, empty if there is none. */
+int	db_get_zfs(struct db *db, struct buf *b);
 
 /* The daemon is alive: readers compare this time with the clock. */
 int	db_heartbeat(struct db *db, time_t now);

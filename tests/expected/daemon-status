@@ -3,4 +3,19 @@ ada0     WARN   HDD  WDC WD40EFRX-68N32N0     WD-WCC7K1ABCDEF        4.0T   41C 
 ada1     WARN   SSD  Samsung SSD 870 EVO 1TB  S6PUNX0T123456A        1.0T   33C    9120 PASSED       - realloc 0
 ada2     -      -    -                        -                         -     -       - standby      -
 nvme0    OK     NVMe Samsung SSD 980 PRO 1TB  S5GXNX0T654321B        1.0T   47C    8123 PASSED     23h used 3%, spare 100%, media err 0
+
+POOL / VDEV                    STATE     READ WRITE CKSUM DISK   HEALTH NOTES
+tank                           ONLINE                            WARN   4.0T, 85% used, scrub 2026-09-01
+  mirror-0                     ONLINE       0     0     0
+    gpt/disk0                  ONLINE       0     0     0 ada0   WARN
+    gpt/disk1                  ONLINE       0     0     3 ada1   WARN
+logs
+  gpt/log0                     ONLINE       0     0     0 ada1   WARN
+spares
+  gpt/spare0                   AVAIL        0     0     0 ada2   -
+backup                         DEGRADED                          CRIT   3.0T, 16% used, scrub running
+  raidz1-0                     DEGRADED     0     0     0
+    da1                        ONLINE       0     0     0
+    da2                        OFFLINE      0     0     0
+    da3                        ONLINE       2     0     0
 exit 0

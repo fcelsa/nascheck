@@ -43,6 +43,13 @@ selftest_max_age	720
 nvme_used		80 100
 nvme_media_errors	1 -
 
+# ZFS pools: allocated space in percent, and the time since the last
+# completed scrub (FreeBSD's periodic(8) scrubs every 35 days when
+# daily_scrub_zfs_enable="YES"). A pool not ONLINE, a vdev that is not
+# ONLINE, and permanent data errors are always critical.
+pool_used		80 90
+scrub_max_age		35d
+
 # ATA attributes: id, then limits on the raw value. The first ata_attr
 # line replaces this whole list.
 ata_attr 5   1 -	# Reallocated_Sector_Ct

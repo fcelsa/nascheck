@@ -1,2 +1,2 @@
-WARNING: 4 disks, 0 critical, 2 warning
-exit 1
+CRITICAL: 4 disks, 2 pools, 1 critical, 3 warning
+exit 2

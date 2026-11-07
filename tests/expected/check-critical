@@ -1,4 +1,4 @@
-CRITICAL: 4 disks, 2 critical, 1 warning
+CRITICAL: 4 disks, 0 pools, 2 critical, 1 warning
 ada4     CRITICAL SMART overall health test FAILED
 ada4     WARNING  Start_Stop_Count failing now (value 90, threshold 95)
 ada4     CRITICAL Reallocated_Sector_Ct failing now (value 30, threshold 36)

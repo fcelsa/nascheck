@@ -1,0 +1,7 @@
+#!/bin/sh
+# Stand-in for sysctl: kern.geom.conftxt from the fixtures, as on FreeBSD.
+
+dir=${NASCHECK_FIXTURES:-$(dirname "$0")/fixtures}
+
+[ "$*" = "-n kern.geom.conftxt" ] && [ -r "$dir/geom-conftxt.txt" ] || exit 1
+cat "$dir/geom-conftxt.txt"

@@ -1,0 +1,22 @@
+#!/bin/sh
+# Stand-in for zpool: replays zpool-status-int.json (or zpool-status.json)
+# from the fixtures; without either, there are no pools.
+
+dir=${NASCHECK_FIXTURES:-$(dirname "$0")/fixtures}
+
+case "$1" in
+status)
+	for f in "$dir/zpool-status-int.json" "$dir/zpool-status.json"; do
+		if [ -r "$f" ]; then
+			cat "$f"
+			exit 0
+		fi
+	done
+	echo "no pools available"
+	exit 0
+	;;
+list)
+	exit 0
+	;;
+esac
+exit 2

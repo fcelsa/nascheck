@@ -6,8 +6,13 @@
 prog=$(cd "$(dirname "$1")" && pwd)/$(basename "$1")
 dir=$(cd "$(dirname "$0")" && pwd)
 cd "$dir/.." || exit 1
+# Fakes for smartctl, zpool and sysctl replay the fixtures; dates are
+# printed in UTC.
 NASCHECK_SMARTCTL=$dir/fake-smartctl
-export NASCHECK_SMARTCTL
+NASCHECK_ZPOOL=$dir/fake-zpool
+NASCHECK_SYSCTL=$dir/fake-sysctl
+TZ=UTC
+export NASCHECK_SMARTCTL NASCHECK_ZPOOL NASCHECK_SYSCTL TZ
 fail=0
 
 # check NAME ARGS...: run nascheck ARGS and diff with expected/NAME.

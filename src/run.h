@@ -21,6 +21,9 @@ struct buf {
  */
 int	run_capture(char *const argv[], struct buf *b, size_t pad, int *code);
 
+/* Copy len bytes into b, followed by a zero byte. Returns 0 or -1. */
+int	buf_set(struct buf *b, const char *data, size_t len);
+
 void	buf_free(struct buf *b);
 
 #define RUN_MAX_OUTPUT	(8u << 20)	/* 8 MiB, far above any smartctl report */

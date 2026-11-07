@@ -2,8 +2,11 @@
 #ifndef NASCHECK_HEALTH_H
 #define NASCHECK_HEALTH_H
 
+#include <time.h>
+
 #include "config.h"
 #include "smart.h"
+#include "zfs.h"
 
 /* Ordered by severity; the values are also the check exit codes. */
 enum level {
@@ -28,6 +31,10 @@ struct health {
 /* Evaluate d. A disk in standby has no new data and is OK. */
 void		health_eval(const struct config *c, const struct disk *d,
 		    struct health *h);
+
+/* Evaluate a ZFS pool at time now (for the scrub age). */
+void		health_pool(const struct config *c, const struct pool *p,
+		    time_t now, struct health *h);
 
 /* Add a finding with a printf-style text. */
 void		health_add(struct health *h, enum level l, const char *fmt, ...);

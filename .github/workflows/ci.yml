@@ -38,6 +38,17 @@ jobs:
             nascheck refresh
             nascheck status
             nascheck check || true
+            # A real pool on a memory disk with a GPT label.
+            mdconfig -a -t swap -s 256m -u 10
+            gpart create -s gpt md10
+            gpart add -t freebsd-zfs -l citest md10
+            zpool create citank gpt/citest
+            nascheck refresh
+            nascheck status | tee /tmp/status
+            grep -q '^citank .*ONLINE' /tmp/status
+            grep -q 'gpt/citest' /tmp/status
+            nascheck -l check || true
+            zpool destroy citank
             service nascheck reload
             service nascheck stop
             ls -l /var/db/nascheck

@@ -4,15 +4,16 @@ Disk health monitor for FreeBSD and Linux, in the terminal.
 It reads SMART data of SATA (HDD and SSD) and NVMe disks through
 `smartctl`, and the state of ZFS pools through `zpool`.
 
-> **Status: early development (phase 3).** A daemon collects SMART data and
-> temperatures into a local database; `status` and `check` report on it
-> without root. ZFS and the ncurses interface come next; see the roadmap.
+> **Status: early development (phase 4).** A daemon collects SMART data,
+> temperatures and the state of ZFS pools into a local database; `status`
+> and `check` report on it without root. The ncurses interface comes next.
 
 ## Requirements
 
 - FreeBSD 14 or later, or Linux
 - smartmontools 7.0 or later (JSON output)
 - SQLite 3.35 or later
+- for ZFS: OpenZFS 2.3 or later (`zpool status -j`), as in FreeBSD 15
 - a C11 compiler and `make` (BSD make or GNU make)
 
 ```sh
@@ -53,6 +54,28 @@ readable by that group. Changed rules are applied with
 
 Disks in standby are not woken up: the daemon tries again every hour, and
 wakes a disk only when its report is older than a week (`wake_after`).
+
+## ZFS
+
+`status` shows the pools as `zpool status` does, with the physical disk
+under each vdev and that disk's health:
+
+```console
+POOL / VDEV                    STATE     READ WRITE CKSUM DISK   HEALTH NOTES
+openasrz                       ONLINE                            WARN   3.0T, 34% used, resilver 2026-10-25
+  raidz2-0                     ONLINE       0     0     0
+    gpt/zfs-90eae6ca820c426b   ONLINE       0     0     0 ada5   WARN
+    gpt/zfs-5f966b29ab9b3ddc   ONLINE       0     0     0 ada2   WARN
+```
+
+On FreeBSD the disk comes from the GEOM tree (`kern.geom.conftxt`), so
+labels (`gpt/`, `gptid/`, `diskid/`) and partitions resolve to their disk;
+on Linux from the device path (`/dev/disk/by-id/...-part1` -> `sdb`).
+NVMe vdevs on FreeBSD (`nda`) are not mapped to their controller yet.
+
+The daemon reads the pools at every temperature sample: `zpool status`
+asks the kernel, not the disks, so a vdev that drops out is reported
+within minutes.
 
 ## Usage
 
@@ -102,7 +125,7 @@ Compatible with Nagios, Icinga and Zabbix plugins, and handy in cron:
 | 0 | all disks OK |
 | 1 | at least one warning |
 | 2 | at least one critical problem |
-| 3 | unknown: smartctl missing, bad configuration, unreadable disk, daemon not updating the database |
+| 3 | unknown: smartctl missing, bad configuration, unreadable disk or pool, daemon not updating the database |
 
 ### Rules
 
@@ -118,6 +141,11 @@ Compatible with Nagios, Icinga and Zabbix plugins, and handy in cron:
 | NVMe | critical warning bit set | critical |
 | NVMe | wear (`percentage_used`) at 80% / 100% | warning, critical |
 | NVMe | media errors above zero | warning |
+| ZFS | pool not ONLINE, a vdev not ONLINE (spares: not AVAIL) | critical |
+| ZFS | permanent errors in files | critical |
+| ZFS | read, write or checksum errors on a vdev | warning |
+| ZFS | allocated space at 80% / 90% | warning, critical |
+| ZFS | no completed scrub, or the last one older than 35 days | warning |
 
 Thresholds live in `/usr/local/etc/nascheck.conf`; see
 [nascheck.conf.sample](nascheck.conf.sample), installed next to it, for
@@ -128,7 +156,7 @@ the keywords and the defaults used when the file does not exist.
 1. Disk discovery, `smartctl` JSON parsing, status table — **done**
 2. Health rules from a config file, `nascheck check` with exit codes — **done**
 3. Daemon: daily SMART report, temperature samples, SQLite, rc.d — **done**
-4. ZFS pools: state, errors, scrub, vdev to disk mapping
+4. ZFS pools: state, errors, scrub, vdev to disk mapping — **done**
 5. ncurses interface: devices, details, history
 6. Temperature graphs
 7. Packaging: FreeBSD port, Linux static build

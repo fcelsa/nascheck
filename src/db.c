@@ -12,7 +12,7 @@
 
 #include "db.h"
 
-#define SCHEMA_VERSION	1
+#define SCHEMA_VERSION	2
 #define BUSY_TIMEOUT_MS	5000	/* readers wait for a write in progress */
 
 static const char schema[] =
@@ -53,6 +53,20 @@ static const char schema[] =
 	"  state INTEGER NOT NULL,"	/* enum read_state */
 	"  error TEXT,"
 	"  time  INTEGER NOT NULL) WITHOUT ROWID;"
+	/* Latest zpool status -j report, and a daily row per pool. */
+	"CREATE TABLE IF NOT EXISTS zfs ("
+	"  id   INTEGER PRIMARY KEY CHECK (id = 1),"
+	"  time INTEGER NOT NULL,"
+	"  json TEXT NOT NULL);"
+	"CREATE TABLE IF NOT EXISTS pool ("
+	"  name   TEXT NOT NULL,"
+	"  time   INTEGER NOT NULL,"
+	"  state  TEXT NOT NULL,"
+	"  alloc  INTEGER NOT NULL,"
+	"  size   INTEGER NOT NULL,"
+	"  errors INTEGER NOT NULL,"	/* read + write + checksum */
+	"  data_errors INTEGER NOT NULL,"
+	"  PRIMARY KEY (name, time)) WITHOUT ROWID;"
 	"CREATE TABLE IF NOT EXISTS meta ("
 	"  key   TEXT PRIMARY KEY,"
 	"  value INTEGER) WITHOUT ROWID;";
@@ -84,6 +98,10 @@ static const char *const sql[ST_COUNT] = {
 	[ST_NODE] = "INSERT OR REPLACE INTO node (path, state, error, time)"
 	    " VALUES (?1, ?2, ?3, ?4)",
 	[ST_NODE_CLEAR] = "DELETE FROM node",
+	[ST_ZFS] = "INSERT OR REPLACE INTO zfs (id, time, json)"
+	    " VALUES (1, ?1, ?2)",
+	[ST_POOL] = "INSERT OR REPLACE INTO pool (name, time, state, alloc,"
+	    " size, errors, data_errors) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
 };
 
 /* SQLite's message, with the system error behind it when there is one. */
@@ -180,7 +198,7 @@ db_open_writer(struct db *db, const char *path, gid_t gid)
 	if (sqlite3_exec(db->h, "PRAGMA journal_mode = WAL;"
 	    "PRAGMA synchronous = NORMAL;", NULL, NULL, NULL) != SQLITE_OK ||
 	    sqlite3_exec(db->h, schema, NULL, NULL, NULL) != SQLITE_OK ||
-	    sqlite3_exec(db->h, "PRAGMA user_version = 1", NULL, NULL,
+	    sqlite3_exec(db->h, "PRAGMA user_version = 2", NULL, NULL,
 	    NULL) != SQLITE_OK)
 		return -1;
 	for (i = 0; i < ST_COUNT; i++)
@@ -385,6 +403,59 @@ db_store_temp(struct db *db, const struct disk *d, time_t now)
 	if ((disk = disk_id(db, d)) == -1)
 		return -1;
 	return store_temp(db, disk, d, now);
+}
+
+int
+db_store_zfs(struct db *db, const struct zfs *z, const char *json,
+    size_t len, int history, time_t now)
+{
+	const struct pool *p;
+	sqlite3_stmt *st = db->st[ST_ZFS];
+	int64_t errors;
+	size_t i, j;
+
+	sqlite3_bind_int64(st, 1, now);
+	sqlite3_bind_text(st, 2, json, (int)len, SQLITE_STATIC);
+	if (run(db, ST_ZFS) == -1)
+		return -1;
+	for (i = 0; history && i < z->n; i++) {
+		p = &z->pools[i];
+		for (errors = 0, j = 0; j < p->nvdev; j++)
+			errors += p->vdevs[j].read_errors +
+			    p->vdevs[j].write_errors +
+			    p->vdevs[j].checksum_errors;
+		st = db->st[ST_POOL];
+		sqlite3_bind_text(st, 1, p->name, -1, SQLITE_STATIC);
+		sqlite3_bind_int64(st, 2, now);
+		sqlite3_bind_text(st, 3, p->state, -1, SQLITE_STATIC);
+		sqlite3_bind_int64(st, 4, p->alloc);
+		sqlite3_bind_int64(st, 5, p->size);
+		sqlite3_bind_int64(st, 6, errors);
+		sqlite3_bind_int64(st, 7, p->data_errors);
+		if (run(db, ST_POOL) == -1)
+			return -1;
+	}
+	return 0;
+}
+
+int
+db_get_zfs(struct db *db, struct buf *b)
+{
+	sqlite3_stmt *st;
+	int rc, ret = 0;
+
+	/* A database from before ZFS support has no table: no pools. */
+	b->len = 0;
+	if (sqlite3_prepare_v2(db->h, "SELECT json FROM zfs WHERE id = 1",
+	    -1, &st, NULL) != SQLITE_OK)
+		return 0;
+	if ((rc = sqlite3_step(st)) == SQLITE_ROW)
+		ret = buf_set(b, (const char *)sqlite3_column_text(st, 0),
+		    (size_t)sqlite3_column_bytes(st, 0));
+	else if (rc != SQLITE_DONE)
+		ret = -1;
+	sqlite3_finalize(st);
+	return ret;
 }
 
 int

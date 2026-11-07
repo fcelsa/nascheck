@@ -1,0 +1,187 @@
+{
+  "output_version": {
+    "command": "zpool status",
+    "vers_major": 0,
+    "vers_minor": 1
+  },
+  "pools": {
+    "tank": {
+      "name": "tank",
+      "state": "ONLINE",
+      "pool_guid": 1,
+      "txg": 100,
+      "spa_version": 5000,
+      "zpl_version": 5,
+      "vdevs": {
+        "tank": {
+          "name": "tank",
+          "vdev_type": "root",
+          "guid": 1,
+          "class": "normal",
+          "state": "ONLINE",
+          "alloc_space": 3400000000000,
+          "total_space": 4000000000000,
+          "def_space": 4000000000000,
+          "read_errors": 0,
+          "write_errors": 0,
+          "checksum_errors": 0,
+          "vdevs": {
+            "mirror-0": {
+              "name": "mirror-0",
+              "vdev_type": "mirror",
+              "guid": 137260698450320567,
+              "class": "normal",
+              "state": "ONLINE",
+              "read_errors": 0,
+              "write_errors": 0,
+              "checksum_errors": 0,
+              "vdevs": {
+                "gpt/disk0": {
+                  "name": "gpt/disk0",
+                  "vdev_type": "disk",
+                  "guid": 667046983349427516,
+                  "class": "normal",
+                  "state": "ONLINE",
+                  "read_errors": 0,
+                  "write_errors": 0,
+                  "checksum_errors": 0,
+                  "slow_ios": 0,
+                  "path": "/dev/gpt/disk0"
+                },
+                "gpt/disk1": {
+                  "name": "gpt/disk1",
+                  "vdev_type": "disk",
+                  "guid": 737077046837799624,
+                  "class": "normal",
+                  "state": "ONLINE",
+                  "read_errors": 0,
+                  "write_errors": 0,
+                  "checksum_errors": 3,
+                  "slow_ios": 0,
+                  "path": "/dev/gpt/disk1"
+                }
+              }
+            }
+          }
+        }
+      },
+      "scan_stats": {
+        "function": "SCRUB",
+        "state": "FINISHED",
+        "start_time": 1788210000,
+        "end_time": 1788220800,
+        "errors": 0
+      },
+      "logs": {
+        "gpt/log0": {
+          "name": "gpt/log0",
+          "vdev_type": "disk",
+          "guid": 832324548932836639,
+          "class": "normal",
+          "state": "ONLINE",
+          "read_errors": 0,
+          "write_errors": 0,
+          "checksum_errors": 0,
+          "slow_ios": 0,
+          "path": "/dev/gpt/log0"
+        }
+      },
+      "spares": {
+        "gpt/spare0": {
+          "name": "gpt/spare0",
+          "vdev_type": "disk",
+          "guid": 416026657743802363,
+          "class": "normal",
+          "state": "AVAIL",
+          "read_errors": 0,
+          "write_errors": 0,
+          "checksum_errors": 0,
+          "slow_ios": 0,
+          "path": "/dev/gpt/spare0"
+        }
+      },
+      "error_count": 0
+    },
+    "backup": {
+      "name": "backup",
+      "state": "DEGRADED",
+      "pool_guid": 1,
+      "txg": 100,
+      "spa_version": 5000,
+      "zpl_version": 5,
+      "vdevs": {
+        "backup": {
+          "name": "backup",
+          "vdev_type": "root",
+          "guid": 1,
+          "class": "normal",
+          "state": "DEGRADED",
+          "alloc_space": 500000000000,
+          "total_space": 3000000000000,
+          "def_space": 3000000000000,
+          "read_errors": 0,
+          "write_errors": 0,
+          "checksum_errors": 0,
+          "vdevs": {
+            "raidz1-0": {
+              "name": "raidz1-0",
+              "vdev_type": "raidz",
+              "guid": 312436351031864470,
+              "class": "normal",
+              "state": "DEGRADED",
+              "read_errors": 0,
+              "write_errors": 0,
+              "checksum_errors": 0,
+              "vdevs": {
+                "da1": {
+                  "name": "da1",
+                  "vdev_type": "disk",
+                  "guid": 413692098739247693,
+                  "class": "normal",
+                  "state": "ONLINE",
+                  "read_errors": 0,
+                  "write_errors": 0,
+                  "checksum_errors": 0,
+                  "slow_ios": 0,
+                  "path": "/dev/da1"
+                },
+                "da2": {
+                  "name": "da2",
+                  "vdev_type": "disk",
+                  "guid": 149659326117514412,
+                  "class": "normal",
+                  "state": "OFFLINE",
+                  "read_errors": 0,
+                  "write_errors": 0,
+                  "checksum_errors": 0,
+                  "slow_ios": 0,
+                  "path": "/dev/da2"
+                },
+                "da3": {
+                  "name": "da3",
+                  "vdev_type": "disk",
+                  "guid": 598403476605898418,
+                  "class": "normal",
+                  "state": "ONLINE",
+                  "read_errors": 2,
+                  "write_errors": 0,
+                  "checksum_errors": 0,
+                  "slow_ios": 0,
+                  "path": "/dev/da3"
+                }
+              }
+            }
+          }
+        }
+      },
+      "scan_stats": {
+        "function": "SCRUB",
+        "state": "SCANNING",
+        "start_time": 1794090000,
+        "end_time": 0,
+        "errors": 0
+      },
+      "error_count": 2
+    }
+  }
+}

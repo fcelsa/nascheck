@@ -43,6 +43,8 @@ struct config {
 	int64_t		selftest_max_age;	/* power-on hours, or LIMIT_OFF */
 	struct ata_rule	ata[ATA_MAX_ATTRS];
 	uint8_t		nata;
+	struct limit	pool_used;		/* percent of the pool size */
+	int64_t		scrub_max_age;		/* seconds, or LIMIT_OFF */
 };
 
 /* Fill c with the built-in defaults. */

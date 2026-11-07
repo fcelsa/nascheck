@@ -22,10 +22,12 @@ done
 if command -v zpool >/dev/null 2>&1; then
 	zpool version >"$out/zpool-version.txt"
 	zpool status -j -p >"$out/zpool-status.json"
+	zpool status -j --json-int -p >"$out/zpool-status-int.json"
 	zpool status -P -p >"$out/zpool-status.txt"
 	zpool list -H -p >"$out/zpool-list.txt"
 fi
 if [ "$(uname -s)" = FreeBSD ]; then
+	sysctl -n kern.geom.conftxt >"$out/geom-conftxt.txt"
 	glabel status >"$out/glabel.txt"
 	gpart show -p >"$out/gpart.txt"
 fi

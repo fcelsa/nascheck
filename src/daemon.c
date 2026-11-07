@@ -20,6 +20,7 @@
 #include "db.h"
 #include "health.h"
 #include "smart.h"
+#include "zfs.h"
 
 /*
  * rc.d and systemd start services with a minimal PATH that may miss
@@ -42,6 +43,12 @@ struct slot {
 	uint8_t		known;		/* d holds a report of this disk */
 };
 
+/* Last evaluation of a pool, for the log. */
+struct pool_level {
+	char		name[ZFS_NAME];
+	enum level	level;
+};
+
 struct daemon {
 	struct config	 cfg;
 	const char	*conf_path;
@@ -49,6 +56,8 @@ struct daemon {
 	struct buf	 b;
 	struct slot	*slots;
 	size_t		 n;
+	struct pool_level *pools;
+	size_t		 npools;
 	time_t		 next_scan;	/* monotonic */
 	time_t		 next_temp;
 	int		 listen_fd;
@@ -182,6 +191,66 @@ log_level_change(struct slot *s, const struct health *h)
 	s->level = h->level;
 }
 
+/* Log the state of a pool when it is first seen and when it changes. */
+static void
+log_pool(struct daemon *dm, const char *name, const struct health *h)
+{
+	struct pool_level *pl;
+	size_t i;
+	int prio = h->level == LEVEL_CRIT ? LOG_CRIT :
+	    h->level == LEVEL_WARN ? LOG_WARNING : LOG_NOTICE;
+
+	for (i = 0; i < dm->npools && strcmp(dm->pools[i].name, name) != 0;
+	    i++)
+		;
+	if (i == dm->npools) {
+		if ((pl = realloc(dm->pools, (i + 1) * sizeof(*pl))) == NULL)
+			return;
+		dm->pools = pl;
+		dm->npools++;
+		snprintf(pl[i].name, sizeof(pl[i].name), "%s", name);
+	} else if (dm->pools[i].level == h->level) {
+		return;
+	}
+	dm->pools[i].level = h->level;
+	if (h->n > 0)
+		syslog(prio, "pool %s: %s: %s%s", name, level_name(h->level),
+		    h->f[0].text, h->n > 1 ? ", ..." : "");
+	else
+		syslog(prio, "pool %s: %s", name, level_name(h->level));
+}
+
+/*
+ * Store the pools; zpool status reads kernel state, not the disks, so it
+ * is cheap enough for every temperature cycle. `history` adds the daily
+ * rows. Returns -1 only on a database error.
+ */
+static int
+collect_pools(struct daemon *dm, int history, time_t wall)
+{
+	static const char none[] = "{\"pools\":{}}";
+	struct health h;
+	struct zfs z;
+	size_t i;
+	int rc;
+
+	if (zfs_read(&dm->b, &z) == -1) {
+		syslog(LOG_ERR, "zpool: %s", errno == EPROTO ? "no JSON output "
+		    "(OpenZFS 2.3 or later is required)" : strerror(errno));
+		return 0;
+	}
+	/* Without pools b holds no JSON: store an empty report. */
+	rc = z.n > 0 ? db_store_zfs(&dm->db, &z, dm->b.data, dm->b.len,
+	    history, wall) : db_store_zfs(&dm->db, &z, none, sizeof(none) - 1,
+	    0, wall);
+	for (i = 0; i < z.n; i++) {
+		health_pool(&dm->cfg, &z.pools[i], wall, &h);
+		log_pool(dm, z.pools[i].name, &h);
+	}
+	zfs_free(&z);
+	return rc;
+}
+
 /* Read one disk completely and store its report. */
 static void
 read_full(struct daemon *dm, struct slot *s, time_t now)
@@ -296,7 +365,8 @@ collect(struct daemon *dm, int scan)
 			read_full(dm, &dm->slots[i], now);
 	}
 	if ((scan && (db_drop_unseen(&dm->db) == -1 ||
-	    db_prune(&dm->db, wall - dm->cfg.temp_keep) == -1)) ||
+	    db_prune(&dm->db, wall - dm->cfg.temp_keep) == -1 ||
+	    collect_pools(dm, 1, wall) == -1)) ||
 	    db_heartbeat(&dm->db, wall) == -1 || db_commit(&dm->db) == -1)
 		goto fail;
 	return;
@@ -305,7 +375,7 @@ fail:
 	db_rollback(&dm->db);
 }
 
-/* Sample the temperature of every disk not read in this interval. */
+/* Sample the temperatures and read the pools. */
 static void
 sample_temps(struct daemon *dm)
 {
@@ -333,7 +403,8 @@ sample_temps(struct daemon *dm)
 		if (db_store_temp(&dm->db, &t, wall) == -1)
 			goto fail;
 	}
-	if (db_heartbeat(&dm->db, wall) == -1 || db_commit(&dm->db) == -1)
+	if (collect_pools(dm, 0, wall) == -1 ||
+	    db_heartbeat(&dm->db, wall) == -1 || db_commit(&dm->db) == -1)
 		goto fail;
 	return;
 fail:
@@ -503,6 +574,7 @@ daemon_run(const struct config *cfg, const char *conf_path)
 	db_close(&dm.db);
 	buf_free(&dm.b);
 	free(dm.slots);
+	free(dm.pools);
 	return 0;
 }
 

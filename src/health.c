@@ -1,6 +1,7 @@
 /* health.c - judge a disk against the configured rules. */
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "health.h"
 
@@ -163,4 +164,82 @@ health_eval(const struct config *c, const struct disk *d, struct health *h)
 		eval_nvme(c, d, h);
 	eval_temp(c, d, h);
 	eval_selftest(c, d, h);
+}
+
+/* Spares are AVAIL when idle; any other vdev should be ONLINE. */
+static int
+vdev_ok(const struct vdev *v)
+{
+	if (v->section == SECTION_SPARES)
+		return strcmp(v->state, "AVAIL") == 0;
+	return strcmp(v->state, "ONLINE") == 0;
+}
+
+/* Pool scrubs: ZFS keeps only the last scan, scrub or resilver. */
+static void
+eval_scrub(const struct config *c, const struct pool *p, time_t now,
+    struct health *h)
+{
+	char day[16];
+	struct tm tm;
+	time_t end = (time_t)p->scan_end;
+
+	if (strcmp(p->scan_state, "SCANNING") == 0)
+		return;		/* a scrub or resilver is running */
+	if (strcmp(p->scan_func, "SCRUB") == 0 && p->scan_errors > 0)
+		health_add(h, LEVEL_WARN, "last scrub found %lld errors",
+		    (long long)p->scan_errors);
+	if (c->scrub_max_age == LIMIT_OFF)
+		return;
+	if (strcmp(p->scan_func, "SCRUB") != 0 ||
+	    strcmp(p->scan_state, "FINISHED") != 0 || end == 0) {
+		health_add(h, LEVEL_WARN, "no completed scrub on record%s",
+		    strcmp(p->scan_func, "RESILVER") == 0 ?
+		    " (last scan was a resilver)" : "");
+		return;
+	}
+	if (now - end > c->scrub_max_age) {
+		localtime_r(&end, &tm);
+		strftime(day, sizeof(day), "%Y-%m-%d", &tm);
+		health_add(h, LEVEL_WARN, "last scrub on %s (limit %lld d)",
+		    day, (long long)(c->scrub_max_age / 86400));
+	}
+}
+
+void
+health_pool(const struct config *c, const struct pool *p, time_t now,
+    struct health *h)
+{
+	const struct vdev *v;
+	size_t i;
+	int leaf;
+
+	h->n = 0;
+	h->level = LEVEL_OK;
+
+	if (strcmp(p->state, "ONLINE") != 0)
+		health_add(h, LEVEL_CRIT, "pool is %s", p->state);
+	for (i = 0; i < p->nvdev; i++) {
+		v = &p->vdevs[i];
+		/* A mirror or raidz is DEGRADED because of a child, listed. */
+		leaf = i + 1 == p->nvdev || p->vdevs[i + 1].depth <= v->depth ||
+		    p->vdevs[i + 1].section != v->section;
+		if (!vdev_ok(v) && (leaf || strcmp(v->state, "DEGRADED") != 0))
+			health_add(h, v->section == SECTION_SPARES &&
+			    strcmp(v->state, "INUSE") == 0 ? LEVEL_WARN :
+			    LEVEL_CRIT, "%s is %s", v->name, v->state);
+		if (v->read_errors + v->write_errors + v->checksum_errors > 0)
+			health_add(h, LEVEL_WARN, "%s: %lld read, %lld write, "
+			    "%lld checksum errors", v->name,
+			    (long long)v->read_errors,
+			    (long long)v->write_errors,
+			    (long long)v->checksum_errors);
+	}
+	if (p->data_errors > 0)
+		health_add(h, LEVEL_CRIT, "%lld permanent errors in files "
+		    "(zpool status -v)", (long long)p->data_errors);
+	if (p->size > 0)
+		check_limit(h, &c->pool_used, p->alloc * 100 / p->size, "used",
+		    "%");
+	eval_scrub(c, p, now, h);
 }

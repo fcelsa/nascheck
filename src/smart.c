@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "json.h"
 #include "smart.h"
-#include "yyjson.h"
 
 /* smartctl exit status bits (see smartctl(8), "RETURN VALUES"). */
 #define SC_CMDLINE	0x01	/* command line did not parse */
@@ -31,44 +31,6 @@ smartctl_json(struct buf *b, char *const argv[], int *code)
 	if ((doc = yyjson_read(b->data, b->len, 0)) == NULL)
 		errno = EPROTO;
 	return doc;
-}
-
-/* JSON pointer helpers: missing or mistyped values yield the default. */
-
-static void
-get_str(yyjson_val *root, const char *ptr, char *dst, size_t size)
-{
-	const char *s = yyjson_get_str(yyjson_ptr_get(root, ptr));
-
-	snprintf(dst, size, "%s", s != NULL ? s : "");
-}
-
-/* Integers; 128-bit counters arrive as reals and are clamped. */
-static int64_t
-get_int(yyjson_val *root, const char *ptr, int64_t def)
-{
-	yyjson_val *v = yyjson_ptr_get(root, ptr);
-	double d;
-
-	if (yyjson_is_uint(v))
-		return yyjson_get_uint(v) > INT64_MAX ? INT64_MAX :
-		    (int64_t)yyjson_get_uint(v);
-	if (yyjson_is_sint(v))
-		return yyjson_get_sint(v);
-	if (yyjson_is_real(v)) {
-		d = yyjson_get_real(v);
-		return d >= 9.2e18 ? INT64_MAX : d < 0 ? def : (int64_t)d;
-	}
-	return def;
-}
-
-/* Booleans as 1/0, -1 when absent. */
-static int8_t
-get_bool(yyjson_val *root, const char *ptr)
-{
-	yyjson_val *v = yyjson_ptr_get(root, ptr);
-
-	return yyjson_is_bool(v) ? (int8_t)yyjson_get_bool(v) : -1;
 }
 
 static uint8_t
@@ -157,26 +119,26 @@ parse_ata(yyjson_val *root, struct disk *d)
 		if (d->u.ata.nattr == ATA_MAX_ATTRS)
 			break;
 		at = &d->u.ata.attr[d->u.ata.nattr++];
-		at->id = clamp_u8(get_int(a, "/id", 0));
-		at->value = clamp_u8(get_int(a, "/value", 0));
-		at->worst = clamp_u8(get_int(a, "/worst", 0));
-		at->thresh = clamp_u8(get_int(a, "/thresh", 0));
-		at->raw = get_int(a, "/raw/value", 0);
-		get_str(a, "/name", at->name, sizeof(at->name));
+		at->id = clamp_u8(json_int(a, "/id", 0));
+		at->value = clamp_u8(json_int(a, "/value", 0));
+		at->worst = clamp_u8(json_int(a, "/worst", 0));
+		at->thresh = clamp_u8(json_int(a, "/thresh", 0));
+		at->raw = json_int(a, "/raw/value", 0);
+		json_str(a, "/name", at->name, sizeof(at->name));
 		wf = yyjson_get_str(yyjson_obj_get(a, "when_failed"));
 		at->failed = wf == NULL ? 0 : strcmp(wf, "now") == 0 ? 2 :
 		    strcmp(wf, "past") == 0 ? 1 : 0;
-		at->prefail = get_bool(a, "/flags/prefailure") == 1;
+		at->prefail = json_bool(a, "/flags/prefailure") == 1;
 	}
 
 	/* The newest self-test is the first entry of the log. */
 	t = yyjson_ptr_get(root, "/ata_smart_self_test_log/standard/table/0");
 	if (yyjson_is_obj(t)) {
 		d->last_test.valid = 1;
-		get_str(t, "/type/string", d->last_test.type,
+		json_str(t, "/type/string", d->last_test.type,
 		    sizeof(d->last_test.type));
-		d->last_test.passed = get_bool(t, "/status/passed");
-		d->last_test.hours = get_int(t, "/lifetime_hours", -1);
+		d->last_test.passed = json_bool(t, "/status/passed");
+		d->last_test.hours = json_int(t, "/lifetime_hours", -1);
 	}
 }
 
@@ -189,18 +151,18 @@ parse_nvme(yyjson_val *root, struct disk *d)
 	int64_t res;
 
 	h = yyjson_obj_get(root, "nvme_smart_health_information_log");
-	nv->critical_warning = clamp_u8(get_int(h, "/critical_warning", 0));
-	nv->available_spare = clamp_u8(get_int(h, "/available_spare", 0));
-	nv->spare_threshold = clamp_u8(get_int(h, "/available_spare_threshold", 0));
-	nv->percentage_used = clamp_u8(get_int(h, "/percentage_used", 0));
-	nv->media_errors = get_int(h, "/media_errors", 0);
-	nv->err_log_entries = get_int(h, "/num_err_log_entries", 0);
-	nv->unsafe_shutdowns = get_int(h, "/unsafe_shutdowns", 0);
-	nv->data_units_written = get_int(h, "/data_units_written", 0);
+	nv->critical_warning = clamp_u8(json_int(h, "/critical_warning", 0));
+	nv->available_spare = clamp_u8(json_int(h, "/available_spare", 0));
+	nv->spare_threshold = clamp_u8(json_int(h, "/available_spare_threshold", 0));
+	nv->percentage_used = clamp_u8(json_int(h, "/percentage_used", 0));
+	nv->media_errors = json_int(h, "/media_errors", 0);
+	nv->err_log_entries = json_int(h, "/num_err_log_entries", 0);
+	nv->unsafe_shutdowns = json_int(h, "/unsafe_shutdowns", 0);
+	nv->data_units_written = json_int(h, "/data_units_written", 0);
 	if (d->power_on_hours < 0)
-		d->power_on_hours = get_int(h, "/power_on_hours", -1);
+		d->power_on_hours = json_int(h, "/power_on_hours", -1);
 	if (d->temp == TEMP_UNKNOWN)
-		d->temp = (int16_t)get_int(h, "/temperature", TEMP_UNKNOWN);
+		d->temp = (int16_t)json_int(h, "/temperature", TEMP_UNKNOWN);
 
 	/* The log may have holes (null entries): take the first real one. */
 	table = yyjson_ptr_get(root, "/nvme_self_test_log/table");
@@ -208,11 +170,11 @@ parse_nvme(yyjson_val *root, struct disk *d)
 		if (!yyjson_is_obj(t))
 			continue;
 		d->last_test.valid = 1;
-		get_str(t, "/self_test_code/string", d->last_test.type,
+		json_str(t, "/self_test_code/string", d->last_test.type,
 		    sizeof(d->last_test.type));
-		d->last_test.hours = get_int(t, "/power_on_hours", -1);
+		d->last_test.hours = json_int(t, "/power_on_hours", -1);
 		/* 0 completed; 5-7 failed; the others were aborted. */
-		res = get_int(t, "/self_test_result/value", -1);
+		res = json_int(t, "/self_test_result/value", -1);
 		d->last_test.passed = res == 0 ? 1 :
 		    (res >= 5 && res <= 7) ? 0 : -1;
 		break;
@@ -246,7 +208,7 @@ smart_parse(const char *json, size_t len, int code, struct disk *d)
 	d->last_test.passed = -1;
 
 	/* smartctl reports a non-zero status also for healthy disks. */
-	d->exit_status = clamp_u8(get_int(root, "/smartctl/exit_status", code));
+	d->exit_status = clamp_u8(json_int(root, "/smartctl/exit_status", code));
 	proto = yyjson_get_str(yyjson_ptr_get(root, "/device/protocol"));
 	d->proto = proto == NULL ? PROTO_OTHER :
 	    strcmp(proto, "ATA") == 0 ? PROTO_ATA :
@@ -260,7 +222,7 @@ smart_parse(const char *json, size_t len, int code, struct disk *d)
 			d->state = READ_STANDBY;
 		} else {
 			d->state = READ_ERROR;
-			get_str(root, "/smartctl/messages/0/string", d->error,
+			json_str(root, "/smartctl/messages/0/string", d->error,
 			    sizeof(d->error));
 		}
 		yyjson_doc_free(doc);
@@ -268,22 +230,22 @@ smart_parse(const char *json, size_t len, int code, struct disk *d)
 	}
 
 	d->state = READ_OK;
-	get_str(root, "/model_name", d->model, sizeof(d->model));
-	get_str(root, "/serial_number", d->serial, sizeof(d->serial));
-	get_str(root, "/firmware_version", d->firmware, sizeof(d->firmware));
-	d->capacity = (uint64_t)get_int(root, "/user_capacity/bytes",
-	    get_int(root, "/nvme_total_capacity", 0));
-	d->power_on_hours = get_int(root, "/power_on_time/hours", -1);
-	d->temp = (int16_t)get_int(root, "/temperature/current", TEMP_UNKNOWN);
+	json_str(root, "/model_name", d->model, sizeof(d->model));
+	json_str(root, "/serial_number", d->serial, sizeof(d->serial));
+	json_str(root, "/firmware_version", d->firmware, sizeof(d->firmware));
+	d->capacity = (uint64_t)json_int(root, "/user_capacity/bytes",
+	    json_int(root, "/nvme_total_capacity", 0));
+	d->power_on_hours = json_int(root, "/power_on_time/hours", -1);
+	d->temp = (int16_t)json_int(root, "/temperature/current", TEMP_UNKNOWN);
 	/* NVMe: WCTEMP and CCTEMP; ATA disks rarely report them. */
-	d->temp_warn = (int16_t)get_int(root, "/temperature/op_limit_max",
+	d->temp_warn = (int16_t)json_int(root, "/temperature/op_limit_max",
 	    TEMP_UNKNOWN);
-	d->temp_crit = (int16_t)get_int(root, "/temperature/critical_limit_max",
+	d->temp_crit = (int16_t)json_int(root, "/temperature/critical_limit_max",
 	    TEMP_UNKNOWN);
-	d->smart_passed = get_bool(root, "/smart_status/passed");
+	d->smart_passed = json_bool(root, "/smart_status/passed");
 
 	if (d->proto == PROTO_ATA) {
-		d->rotation_rate = (int32_t)get_int(root, "/rotation_rate", -1);
+		d->rotation_rate = (int32_t)json_int(root, "/rotation_rate", -1);
 		parse_ata(root, d);
 		/*
 		 * Disks older than ACS-2 do not report the rotation rate;
