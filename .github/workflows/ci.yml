@@ -41,4 +41,7 @@ jobs:
             service nascheck reload
             service nascheck stop
             ls -l /var/db/nascheck
-            tail -n 5 /var/log/messages
+            grep nascheck /var/log/messages
+            # The daemon must not have logged any error.
+            ! grep -E 'nascheck.*(No such file|not found|cannot|error)' \
+                /var/log/messages

@@ -21,6 +21,14 @@
 #include "health.h"
 #include "smart.h"
 
+/*
+ * rc.d and systemd start services with a minimal PATH that may miss
+ * smartctl (/usr/local/sbin on FreeBSD); a root daemon should not trust
+ * an inherited PATH anyway.
+ */
+#define DAEMON_PATH \
+	"/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
+
 #define CLIENT_TIMEOUT_MS	2000		/* to send the request */
 #define REFRESH_TIMEOUT_MS	(10 * 60 * 1000) /* for the daemon to answer */
 
@@ -431,6 +439,10 @@ daemon_run(const struct config *cfg, const char *conf_path)
 	openlog("nascheck", LOG_PID | (isatty(STDERR_FILENO) ? LOG_PERROR : 0),
 	    LOG_DAEMON);
 	umask(027);
+	if (setenv("PATH", DAEMON_PATH, 1) == -1) {
+		syslog(LOG_ERR, "setenv: %s", strerror(errno));
+		return 1;
+	}
 
 	if (cfg->group[0] != '\0') {
 		if ((gr = getgrnam(cfg->group)) == NULL) {
