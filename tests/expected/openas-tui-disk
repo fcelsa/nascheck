@@ -1,0 +1,41 @@
+ nascheck  1 Disks  2 System                              WARNING · 12 disks · 4 pools · 16 with findings   live read
+┌─ Devices ──────────────────────┐┌─ ada2 ──────────────────────────────────────────────────────────────────── WARNING ┐
+│ DISKS                     °C   ││ WDC WD5000AADS-00S9B0 · HDD 500G · firmware 01.00A01                               │
+│ ● ada0   HDD   500G        32  ││ powered on 61431 h (7.0 years) · 29°C · pool openasrz › raidz2-0                   │
+│ ● ada1   HDD   500G        30  ││ last self-test: Short offline, passed, 15088 h ago                                 │
+│▶● ada2   HDD   500G        29  ││                                                                                    │
+│ ● ada3   HDD   500G        31  ││ FINDINGS                                                                           │
+│ ● ada4   HDD   500G        31  ││ ▲ Current_Pending_Sector 28 (limit 1)                                              │
+│ ● ada5   HDD   500G        32  ││ ▲ Offline_Uncorrectable 10 (limit 1)                                               │
+│ ● ada6   HDD   1.0T        24  ││ ▲ last self-test 15088 h ago (limit 720)                                           │
+│ ● ada7   HDD   1.0T        28  ││                                                                                    │
+│ ● ada8   SSD   120G        25  ││  ID ATTRIBUTE                VAL  WST  THR           RAW                           │
+│ ● ada9   HDD   6.0T        22  ││   1 Raw_Read_Error_Rate      200  200   51             2                           │
+│ ● ada10  HDD   1.0T        23  ││   3 Spin_Up_Time             152  149   21          3375                           │
+│ ● ada11  HDD   1.0T        23  ││   4 Start_Stop_Count          95   95    0          5421                           │
+│                                ││   5 Reallocated_Sector_Ct    200  200  140             0                           │
+│ ZFS POOLS               used   ││   7 Seek_Error_Rate          200  200    0             0                           │
+│ ● datastore   4.0T ·····    5% ││   9 Power_On_Hours            16   16    0         61431                           │
+│ ● openasrz    3.0T ■■···   34% ││  10 Spin_Retry_Count         100  100    0             0                           │
+│ ● wdpu6       6.0T ·····    0% ││  11 Calibration_Retry_Count  100  100    0             0                           │
+│ ● zroot       117G ■····   18% ││  12 Power_Cycle_Count         99   99    0          1140                           │
+│                                ││ 192 Power-Off_Retract_Count  200  200    0            97                           │
+│                                ││ 193 Load_Cycle_Count           1    1    0       2332028                           │
+│                                ││ 194 Temperature_Celsius      114   86    0            29                           │
+│                                ││ 196 Reallocated_Event_Count  200  200    0             0                           │
+│                                ││ 197 Current_Pending_Sector   200  200    0            28                           │
+└────────────────────────────────┘└────────────────────────────────────────────────────────────────────────────────────┘
+┌─ Temperature ada2 · 24h ──────────────────────────────────────────────────────────────────────────── 1h [24h] 7d 30d ┐
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│  History is kept by the daemon, which is not running.                                                                │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ arrows select  t period   1-2 pages  r refresh  q quit
+exit 0

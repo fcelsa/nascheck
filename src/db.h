@@ -92,6 +92,32 @@ int	db_prune(struct db *db, time_t before);
 /* Reader: the last update written by the daemon, 0 if none. */
 int	db_get_heartbeat(struct db *db, time_t *t);
 
+/* A time series read from the history, oldest first. */
+struct series {
+	time_t	*t;
+	double	*v;
+	size_t	 n;
+	size_t	 cap;
+};
+
+void	series_free(struct series *s);
+
+/* Temperature samples of a disk (by serial) since a time. */
+int	db_temps(struct db *db, const char *serial, time_t since,
+	    struct series *out);
+
+/* Used space of a pool, in percent, since a time (daily rows). */
+int	db_pool_usage(struct db *db, const char *pool, time_t since,
+	    struct series *out);
+
+/*
+ * Raw counters of the oldest snapshot of a disk taken since `since`, to
+ * show how they changed. ids/raw hold up to max entries; returns how many,
+ * 0 if there is no such snapshot, -1 on error. *when is its time.
+ */
+int	db_baseline(struct db *db, const char *serial, time_t since, int *ids,
+	    int64_t *raw, int max, time_t *when);
+
 /*
  * One present disk with its latest report and temperature sample, or a
  * node without any report: json is NULL and state tells why.

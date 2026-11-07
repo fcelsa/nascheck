@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Dependencies
-        run: sudo apt-get install -y libsqlite3-dev
+        run: sudo apt-get install -y libsqlite3-dev libncurses-dev
       - name: Build and test
         run: make CC=${{ matrix.cc }} CFLAGS="-O2 -Werror" test
       - name: Sanitizers
@@ -48,6 +48,11 @@ jobs:
             grep -q '^citank .*ONLINE' /tmp/status
             grep -q 'gpt/citest' /tmp/status
             nascheck -l check || true
+            # One screen of the interface, as text.
+            env TERM=xterm-256color LC_ALL=C.UTF-8 LINES=40 COLUMNS=120 \
+                NASCHECK_TUI_SNAPSHOT= nascheck
+            env TERM=xterm-256color LC_ALL=C.UTF-8 LINES=40 COLUMNS=120 \
+                NASCHECK_TUI_SNAPSHOT=2 nascheck
             zpool destroy citank
             service nascheck reload
             service nascheck stop

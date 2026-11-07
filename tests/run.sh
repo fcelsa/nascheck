@@ -68,12 +68,37 @@ else
 fi
 rm -rf "$tmp"
 
+# The terminal interface: one screen printed as text after some keys
+# (NASCHECK_TUI_SNAPSHOT), reading the disks directly (-l).
+TERM=xterm-256color
+LC_ALL=C.UTF-8
+LINES=24
+COLUMNS=80
+NASCHECK_TUI_SNAPSHOT=jjjj
+export TERM LC_ALL LINES COLUMNS NASCHECK_TUI_SNAPSHOT
+check tui-small -l -c tests/conf/base.conf
+LC_ALL=C check tui-ascii -l -c tests/conf/base.conf
+NASCHECK_TUI_SNAPSHOT=2
+if "$prog" -l -c tests/conf/base.conf | grep -q 'OS  '; then
+	echo "ok   tui-system"
+else
+	echo "FAIL tui-system"
+	fail=1
+fi
+LINES=40
+COLUMNS=120
+
 # Reports recorded on a real FreeBSD 15.1 NAS (12 SATA disks, ZFS).
 NASCHECK_FIXTURES=$dir/fixtures/openas
 export NASCHECK_FIXTURES
 check openas-status -c tests/conf/base.conf status
 check openas-check -c tests/conf/base.conf check
 check openas-custom -c tests/conf/custom.conf check
+NASCHECK_TUI_SNAPSHOT=jj
+check openas-tui-disk -l -c tests/conf/base.conf
+NASCHECK_TUI_SNAPSHOT=Gkkt
+check openas-tui-pool -l -c tests/conf/base.conf
+unset NASCHECK_TUI_SNAPSHOT
 # The sample configuration must match the built-in defaults.
 cp "$dir/expected/openas-check" "$dir/expected/openas-sample"
 check openas-sample -l -c nascheck.conf.sample check

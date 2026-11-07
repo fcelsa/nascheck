@@ -93,6 +93,20 @@ eval_nvme(const struct config *c, const struct disk *d, struct health *h)
 	    "media errors", "");
 }
 
+struct limit
+health_temp_limit(const struct config *c, const struct disk *d)
+{
+	struct limit lim = d->proto == PROTO_NVME ? c->temp_nvme :
+	    d->rotation_rate == 0 ? c->temp_ssd : c->temp_hdd;
+
+	/* "auto": the limits reported by the disk, if any. */
+	if (lim.warn == LIMIT_AUTO)
+		lim.warn = d->temp_warn != TEMP_UNKNOWN ? d->temp_warn : LIMIT_OFF;
+	if (lim.crit == LIMIT_AUTO)
+		lim.crit = d->temp_crit != TEMP_UNKNOWN ? d->temp_crit : LIMIT_OFF;
+	return lim;
+}
+
 static void
 eval_temp(const struct config *c, const struct disk *d, struct health *h)
 {
@@ -100,13 +114,7 @@ eval_temp(const struct config *c, const struct disk *d, struct health *h)
 
 	if (d->temp == TEMP_UNKNOWN)
 		return;
-	lim = d->proto == PROTO_NVME ? c->temp_nvme :
-	    d->rotation_rate == 0 ? c->temp_ssd : c->temp_hdd;
-	/* "auto": the limits reported by the disk, if any. */
-	if (lim.warn == LIMIT_AUTO)
-		lim.warn = d->temp_warn != TEMP_UNKNOWN ? d->temp_warn : LIMIT_OFF;
-	if (lim.crit == LIMIT_AUTO)
-		lim.crit = d->temp_crit != TEMP_UNKNOWN ? d->temp_crit : LIMIT_OFF;
+	lim = health_temp_limit(c, d);
 	check_limit(h, &lim, d->temp, "temperature", "C");
 }
 

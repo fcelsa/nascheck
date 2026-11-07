@@ -1,0 +1,41 @@
+ nascheck  1 Disks  2 System                              WARNING · 12 disks · 4 pools · 16 with findings   live read
+┌─ Devices ──────────────────────┐┌─ openasrz ──────────────────────────────────────────────────────────────── WARNING ┐
+│ DISKS                     °C   ││ ONLINE · 3.0T · 34% used · resilver 2026-10-25                                     │
+│ ● ada0   HDD   500G        32  ││                                                                                    │
+│ ● ada1   HDD   500G        30  ││ FINDINGS                                                                           │
+│ ● ada2   HDD   500G        29  ││ ▲ no completed scrub on record (last scan was a resilver)                          │
+│ ● ada3   HDD   500G        31  ││                                                                                    │
+│ ● ada4   HDD   500G        31  ││ VDEV                                    STATE    READ WRITE CKSUM DISK             │
+│ ● ada5   HDD   500G        32  ││ raidz2-0                                ONLINE      0     0     0                  │
+│ ● ada6   HDD   1.0T        24  ││   gpt/zfs-90eae6ca820c426b              ONLINE      0     0     0  ada5   WARN     │
+│ ● ada7   HDD   1.0T        28  ││   gpt/zfs-5f966b29ab9b3ddc              ONLINE      0     0     0  ada2   WARN     │
+│ ● ada8   SSD   120G        25  ││   gpt/zfs-c5ccf4e289db396c              ONLINE      0     0     0  ada0   WARN     │
+│ ● ada9   HDD   6.0T        22  ││   gpt/zfs-107012a0c44e7eba              ONLINE      0     0     0  ada3   WARN     │
+│ ● ada10  HDD   1.0T        23  ││   gpt/zfs-7e8967af2db4e8f5              ONLINE      0     0     0  ada4   WARN     │
+│ ● ada11  HDD   1.0T        23  ││   gpt/zfs-710ee34411989525              ONLINE      0     0     0  ada1   WARN     │
+│                                ││                                                                                    │
+│ ZFS POOLS               used   ││                                                                                    │
+│ ● datastore   4.0T ·····    5% ││                                                                                    │
+│▶● openasrz    3.0T ■■···   34% ││                                                                                    │
+│ ● wdpu6       6.0T ·····    0% ││                                                                                    │
+│ ● zroot       117G ■····   18% ││                                                                                    │
+│                                ││                                                                                    │
+│                                ││                                                                                    │
+│                                ││                                                                                    │
+│                                ││                                                                                    │
+│                                ││                                                                                    │
+└────────────────────────────────┘└────────────────────────────────────────────────────────────────────────────────────┘
+┌─ Used space openasrz · 7d ────────────────────────────────────────────────────────────────────────── 1h 24h [7d] 30d ┐
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│  History is kept by the daemon, which is not running.                                                                │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ arrows select  t period   1-2 pages  r refresh  q quit
+exit 0

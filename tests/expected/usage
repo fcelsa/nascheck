@@ -1,4 +1,6 @@
-usage: nascheck [-hlqV] [-c config] command [device ...]
+usage: nascheck [-hlqV] [-c config] [command [device ...]]
+
+Without a command, nascheck opens its terminal interface.
 
 commands:
   scan               list the devices reported by smartctl
@@ -9,6 +11,6 @@ commands:
   refresh            ask the daemon to read all disks now
 
   -c config  configuration file (default /usr/local/etc/nascheck.conf)
-  -l         status, check: read the disks, not the database
+  -l         read the disks, not the daemon's database (root)
   -q         check: print the summary line only
 exit 64

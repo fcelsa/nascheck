@@ -3,6 +3,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
@@ -535,4 +536,91 @@ db_each_report(struct db *db, int (*fn)(void *, const struct db_report *),
 	}
 	sqlite3_finalize(st);
 	return !stopped && rc == SQLITE_DONE ? 0 : -1;
+}
+
+void
+series_free(struct series *s)
+{
+	free(s->t);
+	free(s->v);
+	memset(s, 0, sizeof(*s));
+}
+
+/* Run a query with a text and a time parameter returning (time, value). */
+static int
+series_query(struct db *db, const char *q, const char *key, time_t since,
+    struct series *out)
+{
+	sqlite3_stmt *st;
+	void *p;
+	int rc;
+
+	out->n = 0;
+	if (sqlite3_prepare_v2(db->h, q, -1, &st, NULL) != SQLITE_OK)
+		return -1;
+	sqlite3_bind_text(st, 1, key, -1, SQLITE_STATIC);
+	sqlite3_bind_int64(st, 2, since);
+	while ((rc = sqlite3_step(st)) == SQLITE_ROW) {
+		if (out->n == out->cap) {
+			out->cap = out->cap ? out->cap * 2 : 256;
+			if ((p = realloc(out->t, out->cap * sizeof(*out->t))) ==
+			    NULL)
+				break;
+			out->t = p;
+			if ((p = realloc(out->v, out->cap * sizeof(*out->v))) ==
+			    NULL)
+				break;
+			out->v = p;
+		}
+		out->t[out->n] = (time_t)sqlite3_column_int64(st, 0);
+		out->v[out->n++] = sqlite3_column_double(st, 1);
+	}
+	sqlite3_finalize(st);
+	return rc == SQLITE_DONE ? 0 : -1;
+}
+
+int
+db_temps(struct db *db, const char *serial, time_t since, struct series *out)
+{
+	return series_query(db,
+	    "SELECT t.time, t.celsius FROM temp t JOIN disk d ON d.id = t.disk"
+	    " WHERE d.serial = ?1 AND t.time >= ?2 ORDER BY t.time",
+	    serial, since, out);
+}
+
+int
+db_pool_usage(struct db *db, const char *pool, time_t since,
+    struct series *out)
+{
+	return series_query(db,
+	    "SELECT time, 100.0 * alloc / size FROM pool"
+	    " WHERE name = ?1 AND time >= ?2 AND size > 0 ORDER BY time",
+	    pool, since, out);
+}
+
+int
+db_baseline(struct db *db, const char *serial, time_t since, int *ids,
+    int64_t *raw, int max, time_t *when)
+{
+	static const char q[] =
+	    "SELECT s.time, a.id, a.raw FROM attribute a"
+	    " JOIN snapshot s ON s.id = a.snapshot"
+	    " WHERE a.snapshot = (SELECT s2.id FROM snapshot s2"
+	    "  JOIN disk d ON d.id = s2.disk"
+	    "  WHERE d.serial = ?1 AND s2.time >= ?2 ORDER BY s2.time LIMIT 1)";
+	sqlite3_stmt *st;
+	int rc, n = 0;
+
+	*when = 0;
+	if (sqlite3_prepare_v2(db->h, q, -1, &st, NULL) != SQLITE_OK)
+		return -1;
+	sqlite3_bind_text(st, 1, serial, -1, SQLITE_STATIC);
+	sqlite3_bind_int64(st, 2, since);
+	while ((rc = sqlite3_step(st)) == SQLITE_ROW && n < max) {
+		*when = (time_t)sqlite3_column_int64(st, 0);
+		ids[n] = sqlite3_column_int(st, 1);
+		raw[n++] = sqlite3_column_int64(st, 2);
+	}
+	sqlite3_finalize(st);
+	return rc == SQLITE_DONE || rc == SQLITE_ROW ? n : -1;
 }

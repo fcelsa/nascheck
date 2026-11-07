@@ -21,8 +21,13 @@ LOCALBASE?=	/usr/local
 SQLITE_CPPFLAGS=	-I${LOCALBASE}/include
 SQLITE_LIBS=	-L${LOCALBASE}/lib -lsqlite3
 
-SRCS=		src/main.c src/config.c src/daemon.c src/db.c src/health.c \
-		src/json.c src/run.c src/smart.c src/zfs.c
+# ncurses with wide characters (UTF-8, Braille graphs): in the FreeBSD
+# base system, libncurses-dev on Debian and Ubuntu.
+CURSES_LIBS=	-lncursesw
+
+SRCS=		src/main.c src/config.c src/daemon.c src/data.c src/db.c \
+		src/health.c src/json.c src/run.c src/smart.c src/zfs.c \
+		src/tui.c src/page_disks.c src/page_system.c src/sysinfo.c
 OBJS=		${SRCS:.c=.o} vendor/yyjson/yyjson.o
 
 # Debug build with AddressSanitizer and UndefinedBehaviorSanitizer.
@@ -31,15 +36,15 @@ SANITIZE=	-O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined
 all: ${PROG}
 
 ${PROG}: ${OBJS}
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} ${SQLITE_LIBS}
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} ${SQLITE_LIBS} ${CURSES_LIBS}
 
 .SUFFIXES: .c .o
 .c.o:
 	${CC} ${NC_CPPFLAGS} ${NC_CFLAGS} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
 
-${OBJS}: src/config.h src/daemon.h src/db.h src/health.h src/json.h \
-		src/run.h src/smart.h src/zfs.h \
-		vendor/yyjson/yyjson.h
+${OBJS}: src/config.h src/daemon.h src/data.h src/db.h src/health.h \
+		src/json.h src/run.h src/smart.h src/sysinfo.h src/tui.h \
+		src/zfs.h vendor/yyjson/yyjson.h
 
 test: ${PROG}
 	sh tests/run.sh ./${PROG}

@@ -4,21 +4,22 @@ Disk health monitor for FreeBSD and Linux, in the terminal.
 It reads SMART data of SATA (HDD and SSD) and NVMe disks through
 `smartctl`, and the state of ZFS pools through `zpool`.
 
-> **Status: early development (phase 4).** A daemon collects SMART data,
-> temperatures and the state of ZFS pools into a local database; `status`
-> and `check` report on it without root. The ncurses interface comes next.
+> **Status: early development (phase 5).** A daemon collects SMART data,
+> temperatures and the state of ZFS pools into a local database; a
+> terminal interface, `status` and `check` report on it without root.
 
 ## Requirements
 
 - FreeBSD 14 or later, or Linux
 - smartmontools 7.0 or later (JSON output)
 - SQLite 3.35 or later
+- ncurses with wide characters (in the FreeBSD base system)
 - for ZFS: OpenZFS 2.3 or later (`zpool status -j`), as in FreeBSD 15
 - a C11 compiler and `make` (BSD make or GNU make)
 
 ```sh
-pkg install smartmontools sqlite3                 # FreeBSD
-apt install smartmontools libsqlite3-dev         # Debian, Ubuntu
+pkg install smartmontools sqlite3                         # FreeBSD
+apt install smartmontools libsqlite3-dev libncurses-dev   # Debian, Ubuntu
 ```
 
 ## Build
@@ -31,6 +32,35 @@ make install     # program, sample configuration, rc.d script or
 ```
 
 `make sanitize` rebuilds with AddressSanitizer and UBSan and runs the tests.
+
+## The interface
+
+`nascheck` without a command opens a terminal interface in the style of
+btop. It reads the daemon's database as a normal user, so it needs no
+root; 120x40 is the reference size, 80x24 the minimum.
+
+- **Disks** (page 1): disks and pools on the left; on the right the
+  details of the selection (findings, SMART attributes and how they
+  changed over the last 30 days, or the pool layout with the health of
+  each disk); below, a graph of the temperature of the selected disk, or
+  of the space used by the selected pool.
+- **System** (page 2): the machine at a glance, in the style of fastfetch.
+
+| Key | Action |
+| --- | --- |
+| `1`, `2` | page |
+| arrows, `j` `k`, `g` `G` | select |
+| `t`, `T` | graph period: 1h, 24h, 7d, 30d |
+| `r` | ask the daemon to read all disks now |
+| `q` | quit |
+
+Graphs use Braille characters in a UTF-8 terminal and plain characters
+elsewhere (the FreeBSD console without X); 256 colors when the terminal
+has them, 8 otherwise. Idle, the interface wakes once a second for the
+clock and every 5 seconds looks for new data from the daemon.
+
+Pages are modules (`src/page_*.c`): a new one is a file with its draw and
+key functions, listed in `src/tui.c`.
 
 ## The daemon
 
@@ -105,6 +135,7 @@ ada2     WARNING  last self-test 15088 h ago (limit 720)
 | `nascheck scan` | list the devices reported by `smartctl --scan` |
 | `nascheck status [device ...]` | table of all disks, or of the given ones |
 | `nascheck check [device ...]` | summary line, then one line per problem |
+| `nascheck` | the terminal interface |
 | `nascheck daemon` | collect in the foreground (rc.d and systemd run it) |
 | `nascheck refresh` | ask the daemon to read all disks now |
 
@@ -157,14 +188,16 @@ the keywords and the defaults used when the file does not exist.
 2. Health rules from a config file, `nascheck check` with exit codes — **done**
 3. Daemon: daily SMART report, temperature samples, SQLite, rc.d — **done**
 4. ZFS pools: state, errors, scrub, vdev to disk mapping — **done**
-5. ncurses interface: devices, details, history
-6. Temperature graphs
+5. ncurses interface with pages: disks and pools, system — **done**
+6. Temperature graphs — **done**; next: a page with all disks and sensors
 7. Packaging: FreeBSD port, Linux static build
 
 ## Tests
 
-`tests/fake-smartctl` replays the JSON reports in `tests/fixtures`, so the
-whole program runs without disks. To record reports from a real machine
+`tests/fake-smartctl`, `fake-zpool` and `fake-sysctl` replay the reports
+in `tests/fixtures`, so the whole program runs without disks or pools. The
+interface is tested with `NASCHECK_TUI_SNAPSHOT=keys`: it takes the keys,
+prints one screen as text and exits. To record reports from a real machine
 (serial numbers are masked):
 
 ```sh

@@ -36,6 +36,9 @@ void		health_eval(const struct config *c, const struct disk *d,
 void		health_pool(const struct config *c, const struct pool *p,
 		    time_t now, struct health *h);
 
+/* Temperature limits for this kind of disk, "auto" resolved. */
+struct limit	health_temp_limit(const struct config *c, const struct disk *d);
+
 /* Add a finding with a printf-style text. */
 void		health_add(struct health *h, enum level l, const char *fmt, ...);
 
