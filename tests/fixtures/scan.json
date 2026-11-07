@@ -39,6 +39,12 @@
       "protocol": "ATA"
     },
     {
+      "name": "/dev/cd0",
+      "info_name": "/dev/cd0",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
       "name": "/dev/nvme0",
       "info_name": "/dev/nvme0",
       "type": "nvme",

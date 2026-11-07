@@ -1,0 +1,96 @@
+{
+  "output_version": {
+    "command": "zpool status",
+    "vers_major": 0,
+    "vers_minor": 1
+  },
+  "pools": {
+    "tank": {
+      "name": "tank",
+      "state": "ONLINE",
+      "pool_guid": "2457010096370927439",
+      "txg": "8",
+      "spa_version": "5000",
+      "zpl_version": "5",
+      "scan_stats": {
+        "function": "SCRUB",
+        "state": "FINISHED",
+        "start_time": "1794076182",
+        "end_time": "1794076182",
+        "to_examine": "150528",
+        "examined": "67584",
+        "skipped": "67584",
+        "processed": "0",
+        "errors": "0",
+        "bytes_per_scan": "0",
+        "pass_start": "1794076182",
+        "scrub_pause": "0",
+        "scrub_spent_paused": "0",
+        "issued_bytes_per_scan": "64512",
+        "issued": "64512"
+      },
+      "vdevs": {
+        "tank": {
+          "name": "tank",
+          "vdev_type": "root",
+          "guid": "2457010096370927439",
+          "class": "normal",
+          "state": "ONLINE",
+          "alloc_space": "211968",
+          "total_space": "251658240",
+          "def_space": "251658240",
+          "read_errors": "0",
+          "write_errors": "0",
+          "checksum_errors": "0",
+          "vdevs": {
+            "mirror-0": {
+              "name": "mirror-0",
+              "vdev_type": "mirror",
+              "guid": "16981216129749558897",
+              "class": "normal",
+              "state": "ONLINE",
+              "alloc_space": "211968",
+              "total_space": "251658240",
+              "def_space": "251658240",
+              "rep_dev_size": "251658240",
+              "read_errors": "0",
+              "write_errors": "0",
+              "checksum_errors": "0",
+              "vdevs": {
+                "/tmp/d1": {
+                  "name": "/tmp/d1",
+                  "vdev_type": "file",
+                  "guid": "1890400287619940224",
+                  "path": "/tmp/d1",
+                  "class": "normal",
+                  "state": "ONLINE",
+                  "rep_dev_size": "256376832",
+                  "phys_space": "268435456",
+                  "read_errors": "0",
+                  "write_errors": "0",
+                  "checksum_errors": "0",
+                  "slow_ios": "0"
+                },
+                "/tmp/d2": {
+                  "name": "/tmp/d2",
+                  "vdev_type": "file",
+                  "guid": "811789663472404733",
+                  "path": "/tmp/d2",
+                  "class": "normal",
+                  "state": "ONLINE",
+                  "rep_dev_size": "256376832",
+                  "phys_space": "268435456",
+                  "read_errors": "0",
+                  "write_errors": "0",
+                  "checksum_errors": "0",
+                  "slow_ios": "0"
+                }
+              }
+            }
+          }
+        }
+      },
+      "error_count": "0"
+    }
+  }
+}

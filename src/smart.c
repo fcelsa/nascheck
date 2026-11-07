@@ -78,6 +78,32 @@ clamp_u8(int64_t v)
 	return v < 0 ? 0 : v > 255 ? 255 : (uint8_t)v;
 }
 
+/*
+ * smartctl --scan also lists optical, tape and changer devices (FreeBSD CAM
+ * reports every peripheral). They cannot be told apart from a sleeping disk
+ * without waking the disks, so they are recognized by driver name.
+ */
+static int
+is_disk_node(const char *path)
+{
+	static const char *const skip[] = {
+		"cd", "sa", "nsa", "esa", "ch",	/* FreeBSD */
+		"sr", "st", "nst",		/* Linux */
+	};
+	const char *base = strrchr(path, '/');
+	size_t i, len;
+
+	base = base != NULL ? base + 1 : path;
+	for (i = 0; i < sizeof(skip) / sizeof(skip[0]); i++) {
+		len = strlen(skip[i]);
+		/* Match the driver name followed by the unit number only. */
+		if (strncmp(base, skip[i], len) == 0 &&
+		    base[len] >= '0' && base[len] <= '9')
+			return 0;
+	}
+	return 1;
+}
+
 int
 smart_scan(struct buf *b, struct disk **disks, size_t *n)
 {
@@ -103,7 +129,8 @@ smart_scan(struct buf *b, struct disk **disks, size_t *n)
 	yyjson_arr_foreach(devs, idx, max, dev) {
 		const char *name = yyjson_get_str(yyjson_obj_get(dev, "name"));
 
-		if (name == NULL || strlen(name) >= sizeof(d->path))
+		if (name == NULL || strlen(name) >= sizeof(d->path) ||
+		    !is_disk_node(name))
 			continue;
 		/* Skip duplicates: the same node may be reached twice. */
 		for (i = 0; i < *n && strcmp((*disks)[i].path, name) != 0; i++)
