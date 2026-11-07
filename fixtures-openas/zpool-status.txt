@@ -1,0 +1,50 @@
+  pool: datastore
+ state: ONLINE
+config:
+
+	NAME                          STATE     READ WRITE CKSUM
+	datastore                     ONLINE       0     0     0
+	  raidz1-0                    ONLINE       0     0     0
+	    /dev/gpt/478L83VFS        ONLINE       0     0     0
+	    /dev/gpt/WD-WCC3F2267722  ONLINE       0     0     0
+	    /dev/gpt/WD-WMAW31236855  ONLINE       0     0     0
+	    /dev/gpt/283XLPKNS        ONLINE       0     0     0
+
+errors: No known data errors
+
+  pool: openasrz
+ state: ONLINE
+  scan: resilvered 11.7M in 00:00:01 with 0 errors on Sun Oct 25 14:00:54 2026
+config:
+
+	NAME                               STATE     READ WRITE CKSUM
+	openasrz                           ONLINE       0     0     0
+	  raidz2-0                         ONLINE       0     0     0
+	    /dev/gpt/zfs-90eae6ca820c426b  ONLINE       0     0     0
+	    /dev/gpt/zfs-5f966b29ab9b3ddc  ONLINE       0     0     0
+	    /dev/gpt/zfs-c5ccf4e289db396c  ONLINE       0     0     0
+	    /dev/gpt/zfs-107012a0c44e7eba  ONLINE       0     0     0
+	    /dev/gpt/zfs-7e8967af2db4e8f5  ONLINE       0     0     0
+	    /dev/gpt/zfs-710ee34411989525  ONLINE       0     0     0
+
+errors: No known data errors
+
+  pool: wdpu6
+ state: ONLINE
+config:
+
+	NAME         STATE     READ WRITE CKSUM
+	wdpu6        ONLINE       0     0     0
+	  /dev/ada9  ONLINE       0     0     0
+
+errors: No known data errors
+
+  pool: zroot
+ state: ONLINE
+config:
+
+	NAME           STATE     READ WRITE CKSUM
+	zroot          ONLINE       0     0     0
+	  /dev/ada8p3  ONLINE       0     0     0
+
+errors: No known data errors

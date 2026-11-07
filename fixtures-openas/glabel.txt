@@ -1,0 +1,13 @@
+                    Name  Status  Components
+gpt/zfs-5f966b29ab9b3ddc     N/A  ada2p1
+gpt/zfs-c5ccf4e289db396c     N/A  ada0p1
+gpt/zfs-710ee34411989525     N/A  ada1p1
+     gpt/WD-WMAW31236855     N/A  ada7p1
+gpt/zfs-107012a0c44e7eba     N/A  ada3p1
+            gpt/gptboot0     N/A  ada8p1
+               gpt/swap0     N/A  ada8p2
+gpt/zfs-7e8967af2db4e8f5     N/A  ada4p1
+gpt/zfs-90eae6ca820c426b     N/A  ada5p1
+     gpt/WD-WCC3F2267722     N/A  ada10p1
+           gpt/478L83VFS     N/A  ada6p1
+           gpt/283XLPKNS     N/A  ada11p1
