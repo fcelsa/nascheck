@@ -1,0 +1,6 @@
+DEVICE   TYPE MODEL                    SERIAL                 SIZE  TEMP   HOURS SMART   TEST NOTES
+ada0     HDD  WDC WD40EFRX-68N32N0     WD-WCC7K1ABCDEF        4.0T   41C   31204 PASSED  ok   realloc 8, pending 0, uncorr 0
+ada1     SSD  Samsung SSD 870 EVO 1TB  S6PUNX0T123456A        1.0T   33C    9120 PASSED  -    realloc 0
+ada2     -    -                        -                         -     -       - standby -
+nvme0    NVMe Samsung SSD 980 PRO 1TB  S5GXNX0T654321B        1.0T   47C    8123 PASSED  ok   used 3%, spare 100%, media err 0
+exit 0

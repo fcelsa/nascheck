@@ -1,0 +1,6 @@
+/dev/ada0
+/dev/ada1
+/dev/ada2
+/dev/nvme0
+/dev/da0
+exit 0

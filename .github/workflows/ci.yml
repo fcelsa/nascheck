@@ -1,0 +1,32 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cc: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        run: make CC=${{ matrix.cc }} CFLAGS="-O2 -Werror" test
+      - name: Sanitizers
+        run: make CC=${{ matrix.cc }} sanitize
+
+  freebsd:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test on FreeBSD
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "15.1"
+          prepare: pkg install -y smartmontools
+          run: |
+            freebsd-version
+            make CFLAGS="-O2 -Werror" test
+            # Smoke test against the real smartctl (VM disks).
+            ./nascheck scan
+            ./nascheck status || true

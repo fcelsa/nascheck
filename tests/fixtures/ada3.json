@@ -1,0 +1,31 @@
+{
+  "json_format_version": [
+    1,
+    0
+  ],
+  "smartctl": {
+    "version": [
+      7,
+      4
+    ],
+    "pre_release": false,
+    "svn_revision": "5530",
+    "platform_info": "FreeBSD 15.1-RELEASE-p6 amd64",
+    "build_info": "(local build)",
+    "argv": [
+      "smartctl",
+      "-a",
+      "-j",
+      "-n",
+      "standby",
+      "/dev/ada3"
+    ],
+    "messages": [
+      {
+        "string": "Smartctl open device: /dev/ada3 failed: Permission denied",
+        "severity": "error"
+      }
+    ],
+    "exit_status": 2
+  }
+}

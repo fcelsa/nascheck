@@ -1,0 +1,31 @@
+#!/bin/sh
+# Save the raw output of smartctl and zpool from this machine, to be used
+# as test fixtures. Serial numbers and WWNs are masked.
+# usage: doas sh scripts/capture-fixtures.sh [outdir]
+
+out=${1:-fixtures-$(hostname -s)}
+mkdir -p "$out" || exit 1
+
+mask() {
+	sed -e 's/\("serial_number": "\)[^"]*"/\1MASKED"/' \
+	    -e 's/\("id": \)[0-9]\{10,\}/\10/'
+}
+
+uname -a >"$out/uname.txt"
+smartctl --version >"$out/smartctl-version.txt"
+smartctl --scan -j >"$out/scan.json"
+for dev in $(smartctl --scan | awk '{ print $1 }'); do
+	smartctl -a -j -n standby "$dev" | mask >"$out/$(basename "$dev").json"
+done
+
+if command -v zpool >/dev/null 2>&1; then
+	zpool version >"$out/zpool-version.txt"
+	zpool status -j -p >"$out/zpool-status.json"
+	zpool status -P -p >"$out/zpool-status.txt"
+	zpool list -H -p >"$out/zpool-list.txt"
+fi
+if [ "$(uname -s)" = FreeBSD ]; then
+	glabel status >"$out/glabel.txt"
+	gpart show -p >"$out/gpart.txt"
+fi
+echo "saved in $out"

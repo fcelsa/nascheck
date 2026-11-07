@@ -1,0 +1,16 @@
+#!/bin/sh
+# Stand-in for smartctl: replays the JSON reports in tests/fixtures,
+# with the exit status recorded in each report.
+
+dir=$(dirname "$0")/fixtures
+
+for arg; do dev=$arg; done	# the device is the last argument
+case " $* " in
+*" --scan "*)	file=$dir/scan.json ;;
+*)		file=$dir/$(basename "$dev").json ;;
+esac
+
+[ -r "$file" ] || exit 2
+cat "$file"
+code=$(sed -n 's/^ *"exit_status": *\([0-9]*\).*/\1/p' "$file" | head -n 1)
+exit "${code:-0}"

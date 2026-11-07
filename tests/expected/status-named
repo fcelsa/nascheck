@@ -1,0 +1,6 @@
+DEVICE   TYPE MODEL                    SERIAL                 SIZE  TEMP   HOURS SMART   TEST NOTES
+ada0     HDD  WDC WD40EFRX-68N32N0     WD-WCC7K1ABCDEF        4.0T   41C   31204 PASSED  ok   realloc 8, pending 0, uncorr 0
+ada3     -    -                        -                         -     -       - error   -    Smartctl open device: /dev/ada3 failed: Permission denied
+da0      -    -                        -                       31G     -       - -       -    not ATA or NVMe, skipped
+missing  -    -                        -                         -     -       - error   -    /dev/missing: Unable to detect device type
+exit 0
