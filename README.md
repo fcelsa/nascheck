@@ -52,7 +52,11 @@ root; 120x40 is the reference size, 80x24 the minimum.
   search that is always active: every word typed must match the name or
   the description; the best matches come first (exact name, prefix,
   name, description, then letters in order: `zfst` finds `zfs-stats`) and
-  the matching text is highlighted.
+  the matching text is highlighted. Each package is marked as installed
+  by hand (●), as a dependency (○) or part of the base system (◆), with
+  its repository and how many packages need it; below, the enabled
+  repositories and how the base system is updated. `S` sorts by name,
+  size or install date.
 
 | Key | Action |
 | --- | --- |
@@ -62,10 +66,18 @@ root; 120x40 is the reference size, 80x24 the minimum.
 | `t`, `T` | graph period: 1h, 24h, 7d, 30d |
 | `r`, `F5` | ask the daemon to read all disks now |
 | Esc, ^U | clear the search (page 3) |
+| `S` | sort by name, size or date (page 3) |
 | `q`, `F10` | quit |
 
 On the Packages page letters go to the search field, so there the page
-keys are F1-F3 and Tab, refresh is F5 and quit is F10.
+keys are F1-F3 and Tab, refresh is F5 and quit is F10; the search ignores
+case, so a capital `S` sorts.
+
+| Manager | By hand / dependency | Base system | Repositories | Install date |
+| --- | --- | --- | --- | --- |
+| pkg (FreeBSD) | `%a` | `FreeBSD-*` packages (pkgbase), else freebsd-update | `pkg -vv`, and each package's | yes |
+| dpkg (Debian, Ubuntu) | apt `extended_states` | priority required, important or essential | `sources.list`, `.list`, `.sources` | from dpkg's file lists |
+| rpm | zypper `AutoInstalled` only | — | `yum.repos.d`, `zypp/repos.d` | yes |
 
 Graphs use Braille characters in a UTF-8 terminal and plain characters
 elsewhere (the FreeBSD console without X); 256 colors when the terminal

@@ -1,0 +1,24 @@
+Version                 : 2.4.2
+PKG_DBDIR = "/var/db/pkg";
+ALIAS {
+    noauto = "query -e '%a == 0' '%n-%v'";
+}
+Repositories:
+  FreeBSD-ports: {
+    url             : "pkg+https://pkg.FreeBSD.org/FreeBSD:15:amd64/quarterly",
+    enabled         : yes,
+    priority        : 0,
+    mirror_type     : "SRV",
+    signature_type  : "FINGERPRINTS",
+    fingerprints    : "/usr/share/keys/pkg"
+  }
+  FreeBSD-ports-kmods: {
+    url             : "pkg+https://pkg.FreeBSD.org/FreeBSD:15:amd64/kmods_quarterly_1",
+    enabled         : no,
+    priority        : 0
+  }
+  FreeBSD-base: {
+    url             : "pkg+https://pkg.FreeBSD.org/FreeBSD:15:amd64/base_release_1",
+    enabled         : yes,
+    priority        : 0
+  }

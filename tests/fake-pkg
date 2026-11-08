@@ -1,9 +1,13 @@
 #!/bin/sh
-# Stand-in for pkg: `pkg query FORMAT` replays pkg-query.txt from the
-# fixtures.
+# Stand-in for pkg: `pkg query FORMAT` replays pkg-query.txt and `pkg -vv`
+# pkg-vv.txt from the fixtures.
 
 dir=${NASCHECK_FIXTURES:-$(dirname "$0")/fixtures}
 
-[ "$1" = query ] || exit 2
-[ -r "$dir/pkg-query.txt" ] || exit 1
-cat "$dir/pkg-query.txt"
+case $1 in
+query)	file=pkg-query.txt ;;
+-vv)	file=pkg-vv.txt ;;
+*)	exit 2 ;;
+esac
+[ -r "$dir/$file" ] || exit 1
+cat "$dir/$file"

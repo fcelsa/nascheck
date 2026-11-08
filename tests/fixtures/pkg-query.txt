@@ -1,0 +1,8 @@
+FreeBSD-clibs	15.1p6	5242880	1780603000	0	180		base/clibs	Core C libraries
+FreeBSD-kernel-generic	15.1p6	104857600	1780603000	0	0	FreeBSD-base	base/kernel-generic	FreeBSD GENERIC kernel
+FreeBSD-zfs	15.1p6	12582912	1780603000	0	3	FreeBSD-base	base/zfs	ZFS file system utilities
+smartmontools	7.5	2097152	1792956467	0	0	FreeBSD-ports	sysutils/smartmontools	S.M.A.R.T. disk monitoring tools
+sqlite3	3.50.4,1	9437184	1792956467	1	4	FreeBSD-ports	databases/sqlite3	SQL database engine in a C library
+ncurses	6.5	7340032	1790000000	1	2	FreeBSD-ports	devel/ncurses	Library for terminal-independent, full-screen output
+zfs-stats	1.3.2	65536	1785000000	0	0	FreeBSD-ports	sysutils/zfs-stats	Display human-readable ZFS statistics
+mylocaltool	0.1	4096	1795000000	0	0	unknown-repository	local/mylocaltool	Built from a local port

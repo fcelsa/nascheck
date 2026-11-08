@@ -1,8 +1,7 @@
  nascheck  1 Disks  2 System  3 Packages                  WARNING · 12 disks · 4 pools · 16 with findings   live read
 ┌─ Packages ────────────────────────────────────────────────────────────────────────────────────── 227 installed (pkg) ┐
 │ Search qzzx                                                                                                          │
-│ 0 matching, best first                                                                                               │
-│                                                                                                                      │
+│ 0 matching · sorted by relevance                                                                                     │
 │                                                                                                                      │
 │                                                                                                                      │
 │                                                                                                                      │
@@ -36,6 +35,7 @@
 │ No package matches every word.                                                                                       │
 │                                                                                                                      │
 │                                                                                                                      │
+│                                                                                                                      │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- type to search  arrows select  Esc clear                                         F1-F3/Tab pages  F5 refresh  F10 quit
+ type to search  arrows select  S sort  Esc clear                                 F1-F3/Tab pages  F5 refresh  F10 quit
 exit 0

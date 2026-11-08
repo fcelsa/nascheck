@@ -91,6 +91,13 @@ else
 fi
 LINES=40
 COLUMNS=120
+# Packages from pkg: base system, by hand, dependencies; the S orders.
+NASCHECK_TUI_SNAPSHOT='@3@d@d'
+check tui-packages -l -c tests/conf/base.conf
+NASCHECK_TUI_SNAPSHOT='@3S'
+check tui-packages-size -l -c tests/conf/base.conf
+NASCHECK_TUI_SNAPSHOT='@3zfSS@d'
+check tui-packages-date -l -c tests/conf/base.conf
 
 # Reports recorded on a real FreeBSD 15.1 NAS (12 SATA disks, ZFS).
 NASCHECK_FIXTURES=$dir/fixtures/openas

@@ -259,7 +259,7 @@ pci_name(unsigned vendor, unsigned device, char *dst, size_t size)
 	};
 	char line[256], vname[96] = "";
 	unsigned id;
-	size_t i;
+	size_t i, n, k;
 	FILE *f = NULL;
 
 	snprintf(dst, size, "PCI %04x:%04x", vendor, device);
@@ -279,8 +279,14 @@ pci_name(unsigned vendor, unsigned device, char *dst, size_t size)
 		} else if (vname[0] != '\0' && line[0] == '\t' &&
 		    line[1] != '\t' && sscanf(line + 1, "%x", &id) == 1 &&
 		    id == device) {
-			snprintf(dst, size, "%s %.*s", vname, (int)size / 2,
-			    line + 7);
+			/* Vendor, then as much of the device name as fits. */
+			n = (size_t)snprintf(dst, size, "%s ", vname);
+			if (n < size) {
+				k = strlen(line + 7);
+				k = k < size - n - 1 ? k : size - n - 1;
+				memcpy(dst + n, line + 7, k);
+				dst[n + k] = '\0';
+			}
 			fclose(f);
 			return;
 		}

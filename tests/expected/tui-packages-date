@@ -1,0 +1,41 @@
+ nascheck  1 Disks  2 System  3 Packages                   CRITICAL · 4 disks · 2 pools · 4 with findings   live read
+┌─ Packages ──────────────────────────────────────────────── 8 installed (pkg) · 3 by hand · 2 dependencies · 3 system ┐
+│ Search zf                                                                                                            │
+│ 2 matching · sorted by date                                               ● by hand  ○ dependency  ◆ system          │
+│ ● zfs-stats-1.3.2                       2026-07-25  Display human-readable ZFS statistics                            │
+│ ◆ FreeBSD-zfs-15.1p6                    2026-06-04  ZFS file system utilities                                        │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────│
+│ FreeBSD-zfs 15.1p6  · 13M installed  · installed on 2026-06-04                                                       │
+│ ZFS file system utilities                                                                                            │
+│ ◆ part of the base system  · from FreeBSD-base  · needed by 3 packages                                               │
+│ Repositories FreeBSD-ports, FreeBSD-base  · base system via pkgbase                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ type to search  arrows select  S sort  Esc clear                                 F1-F3/Tab pages  F5 refresh  F10 quit
+exit 0

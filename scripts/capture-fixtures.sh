@@ -30,7 +30,8 @@ if command -v zpool >/dev/null 2>&1; then
 fi
 # Installed packages: name, version, size, install time, comment.
 if command -v pkg >/dev/null 2>&1; then
-	pkg query '%n\t%v\t%sb\t%t\t%c' >"$out/pkg-query.txt"
+	pkg query '%n\t%v\t%sb\t%t\t%a\t%#r\t%R\t%o\t%c' >"$out/pkg-query.txt"
+	pkg -vv >"$out/pkg-vv.txt"
 fi
 if [ "$(uname -s)" = FreeBSD ]; then
 	sysctl -n kern.geom.conftxt >"$out/geom-conftxt.txt"
