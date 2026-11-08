@@ -1,2 +1,0 @@
-zfs-2.4.2-1-FreeBSD_g6330a45b0
-zfs-kmod-2.4.2-1-FreeBSD_g6330a45b0

@@ -26,8 +26,8 @@
     "exit_status": 0
   },
   "local_time": {
-    "time_t": 1794078124,
-    "asctime": "Sat Nov  7 20:02:04 2026 CET"
+    "time_t": 1794144359,
+    "asctime": "Sun Nov  8 14:25:59 2026 CET"
   },
   "device": {
     "name": "/dev/ada1",
@@ -96,9 +96,8 @@
   "ata_smart_data": {
     "offline_data_collection": {
       "status": {
-        "value": 130,
-        "string": "was completed without error",
-        "passed": true
+        "value": 132,
+        "string": "was suspended by an interrupting command from host"
       },
       "completion_seconds": 3595
     },
@@ -310,8 +309,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 66980,
-          "string": "66980"
+          "value": 66999,
+          "string": "66999"
         }
       },
       {
@@ -519,7 +518,7 @@
     "threshold_percent": 5
   },
   "power_on_time": {
-    "hours": 66980
+    "hours": 66999
   },
   "power_cycle_count": 493,
   "temperature": {
@@ -535,6 +534,18 @@
     "standard": {
       "revision": 1,
       "table": [
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 1451
+        },
         {
           "type": {
             "value": 1,
@@ -776,7 +787,7 @@
           "lifetime_hours": 2902
         }
       ],
-      "count": 20,
+      "count": 21,
       "error_count_total": 0,
       "error_count_outdated": 0
     }

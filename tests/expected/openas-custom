@@ -1,12 +1,10 @@
-CRITICAL: 12 disks, 4 pools, 3 critical, 7 warning
+CRITICAL: 12 disks, 4 pools, 5 critical, 2 warning
 ada0     CRITICAL temperature 32C (limit 32)
 ada1     WARNING  temperature 30C (limit 30)
 ada2     CRITICAL Current_Pending_Sector 28 (limit 20)
-ada3     WARNING  temperature 31C (limit 30)
-ada4     WARNING  temperature 31C (limit 30)
+ada2     CRITICAL last self-test failed (Short offline)
+ada3     CRITICAL temperature 32C (limit 32)
+ada4     CRITICAL temperature 32C (limit 32)
 ada5     CRITICAL temperature 32C (limit 32)
-datastore WARNING  no completed scrub on record
-openasrz WARNING  no completed scrub on record (last scan was a resilver)
 wdpu6    WARNING  no completed scrub on record
-zroot    WARNING  no completed scrub on record
 exit 2

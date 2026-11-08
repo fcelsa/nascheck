@@ -32,9 +32,9 @@
 │                                                                                                                      │
 │                                                                                                                      │
 │──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────│
-│ FreeBSD-clibs 15.1p6  · 5.2M installed  · installed on 2026-06-04                                                    │
-│ Core C libraries                                                                                                     │
-│ ◆ part of the base system  · needed by 180 packages                                                                  │
+│ FreeBSD-kernel-generic 15.1p6  · 105M installed  · installed on 2026-06-04                                           │
+│ FreeBSD GENERIC kernel                                                                                               │
+│ ◆ part of the base system  · from FreeBSD-base  · no package needs it                                                │
 │ Repositories FreeBSD-ports, FreeBSD-base  · base system via pkgbase                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
  type to search  arrows select  S sort  Esc clear                                 F1-F3/Tab pages  F5 refresh  F10 quit

@@ -26,8 +26,8 @@
     "exit_status": 0
   },
   "local_time": {
-    "time_t": 1794144366,
-    "asctime": "Sun Nov  8 14:26:06 2026 CET"
+    "time_t": 1794078131,
+    "asctime": "Sat Nov  7 20:02:11 2026 CET"
   },
   "device": {
     "name": "/dev/ada8",
@@ -105,9 +105,8 @@
     },
     "self_test": {
       "status": {
-        "value": 0,
-        "string": "completed without error",
-        "passed": true
+        "value": 32,
+        "string": "was interrupted by the host with a reset"
       },
       "polling_minutes": {
         "short": 2,
@@ -173,8 +172,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 20570,
-          "string": "20570"
+          "value": 20551,
+          "string": "20551"
         }
       },
       {
@@ -217,8 +216,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 1739,
-          "string": "1739"
+          "value": 1738,
+          "string": "1738"
         }
       },
       {
@@ -474,7 +473,7 @@
       {
         "id": 194,
         "name": "Temperature_Celsius",
-        "value": 74,
+        "value": 75,
         "worst": 46,
         "thresh": 0,
         "when_failed": "",
@@ -489,8 +488,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 197568495642,
-          "string": "26 (Min/Max 0/46)"
+          "value": 197568495641,
+          "string": "25 (Min/Max 0/46)"
         }
       },
       {
@@ -573,8 +572,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 1342,
-          "string": "1342"
+          "value": 1341,
+          "string": "1341"
         }
       },
       {
@@ -595,8 +594,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 9677,
-          "string": "9677"
+          "value": 9674,
+          "string": "9674"
         }
       },
       {
@@ -617,8 +616,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 3798,
-          "string": "3798"
+          "value": 3797,
+          "string": "3797"
         }
       },
       {
@@ -639,8 +638,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 2329,
-          "string": "2329"
+          "value": 2308,
+          "string": "2308"
         }
       },
       {
@@ -669,11 +668,11 @@
     "current_percent": 100
   },
   "power_on_time": {
-    "hours": 20570
+    "hours": 20551
   },
   "power_cycle_count": 282,
   "temperature": {
-    "current": 26
+    "current": 25
   },
   "ata_smart_error_log": {
     "summary": {
@@ -685,18 +684,6 @@
     "standard": {
       "revision": 1,
       "table": [
-        {
-          "type": {
-            "value": 1,
-            "string": "Short offline"
-          },
-          "status": {
-            "value": 0,
-            "string": "Completed without error",
-            "passed": true
-          },
-          "lifetime_hours": 20558
-        },
         {
           "type": {
             "value": 1,
@@ -936,6 +923,18 @@
             "passed": true
           },
           "lifetime_hours": 16171
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 16147
         }
       ],
       "count": 21,

@@ -1,41 +1,41 @@
- nascheck  1 Disks  2 System  3 Packages                  WARNING · 12 disks · 4 pools · 16 with findings   live read
-┌─ Packages ────────────────────────────────────────────────────────────────────────────────────── 227 installed (pkg) ┐
+ nascheck  1 Disks  2 System  3 Packages                  CRITICAL · 12 disks · 4 pools · 4 with findings   live read
+┌─ Packages ────────────────────────────────────────────────────── 227 installed (pkg) · 19 by hand · 208 dependencies ┐
 │ Search pyth                                                                                                          │
-│ 35 matching · sorted by relevance                                                                                    │
-│   python-3.12_3,2                       "meta-port" for the default version of Python interpreter                    │
-│   python3-3_4                           Meta-port for the Python interpreter 3.x                                     │
-│   python311-3.11.17                     Interpreted object-oriented programming language                             │
-│   python312-3.12.15                     Interpreted object-oriented programming language                             │
-│   py312-dnspython-2.8.0_1,1             DNS toolkit for Python                                                       │
-│   py311-async_generator-1.10_1          Tiny library to add async generators to Python 3.5                           │
-│   py311-attrs-25.4.0                    Python attributes without boilerplate                                        │
-│   py311-cffi-2.0.0                      Foreign Function Interface for Python calling C code                         │
-│   py311-cryptography-46.0.7,1           Cryptographic recipes and primitives for Python developers                   │
-│   py311-h11-0.16.0                      Pure-Python, bring-your-own-I/O implementation of HTTP/1.1                   │
-│   py311-hyperframe-6.0.0_1              Python module that decodes binary streams into HTTP/2 frames                 │
-│   py311-outcome-1.3.0_2                 Capture the outcome of Python function calls                                 │
-│   py311-packaging-26.3                  Core utilities for Python packages                                           │
-│   py311-pyasn1-0.6.0                    ASN.1 toolkit for Python                                                     │
-│   py311-pycparser-2.23                  C parser in Python                                                           │
-│   py311-pylsqpack-0.3.23                Python wrapper for the ls-qpack QPACK library                                │
-│   py311-pyopenssl-26.0.0,1              Python interface to the OpenSSL library                                      │
-│   py311-sortedcontainers-2.4.0_1        Python Sorted Container Types: SortedList, SortedDict, and SortedSet         │
-│   py311-typing-extensions-4.15.0        Backported and Experimental Type Hints for Python 3.5+                       │
-│   py312-async_generator-1.10_1          Tiny library to add async generators to Python 3.5                           │
-│   py312-attrs-26.1.0                    Python attributes without boilerplate                                        │
-│   py312-cffi-2.1.1                      Foreign Function Interface for Python calling C code                         │
-│   py312-cryptography-50.0.1,1           Cryptographic recipes and primitives for Python developers                   │
-│   py312-h11-0.16.0                      Pure-Python, bring-your-own-I/O implementation of HTTP/1.1                   │
-│   py312-h2-4.4.1                        Pure-Python HTTP/2 protocol implementation                                   │
-│   py312-hpack-4.2.0                     Pure-Python HPACK header encoding                                            │
-│   py312-hyperframe-6.1.0                Pure-Python HTTP/2 framing                                                   │
-│   py312-markdown-3.10.3                 Python implementation of Markdown                                            │
+│ 35 matching · sorted by relevance                                         ● by hand  ○ dependency  ◆ system          │
+│ ● python-3.12_3,2                       "meta-port" for the default version of Python interpreter                    │
+│ ○ python3-3_4                           Meta-port for the Python interpreter 3.x                                     │
+│ ○ python311-3.11.17                     Interpreted object-oriented programming language                             │
+│ ○ python312-3.12.15                     Interpreted object-oriented programming language                             │
+│ ○ py312-dnspython-2.8.0_1,1             DNS toolkit for Python                                                       │
+│ ○ py311-async_generator-1.10_1          Tiny library to add async generators to Python 3.5                           │
+│ ○ py311-attrs-25.4.0                    Python attributes without boilerplate                                        │
+│ ○ py311-cffi-2.0.0                      Foreign Function Interface for Python calling C code                         │
+│ ○ py311-cryptography-46.0.7,1           Cryptographic recipes and primitives for Python developers                   │
+│ ○ py311-h11-0.16.0                      Pure-Python, bring-your-own-I/O implementation of HTTP/1.1                   │
+│ ○ py311-hyperframe-6.0.0_1              Python module that decodes binary streams into HTTP/2 frames                 │
+│ ○ py311-outcome-1.3.0_2                 Capture the outcome of Python function calls                                 │
+│ ○ py311-packaging-26.3                  Core utilities for Python packages                                           │
+│ ○ py311-pyasn1-0.6.0                    ASN.1 toolkit for Python                                                     │
+│ ○ py311-pycparser-2.23                  C parser in Python                                                           │
+│ ○ py311-pylsqpack-0.3.23                Python wrapper for the ls-qpack QPACK library                                │
+│ ○ py311-pyopenssl-26.0.0,1              Python interface to the OpenSSL library                                      │
+│ ○ py311-sortedcontainers-2.4.0_1        Python Sorted Container Types: SortedList, SortedDict, and SortedSet         │
+│ ○ py311-typing-extensions-4.15.0        Backported and Experimental Type Hints for Python 3.5+                       │
+│ ○ py312-async_generator-1.10_1          Tiny library to add async generators to Python 3.5                           │
+│ ○ py312-attrs-26.1.0                    Python attributes without boilerplate                                        │
+│ ○ py312-cffi-2.1.1                      Foreign Function Interface for Python calling C code                         │
+│ ○ py312-cryptography-50.0.1,1           Cryptographic recipes and primitives for Python developers                   │
+│ ○ py312-h11-0.16.0                      Pure-Python, bring-your-own-I/O implementation of HTTP/1.1                   │
+│ ○ py312-h2-4.4.1                        Pure-Python HTTP/2 protocol implementation                                   │
+│ ○ py312-hpack-4.2.0                     Pure-Python HPACK header encoding                                            │
+│ ○ py312-hyperframe-6.1.0                Pure-Python HTTP/2 framing                                                   │
+│ ○ py312-markdown-3.10.3                 Python implementation of Markdown                                            │
 │                                                                                                                      │
 │──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────│
 │ python311 3.11.17  · 212M installed  · installed on 2026-10-25                                                       │
 │ Interpreted object-oriented programming language                                                                     │
-│                                                                                                                      │
-│ Repositories none found  · base system via freebsd-update                                                            │
+│ ○ installed as a dependency  · from FreeBSD-ports  · needed by 27 packages                                           │
+│ Repositories FreeBSD-ports, FreeBSD-ports-kmods  · base system via freebsd-update                                    │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
  type to search  arrows select  S sort  Esc clear                                 F1-F3/Tab pages  F5 refresh  F10 quit
 exit 0

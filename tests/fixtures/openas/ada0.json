@@ -26,8 +26,8 @@
     "exit_status": 0
   },
   "local_time": {
-    "time_t": 1794078123,
-    "asctime": "Sat Nov  7 20:02:03 2026 CET"
+    "time_t": 1794144358,
+    "asctime": "Sun Nov  8 14:25:58 2026 CET"
   },
   "device": {
     "name": "/dev/ada0",
@@ -96,9 +96,8 @@
   "ata_smart_data": {
     "offline_data_collection": {
       "status": {
-        "value": 130,
-        "string": "was completed without error",
-        "passed": true
+        "value": 132,
+        "string": "was suspended by an interrupting command from host"
       },
       "completion_seconds": 3644
     },
@@ -273,8 +272,8 @@
       {
         "id": 8,
         "name": "Seek_Time_Performance",
-        "value": 113,
-        "worst": 113,
+        "value": 115,
+        "worst": 115,
         "thresh": 20,
         "when_failed": "",
         "flags": {
@@ -288,8 +287,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 35,
-          "string": "35"
+          "value": 34,
+          "string": "34"
         }
       },
       {
@@ -310,8 +309,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 66998,
-          "string": "66998"
+          "value": 67016,
+          "string": "67016"
         }
       },
       {
@@ -519,7 +518,7 @@
     "threshold_percent": 5
   },
   "power_on_time": {
-    "hours": 66998
+    "hours": 67016
   },
   "power_cycle_count": 824,
   "temperature": {
@@ -535,6 +534,18 @@
     "standard": {
       "revision": 1,
       "table": [
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 1468
+        },
         {
           "type": {
             "value": 2,
@@ -764,7 +775,7 @@
           "lifetime_hours": 2798
         }
       ],
-      "count": 19,
+      "count": 20,
       "error_count_total": 0,
       "error_count_outdated": 0
     }

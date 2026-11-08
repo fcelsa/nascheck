@@ -26,8 +26,8 @@
     "exit_status": 0
   },
   "local_time": {
-    "time_t": 1794078131,
-    "asctime": "Sat Nov  7 20:02:11 2026 CET"
+    "time_t": 1794144367,
+    "asctime": "Sun Nov  8 14:26:07 2026 CET"
   },
   "device": {
     "name": "/dev/ada11",
@@ -96,8 +96,9 @@
   "ata_smart_data": {
     "offline_data_collection": {
       "status": {
-        "value": 132,
-        "string": "was suspended by an interrupting command from host"
+        "value": 130,
+        "string": "was completed without error",
+        "passed": true
       },
       "completion_seconds": 7216
     },
@@ -309,8 +310,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 29672,
-          "string": "29672"
+          "value": 29690,
+          "string": "29690"
         }
       },
       {
@@ -518,7 +519,7 @@
     "threshold_percent": 5
   },
   "power_on_time": {
-    "hours": 29672
+    "hours": 29690
   },
   "power_cycle_count": 258,
   "temperature": {
@@ -533,7 +534,23 @@
   "ata_smart_self_test_log": {
     "standard": {
       "revision": 1,
-      "count": 0
+      "table": [
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 29678
+        }
+      ],
+      "count": 1,
+      "error_count_total": 0,
+      "error_count_outdated": 0
     }
   },
   "ata_smart_selective_self_test_log": {

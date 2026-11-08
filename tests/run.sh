@@ -115,9 +115,16 @@ for distro in debian arch alpine fedora opensuse; do
 done
 NASCHECK_ROOT=$r/freebsd
 
-# Reports recorded on a real FreeBSD 15.1 NAS (12 SATA disks, ZFS).
-NASCHECK_FIXTURES=$dir/fixtures/openas
+# The first reports recorded on a real FreeBSD 15.1 NAS (12 SATA disks,
+# ZFS): self-tests long ago or never, pools never scrubbed, a resilver.
+NASCHECK_FIXTURES=$dir/fixtures/openas-first
 export NASCHECK_FIXTURES
+check openas-first-status -c tests/conf/base.conf status
+check openas-first-check -c tests/conf/base.conf check
+
+# The same NAS 17 hours later: fresh self-tests and scrubs, one failed
+# self-test (ada2), its packages.
+NASCHECK_FIXTURES=$dir/fixtures/openas
 check openas-status -c tests/conf/base.conf status
 check openas-check -c tests/conf/base.conf check
 check openas-custom -c tests/conf/custom.conf check

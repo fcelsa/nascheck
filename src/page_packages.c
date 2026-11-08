@@ -101,16 +101,12 @@ by_order(const void *a, const void *b)
 	return strcmp(p->name, q->name);
 }
 
-/* Sort the hits again, keeping the selected package selected. */
+/* Sort the hits again, from the top: the largest or newest first. */
 static void
 order(void)
 {
-	size_t was = pg.nhits > 0 ? pg.hits[pg.sel] : 0, i;
-
 	qsort(pg.hits, pg.nhits, sizeof(*pg.hits), by_order);
-	for (i = 0; i < pg.nhits && pg.hits[i] != was; i++)
-		;
-	pg.sel = i < pg.nhits ? i : 0;
+	pg.sel = pg.top = 0;
 }
 
 /* Split the query into words and rank the packages that match them all. */

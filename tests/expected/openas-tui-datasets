@@ -1,27 +1,27 @@
- nascheck  1 Disks  2 System  3 Packages                  WARNING · 12 disks · 4 pools · 16 with findings   live read
-┌─ Devices ──────────────────────┐┌─ zroot ─────────────────────────────────────────────────────────────────── WARNING ┐
+ nascheck  1 Disks  2 System  3 Packages                  CRITICAL · 12 disks · 4 pools · 4 with findings   live read
+┌─ Devices ──────────────────────┐┌─ zroot ──────────────────────────────────────────────────────────────────────── OK ┐
 │ DISKS                     °C   ││ NAME                                      USED   REFER  MOUNTPOINT                 │
 │ ● ada0   HDD   500G        32  ││ zroot                                      22G     98K  /zroot                     │
 │ ● ada1   HDD   500G        30  ││   ROOT                                     22G     98K  none                       │
 │ ● ada2   HDD   500G        29  ││     15.0-RELEASE-p10_2026-09-14_090833    8.2K    9.7G  /                          │
-│ ● ada3   HDD   500G        31  ││     15.0-RELEASE-p13_2026-10-03_082632    8.2K     10G  /                          │
-│ ● ada4   HDD   500G        31  ││     15.0-RELEASE-p14_2026-10-17_134535    8.2K     11G  /                          │
+│ ● ada3   HDD   500G        32  ││     15.0-RELEASE-p13_2026-10-03_082632    8.2K     10G  /                          │
+│ ● ada4   HDD   500G        32  ││     15.0-RELEASE-p14_2026-10-17_134535    8.2K     11G  /                          │
 │ ● ada5   HDD   500G        32  ││     15.0-RELEASE-p9_2026-06-11_161522     8.2K    9.2G  /                          │
 │ ● ada6   HDD   1.0T        24  ││     15.0-RELEASE_2026-06-04_220735        8.2K    1.9G  /                          │
-│ ● ada7   HDD   1.0T        28  ││     15.1-RELEASE-p5_2026-10-17_135046     8.2K     11G  /                          │
-│ ● ada8   SSD   120G        25  ││     15.1-RELEASE-p5_2026-10-25_095237     8.2K     11G  /                          │
-│ ● ada9   HDD   6.0T        22  ││     15.1-RELEASE-p5_2026-10-25_095407     8.2K     11G  /                          │
+│ ● ada7   HDD   1.0T        27  ││     15.1-RELEASE-p5_2026-10-17_135046     8.2K     11G  /                          │
+│ ● ada8   SSD   120G        26  ││     15.1-RELEASE-p5_2026-10-25_095237     8.2K     11G  /                          │
+│ ● ada9   HDD   6.0T        21  ││     15.1-RELEASE-p5_2026-10-25_095407     8.2K     11G  /                          │
 │ ● ada10  HDD   1.0T        23  ││     default                                22G     13G  /                          │
-│ ● ada11  HDD   1.0T        23  ││   home                                    3.6M    131K  /home                      │
-│                                ││     fabio                                 3.5M    3.5M  /home/fabio                │
-│ ZFS POOLS               used   ││   tmp                                     262K    262K  /tmp                       │
+│ ● ada11  HDD   1.0T        23  ││   home                                    4.9M    131K  /home                      │
+│                                ││     fabio                                 4.8M    4.8M  /home/fabio                │
+│ ZFS POOLS               used   ││   tmp                                     1.1M    1.1M  /tmp                       │
 │ ● datastore   2.9T ·····    5% ││   usr                                     295K     98K  /usr                       │
 │ ● openasrz    2.0T ■■···   34% ││     ports                                  98K     98K  /usr/ports                 │
 │ ● wdpu6       6.0T ·····    0% ││     src                                    98K     98K  /usr/src                   │
-│▶● zroot       117G ■····   18% ││   var                                     1.7M     98K  /var                       │
+│▶● zroot       117G ■····   18% ││   var                                     1.6M     98K  /var                       │
 │                                ││     audit                                  98K     98K  /var/audit                 │
 │                                ││     crash                                  98K     98K  /var/crash                 │
-│                                ││     log                                   1.1M    1.1M  /var/log                   │
+│                                ││     log                                   946K    946K  /var/log                   │
 │                                ││     mail                                  229K    229K  /var/mail                  │
 │                                ││     tmp                                    98K     98K  /var/tmp                   │
 └────────────────────────────────┘└───────────────────────────────────────────────────────────── ▲ PgUp ───────────────┘

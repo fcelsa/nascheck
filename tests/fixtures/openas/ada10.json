@@ -26,8 +26,8 @@
     "exit_status": 0
   },
   "local_time": {
-    "time_t": 1794078131,
-    "asctime": "Sat Nov  7 20:02:11 2026 CET"
+    "time_t": 1794144367,
+    "asctime": "Sun Nov  8 14:26:07 2026 CET"
   },
   "device": {
     "name": "/dev/ada10",
@@ -263,8 +263,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 32895,
-          "string": "32895"
+          "value": 32913,
+          "string": "32913"
         }
       },
       {
@@ -515,7 +515,7 @@
     "current_percent": 100
   },
   "power_on_time": {
-    "hours": 32895
+    "hours": 32913
   },
   "power_cycle_count": 203,
   "temperature": {
@@ -530,7 +530,23 @@
   "ata_smart_self_test_log": {
     "standard": {
       "revision": 1,
-      "count": 0
+      "table": [
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 32901
+        }
+      ],
+      "count": 1,
+      "error_count_total": 0,
+      "error_count_outdated": 0
     }
   },
   "ata_smart_selective_self_test_log": {

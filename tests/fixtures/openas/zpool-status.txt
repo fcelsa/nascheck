@@ -1,5 +1,6 @@
   pool: datastore
  state: ONLINE
+  scan: scrub repaired 0B in 00:07:10 with 0 errors on Sun Nov  8 00:23:55 2026
 config:
 
 	NAME                          STATE     READ WRITE CKSUM
@@ -14,7 +15,7 @@ errors: No known data errors
 
   pool: openasrz
  state: ONLINE
-  scan: resilvered 11.7M in 00:00:01 with 0 errors on Sun Oct 25 14:00:54 2026
+  scan: scrub repaired 0B in 00:39:27 with 0 errors on Sun Nov  8 04:21:48 2026
 config:
 
 	NAME                               STATE     READ WRITE CKSUM
@@ -41,6 +42,7 @@ errors: No known data errors
 
   pool: zroot
  state: ONLINE
+  scan: scrub repaired 0B in 00:01:31 with 0 errors on Sun Nov  8 00:15:24 2026
 config:
 
 	NAME           STATE     READ WRITE CKSUM

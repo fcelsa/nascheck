@@ -32,9 +32,9 @@
 │                                                                                                                      │
 │                                                                                                                      │
 │──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────│
-│ base 3-2  · ? installed  · installed on 2026-06-04                                                                   │
-│ Minimal package set to define a basic Arch Linux installation                                                        │
-│ ◆ part of the base system                                                                                            │
+│ htop 3.4.1-1  · 467K installed  · installed on 2026-11-18                                                            │
+│ Interactive process viewer                                                                                           │
+│ ● installed by hand                                                                                                  │
 │ Repositories cachyos-v3, core, extra                                                                                 │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
  type to search  arrows select  S sort  Esc clear                                 F1-F3/Tab pages  F5 refresh  F10 quit

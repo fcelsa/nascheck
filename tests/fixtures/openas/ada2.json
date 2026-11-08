@@ -23,11 +23,11 @@
     "drive_database_version": {
       "string": "7.5/5706"
     },
-    "exit_status": 0
+    "exit_status": 128
   },
   "local_time": {
-    "time_t": 1794078125,
-    "asctime": "Sat Nov  7 20:02:05 2026 CET"
+    "time_t": 1794144361,
+    "asctime": "Sun Nov  8 14:26:01 2026 CET"
   },
   "device": {
     "name": "/dev/ada2",
@@ -93,9 +93,9 @@
     },
     "self_test": {
       "status": {
-        "value": 0,
-        "string": "completed without error",
-        "passed": true
+        "value": 121,
+        "string": "completed with error (read test element)",
+        "passed": false
       },
       "polling_minutes": {
         "short": 2,
@@ -219,8 +219,8 @@
       {
         "id": 7,
         "name": "Seek_Error_Rate",
-        "value": 200,
-        "worst": 200,
+        "value": 100,
+        "worst": 253,
         "thresh": 0,
         "when_failed": "",
         "flags": {
@@ -256,8 +256,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 61431,
-          "string": "61431"
+          "value": 61448,
+          "string": "61448"
         }
       },
       {
@@ -366,8 +366,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 2332028,
-          "string": "2332028"
+          "value": 2332104,
+          "string": "2332104"
         }
       },
       {
@@ -483,7 +483,7 @@
       {
         "id": 200,
         "name": "Multi_Zone_Error_Rate",
-        "value": 197,
+        "value": 196,
         "worst": 175,
         "thresh": 0,
         "when_failed": "",
@@ -498,8 +498,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 790,
-          "string": "790"
+          "value": 828,
+          "string": "828"
         }
       }
     ]
@@ -508,7 +508,7 @@
     "current_percent": 100
   },
   "power_on_time": {
-    "hours": 61431
+    "hours": 61448
   },
   "power_cycle_count": 1140,
   "temperature": {
@@ -524,6 +524,20 @@
     "standard": {
       "revision": 1,
       "table": [
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 121,
+            "string": "Completed: read failure",
+            "remaining_percent": 90,
+            "passed": false
+          },
+          "lifetime_hours": 61437,
+          "lba": 976646794
+        },
         {
           "type": {
             "value": 1,
@@ -763,22 +777,10 @@
             "passed": true
           },
           "lifetime_hours": 45893
-        },
-        {
-          "type": {
-            "value": 2,
-            "string": "Extended offline"
-          },
-          "status": {
-            "value": 0,
-            "string": "Completed without error",
-            "passed": true
-          },
-          "lifetime_hours": 45869
         }
       ],
       "count": 21,
-      "error_count_total": 0,
+      "error_count_total": 1,
       "error_count_outdated": 0
     }
   },
@@ -789,7 +791,7 @@
         "lba_min": 0,
         "lba_max": 0,
         "status": {
-          "value": 0,
+          "value": 121,
           "string": "Not_testing"
         }
       },
@@ -797,7 +799,7 @@
         "lba_min": 0,
         "lba_max": 0,
         "status": {
-          "value": 0,
+          "value": 121,
           "string": "Not_testing"
         }
       },
@@ -805,7 +807,7 @@
         "lba_min": 0,
         "lba_max": 0,
         "status": {
-          "value": 0,
+          "value": 121,
           "string": "Not_testing"
         }
       },
@@ -813,7 +815,7 @@
         "lba_min": 0,
         "lba_max": 0,
         "status": {
-          "value": 0,
+          "value": 121,
           "string": "Not_testing"
         }
       },
@@ -821,7 +823,7 @@
         "lba_min": 0,
         "lba_max": 0,
         "status": {
-          "value": 0,
+          "value": 121,
           "string": "Not_testing"
         }
       }

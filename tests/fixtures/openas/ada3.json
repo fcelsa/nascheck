@@ -26,8 +26,8 @@
     "exit_status": 0
   },
   "local_time": {
-    "time_t": 1794078126,
-    "asctime": "Sat Nov  7 20:02:06 2026 CET"
+    "time_t": 1794144361,
+    "asctime": "Sun Nov  8 14:26:01 2026 CET"
   },
   "device": {
     "name": "/dev/ada3",
@@ -96,9 +96,8 @@
   "ata_smart_data": {
     "offline_data_collection": {
       "status": {
-        "value": 130,
-        "string": "was completed without error",
-        "passed": true
+        "value": 132,
+        "string": "was suspended by an interrupting command from host"
       },
       "completion_seconds": 3571
     },
@@ -310,8 +309,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 65679,
-          "string": "65679"
+          "value": 65697,
+          "string": "65697"
         }
       },
       {
@@ -405,8 +404,8 @@
       {
         "id": 194,
         "name": "Temperature_Celsius",
-        "value": 193,
-        "worst": 193,
+        "value": 187,
+        "worst": 187,
         "thresh": 0,
         "when_failed": "",
         "flags": {
@@ -420,8 +419,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 244813529119,
-          "string": "31 (Min/Max 6/57)"
+          "value": 244813529120,
+          "string": "32 (Min/Max 6/57)"
         }
       },
       {
@@ -519,11 +518,11 @@
     "threshold_percent": 5
   },
   "power_on_time": {
-    "hours": 65679
+    "hours": 65697
   },
   "power_cycle_count": 630,
   "temperature": {
-    "current": 31
+    "current": 32
   },
   "ata_smart_error_log": {
     "summary": {
@@ -535,6 +534,18 @@
     "standard": {
       "revision": 1,
       "table": [
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 149
+        },
         {
           "type": {
             "value": 2,
@@ -764,7 +775,7 @@
           "lifetime_hours": 1503
         }
       ],
-      "count": 19,
+      "count": 20,
       "error_count_total": 0,
       "error_count_outdated": 0
     }

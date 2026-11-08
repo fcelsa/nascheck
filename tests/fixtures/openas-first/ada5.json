@@ -18,20 +18,20 @@
       "-j",
       "-n",
       "standby",
-      "/dev/ada1"
+      "/dev/ada5"
     ],
     "drive_database_version": {
       "string": "7.5/5706"
     },
-    "exit_status": 0
+    "exit_status": 64
   },
   "local_time": {
-    "time_t": 1794144359,
-    "asctime": "Sun Nov  8 14:25:59 2026 CET"
+    "time_t": 1794078128,
+    "asctime": "Sat Nov  7 20:02:08 2026 CET"
   },
   "device": {
-    "name": "/dev/ada1",
-    "info_name": "/dev/ada1",
+    "name": "/dev/ada5",
+    "info_name": "/dev/ada5",
     "type": "atacam",
     "protocol": "ATA"
   },
@@ -96,10 +96,11 @@
   "ata_smart_data": {
     "offline_data_collection": {
       "status": {
-        "value": 132,
-        "string": "was suspended by an interrupting command from host"
+        "value": 130,
+        "string": "was completed without error",
+        "passed": true
       },
-      "completion_seconds": 3595
+      "completion_seconds": 3450
     },
     "self_test": {
       "status": {
@@ -109,7 +110,7 @@
       },
       "polling_minutes": {
         "short": 1,
-        "extended": 60
+        "extended": 58
       }
     },
     "capabilities": {
@@ -162,8 +163,8 @@
       {
         "id": 2,
         "name": "Throughput_Performance",
-        "value": 141,
-        "worst": 141,
+        "value": 142,
+        "worst": 142,
         "thresh": 54,
         "when_failed": "",
         "flags": {
@@ -177,15 +178,15 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 72,
-          "string": "72"
+          "value": 69,
+          "string": "69"
         }
       },
       {
         "id": 3,
         "name": "Spin_Up_Time",
-        "value": 127,
-        "worst": 127,
+        "value": 115,
+        "worst": 115,
         "thresh": 24,
         "when_failed": "",
         "flags": {
@@ -199,8 +200,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 12896829619,
-          "string": "179 (Average 182)"
+          "value": 17193107653,
+          "string": "197 (Average 202)"
         }
       },
       {
@@ -221,8 +222,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 494,
-          "string": "494"
+          "value": 874,
+          "string": "874"
         }
       },
       {
@@ -309,8 +310,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 66999,
-          "string": "66999"
+          "value": 68755,
+          "string": "68755"
         }
       },
       {
@@ -353,15 +354,15 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 493,
-          "string": "493"
+          "value": 873,
+          "string": "873"
         }
       },
       {
         "id": 192,
         "name": "Power-Off_Retract_Count",
-        "value": 99,
-        "worst": 99,
+        "value": 98,
+        "worst": 98,
         "thresh": 0,
         "when_failed": "",
         "flags": {
@@ -375,15 +376,15 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 1663,
-          "string": "1663"
+          "value": 2463,
+          "string": "2463"
         }
       },
       {
         "id": 193,
         "name": "Load_Cycle_Count",
-        "value": 99,
-        "worst": 99,
+        "value": 98,
+        "worst": 98,
         "thresh": 0,
         "when_failed": "",
         "flags": {
@@ -397,15 +398,15 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 1663,
-          "string": "1663"
+          "value": 2463,
+          "string": "2463"
         }
       },
       {
         "id": 194,
         "name": "Temperature_Celsius",
-        "value": 200,
-        "worst": 200,
+        "value": 187,
+        "worst": 187,
         "thresh": 0,
         "when_failed": "",
         "flags": {
@@ -419,8 +420,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 231928627230,
-          "string": "30 (Min/Max 6/54)"
+          "value": 244813529120,
+          "string": "32 (Min/Max 6/57)"
         }
       },
       {
@@ -507,8 +508,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 0,
-          "string": "0"
+          "value": 14,
+          "string": "14"
         }
       }
     ]
@@ -518,16 +519,384 @@
     "threshold_percent": 5
   },
   "power_on_time": {
-    "hours": 66999
+    "hours": 68755
   },
-  "power_cycle_count": 493,
+  "power_cycle_count": 873,
   "temperature": {
-    "current": 30
+    "current": 32
   },
   "ata_smart_error_log": {
     "summary": {
       "revision": 1,
-      "count": 0
+      "count": 14,
+      "logged_count": 5,
+      "table": [
+        {
+          "error_number": 14,
+          "lifetime_hours": 2877,
+          "completion_registers": {
+            "error": 132,
+            "status": 81,
+            "count": 0,
+            "lba": 0,
+            "device": 0
+          },
+          "previous_commands": [
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 160,
+                "device_control": 0
+              },
+              "powerup_milliseconds": 309321038,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 160,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 309320730,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 160,
+                "device_control": 0
+              },
+              "powerup_milliseconds": 309315428,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 160,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 309315120,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 160,
+                "device_control": 0
+              },
+              "powerup_milliseconds": 309309674,
+              "command_name": "IDENTIFY DEVICE"
+            }
+          ]
+        },
+        {
+          "error_number": 13,
+          "lifetime_hours": 2877,
+          "completion_registers": {
+            "error": 132,
+            "status": 81,
+            "count": 0,
+            "lba": 0,
+            "device": 0
+          },
+          "previous_commands": [
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 160,
+                "device_control": 0
+              },
+              "powerup_milliseconds": 309315428,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 160,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 309315120,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 160,
+                "device_control": 0
+              },
+              "powerup_milliseconds": 309309674,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 1,
+                "lba": 1,
+                "device": 0,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 309309369,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 1,
+                "lba": 1,
+                "device": 0,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 309299360,
+              "command_name": "IDENTIFY DEVICE"
+            }
+          ]
+        },
+        {
+          "error_number": 12,
+          "lifetime_hours": 2877,
+          "completion_registers": {
+            "error": 132,
+            "status": 81,
+            "count": 0,
+            "lba": 0,
+            "device": 0
+          },
+          "previous_commands": [
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 160,
+                "device_control": 0
+              },
+              "powerup_milliseconds": 309309674,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 1,
+                "lba": 1,
+                "device": 0,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 309309369,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 1,
+                "lba": 1,
+                "device": 0,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 309299360,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 1,
+                "lba": 1,
+                "device": 160,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 309289352,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 0,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 309289345,
+              "command_name": "IDENTIFY DEVICE"
+            }
+          ]
+        },
+        {
+          "error_number": 11,
+          "lifetime_hours": 2877,
+          "completion_registers": {
+            "error": 132,
+            "status": 81,
+            "count": 0,
+            "lba": 0,
+            "device": 0
+          },
+          "previous_commands": [
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 0,
+                "device_control": 0
+              },
+              "powerup_milliseconds": 309282866,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 1,
+                "lba": 0,
+                "device": 0,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 309282857,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 0,
+                "device_control": 0
+              },
+              "powerup_milliseconds": 309278123,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 176,
+                "features": 218,
+                "count": 1,
+                "lba": 1,
+                "device": 0,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 309275891,
+              "command_name": "SMART RETURN STATUS"
+            },
+            {
+              "registers": {
+                "command": 176,
+                "features": 218,
+                "count": 1,
+                "lba": 1,
+                "device": 160,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 230618286,
+              "command_name": "SMART RETURN STATUS"
+            }
+          ]
+        },
+        {
+          "error_number": 10,
+          "lifetime_hours": 2368,
+          "completion_registers": {
+            "error": 132,
+            "status": 81,
+            "count": 0,
+            "lba": 0,
+            "device": 0
+          },
+          "previous_commands": [
+            {
+              "registers": {
+                "command": 236,
+                "features": 0,
+                "count": 0,
+                "lba": 0,
+                "device": 160,
+                "device_control": 0
+              },
+              "powerup_milliseconds": 233903353,
+              "command_name": "IDENTIFY DEVICE"
+            },
+            {
+              "registers": {
+                "command": 176,
+                "features": 218,
+                "count": 1,
+                "lba": 1,
+                "device": 0,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 233903045,
+              "command_name": "SMART RETURN STATUS"
+            },
+            {
+              "registers": {
+                "command": 176,
+                "features": 218,
+                "count": 0,
+                "lba": 12734208,
+                "device": 0,
+                "device_control": 255
+              },
+              "powerup_milliseconds": 233896859,
+              "command_name": "SMART RETURN STATUS"
+            },
+            {
+              "registers": {
+                "command": 176,
+                "features": 218,
+                "count": 0,
+                "lba": 12734208,
+                "device": 0,
+                "device_control": 0
+              },
+              "powerup_milliseconds": 233401983,
+              "command_name": "SMART RETURN STATUS"
+            },
+            {
+              "registers": {
+                "command": 176,
+                "features": 208,
+                "count": 1,
+                "lba": 12734208,
+                "device": 0,
+                "device_control": 0
+              },
+              "powerup_milliseconds": 233401817,
+              "command_name": "SMART READ DATA"
+            }
+          ]
+        }
+      ]
     }
   },
   "ata_smart_self_test_log": {
@@ -536,258 +905,234 @@
       "table": [
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 1451
+          "lifetime_hours": 16872
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 15145
+          "lifetime_hours": 16131
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 14405
+          "lifetime_hours": 15387
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 13661
+          "lifetime_hours": 14669
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 12943
+          "lifetime_hours": 13921
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 12195
+          "lifetime_hours": 13236
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 11510
+          "lifetime_hours": 12492
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 10766
+          "lifetime_hours": 11788
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 10062
+          "lifetime_hours": 11068
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 9342
+          "lifetime_hours": 10324
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 8598
+          "lifetime_hours": 9604
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 7878
+          "lifetime_hours": 8860
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 7134
+          "lifetime_hours": 8188
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 6462
+          "lifetime_hours": 7444
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 5718
+          "lifetime_hours": 6929
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 5183
+          "lifetime_hours": 6810
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 5155
+          "lifetime_hours": 6090
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 5084
+          "lifetime_hours": 5346
         },
         {
           "type": {
-            "value": 1,
-            "string": "Short offline"
+            "value": 2,
+            "string": "Extended offline"
           },
           "status": {
             "value": 0,
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 4364
-        },
-        {
-          "type": {
-            "value": 1,
-            "string": "Short offline"
-          },
-          "status": {
-            "value": 0,
-            "string": "Completed without error",
-            "passed": true
-          },
-          "lifetime_hours": 3620
-        },
-        {
-          "type": {
-            "value": 1,
-            "string": "Short offline"
-          },
-          "status": {
-            "value": 0,
-            "string": "Completed without error",
-            "passed": true
-          },
-          "lifetime_hours": 2902
+          "lifetime_hours": 4628
         }
       ],
-      "count": 21,
+      "count": 19,
       "error_count_total": 0,
       "error_count_outdated": 0
     }

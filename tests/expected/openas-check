@@ -1,22 +1,8 @@
-WARNING: 12 disks, 4 pools, 0 critical, 16 warning
-ada0     WARNING  last self-test 51956 h ago (limit 720)
-ada1     WARNING  last self-test 51835 h ago (limit 720)
+CRITICAL: 12 disks, 4 pools, 1 critical, 3 warning
 ada2     WARNING  Current_Pending_Sector 28 (limit 1)
 ada2     WARNING  Offline_Uncorrectable 10 (limit 1)
-ada2     WARNING  last self-test 15088 h ago (limit 720)
-ada3     WARNING  last self-test 51931 h ago (limit 720)
-ada4     WARNING  no self-test in the log
-ada5     WARNING  last self-test 51883 h ago (limit 720)
-ada6     WARNING  no self-test in the log
+ada2     CRITICAL last self-test failed (Short offline)
 ada7     WARNING  Reallocated_Sector_Ct 93 (limit 1)
-ada7     WARNING  no self-test in the log
 ada8     WARNING  Reported_Uncorrect 4 (limit 1)
-ada8     WARNING  last self-test 3924 h ago (limit 720)
-ada9     WARNING  no self-test in the log
-ada10    WARNING  no self-test in the log
-ada11    WARNING  no self-test in the log
-datastore WARNING  no completed scrub on record
-openasrz WARNING  no completed scrub on record (last scan was a resilver)
 wdpu6    WARNING  no completed scrub on record
-zroot    WARNING  no completed scrub on record
-exit 1
+exit 2

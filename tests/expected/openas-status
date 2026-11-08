@@ -1,34 +1,34 @@
 DEVICE   HEALTH TYPE MODEL                    SERIAL                 SIZE  TEMP   HOURS SMART     TEST NOTES
-ada0     WARN   HDD  TOSHIBA DT01ACA050       MASKED                 500G   32C   66998 PASSED  51956h realloc 0, pending 0, uncorr 0
-ada1     WARN   HDD  TOSHIBA DT01ACA050       MASKED                 500G   30C   66980 PASSED  51835h realloc 0, pending 0, uncorr 0
-ada2     WARN   HDD  WDC WD5000AADS-00S9B0    MASKED                 500G   29C   61431 PASSED  15088h realloc 0, pending 28, uncorr 10
-ada3     WARN   HDD  TOSHIBA DT01ACA050       MASKED                 500G   31C   65679 PASSED  51931h realloc 0, pending 0, uncorr 0
-ada4     WARN   HDD  TOSHIBA DT01ACA050       MASKED                 500G   31C   35059 PASSED       - realloc 0, pending 0, uncorr 0
-ada5     WARN   HDD  TOSHIBA DT01ACA050       MASKED                 500G   32C   68755 PASSED  51883h realloc 0, pending 0, uncorr 0
-ada6     WARN   HDD  TOSHIBA HDWD110          MASKED                 1.0T   24C   48233 PASSED       - realloc 0, pending 0, uncorr 0
-ada7     WARN   HDD  WDC WD1003FBYX-01Y7B1    MASKED                 1.0T   28C   35093 PASSED       - realloc 93, pending 0, uncorr 0
-ada8     WARN   SSD  SanDisk SSD PLUS 120 GB  MASKED                 120G   25C   20551 PASSED   3924h realloc 0
-ada9     WARN   HDD  WDC WD64PURZ-74BWUY0     MASKED                 6.0T   22C   11237 PASSED       - realloc 0, pending 0, uncorr 0
-ada10    WARN   HDD  WDC WD1003FZEX-00MK2A0   MASKED                 1.0T   23C   32895 PASSED       - realloc 0, pending 0, uncorr 0
-ada11    WARN   HDD  TOSHIBA HDWD110          MASKED                 1.0T   23C   29672 PASSED       - realloc 0, pending 0, uncorr 0
+ada0     OK     HDD  TOSHIBA DT01ACA050       MASKED                 500G   32C   67016 PASSED     12h realloc 0, pending 0, uncorr 0
+ada1     OK     HDD  TOSHIBA DT01ACA050       MASKED                 500G   30C   66999 PASSED     12h realloc 0, pending 0, uncorr 0
+ada2     CRIT   HDD  WDC WD5000AADS-00S9B0    MASKED                 500G   29C   61448 PASSED    FAIL realloc 0, pending 28, uncorr 10
+ada3     OK     HDD  TOSHIBA DT01ACA050       MASKED                 500G   32C   65697 PASSED     12h realloc 0, pending 0, uncorr 0
+ada4     OK     HDD  TOSHIBA DT01ACA050       MASKED                 500G   32C   35077 PASSED     12h realloc 0, pending 0, uncorr 0
+ada5     OK     HDD  TOSHIBA DT01ACA050       MASKED                 500G   32C   68774 PASSED     12h realloc 0, pending 0, uncorr 0
+ada6     OK     HDD  TOSHIBA HDWD110          MASKED                 1.0T   24C   48251 PASSED     12h realloc 0, pending 0, uncorr 0
+ada7     WARN   HDD  WDC WD1003FBYX-01Y7B1    MASKED                 1.0T   27C   35111 PASSED     12h realloc 93, pending 0, uncorr 0
+ada8     WARN   SSD  SanDisk SSD PLUS 120 GB  MASKED                 120G   26C   20570 PASSED     12h realloc 0
+ada9     OK     HDD  WDC WD64PURZ-74BWUY0     MASKED                 6.0T   21C   11256 PASSED     12h realloc 0, pending 0, uncorr 0
+ada10    OK     HDD  WDC WD1003FZEX-00MK2A0   MASKED                 1.0T   23C   32913 PASSED     12h realloc 0, pending 0, uncorr 0
+ada11    OK     HDD  TOSHIBA HDWD110          MASKED                 1.0T   23C   29690 PASSED     12h realloc 0, pending 0, uncorr 0
 
 POOL / VDEV                    STATE     READ WRITE CKSUM DISK   HEALTH NOTES
-datastore                      ONLINE                            WARN   2.9T, 5% used, never scrubbed
+datastore                      ONLINE                            OK     2.9T, 5% used, scrub 2026-11-07
   raidz1-0                     ONLINE       0     0     0
-    gpt/478L83VFS              ONLINE       0     0     0 ada6   WARN
-    gpt/WD-WCC3F2267722        ONLINE       0     0     0 ada10  WARN
+    gpt/478L83VFS              ONLINE       0     0     0 ada6   OK
+    gpt/WD-WCC3F2267722        ONLINE       0     0     0 ada10  OK
     gpt/WD-WMAW31236855        ONLINE       0     0     0 ada7   WARN
-    gpt/283XLPKNS              ONLINE       0     0     0 ada11  WARN
-openasrz                       ONLINE                            WARN   2.0T, 34% used, resilver 2026-10-25
+    gpt/283XLPKNS              ONLINE       0     0     0 ada11  OK
+openasrz                       ONLINE                            OK     2.0T, 34% used, scrub 2026-11-08
   raidz2-0                     ONLINE       0     0     0
-    gpt/zfs-90eae6ca820c426b   ONLINE       0     0     0 ada5   WARN
-    gpt/zfs-5f966b29ab9b3ddc   ONLINE       0     0     0 ada2   WARN
-    gpt/zfs-c5ccf4e289db396c   ONLINE       0     0     0 ada0   WARN
-    gpt/zfs-107012a0c44e7eba   ONLINE       0     0     0 ada3   WARN
-    gpt/zfs-7e8967af2db4e8f5   ONLINE       0     0     0 ada4   WARN
-    gpt/zfs-710ee34411989525   ONLINE       0     0     0 ada1   WARN
+    gpt/zfs-90eae6ca820c426b   ONLINE       0     0     0 ada5   OK
+    gpt/zfs-5f966b29ab9b3ddc   ONLINE       0     0     0 ada2   CRIT
+    gpt/zfs-c5ccf4e289db396c   ONLINE       0     0     0 ada0   OK
+    gpt/zfs-107012a0c44e7eba   ONLINE       0     0     0 ada3   OK
+    gpt/zfs-7e8967af2db4e8f5   ONLINE       0     0     0 ada4   OK
+    gpt/zfs-710ee34411989525   ONLINE       0     0     0 ada1   OK
 wdpu6                          ONLINE                            WARN   6.0T, 0% used, never scrubbed
-  ada9                         ONLINE       0     0     0 ada9   WARN
-zroot                          ONLINE                            WARN   117G, 18% used, never scrubbed
+  ada9                         ONLINE       0     0     0 ada9   OK
+zroot                          ONLINE                            OK     117G, 18% used, scrub 2026-11-07
   ada8p3                       ONLINE       0     0     0 ada8   WARN
 exit 0

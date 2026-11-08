@@ -18,7 +18,7 @@
       "-j",
       "-n",
       "standby",
-      "/dev/ada4"
+      "/dev/ada1"
     ],
     "drive_database_version": {
       "string": "7.5/5706"
@@ -26,12 +26,12 @@
     "exit_status": 0
   },
   "local_time": {
-    "time_t": 1794144363,
-    "asctime": "Sun Nov  8 14:26:03 2026 CET"
+    "time_t": 1794078124,
+    "asctime": "Sat Nov  7 20:02:04 2026 CET"
   },
   "device": {
-    "name": "/dev/ada4",
-    "info_name": "/dev/ada4",
+    "name": "/dev/ada1",
+    "info_name": "/dev/ada1",
     "type": "atacam",
     "protocol": "ATA"
   },
@@ -47,7 +47,7 @@
     "oui": 57,
     "id": 0
   },
-  "firmware_version": "MS1OA750",
+  "firmware_version": "MS1OA7L0",
   "user_capacity": {
     "blocks": 976773168,
     "bytes": 500107862016
@@ -96,10 +96,11 @@
   "ata_smart_data": {
     "offline_data_collection": {
       "status": {
-        "value": 132,
-        "string": "was suspended by an interrupting command from host"
+        "value": 130,
+        "string": "was completed without error",
+        "passed": true
       },
-      "completion_seconds": 3644
+      "completion_seconds": 3595
     },
     "self_test": {
       "status": {
@@ -109,7 +110,7 @@
       },
       "polling_minutes": {
         "short": 1,
-        "extended": 61
+        "extended": 60
       }
     },
     "capabilities": {
@@ -184,8 +185,8 @@
       {
         "id": 3,
         "name": "Spin_Up_Time",
-        "value": 131,
-        "worst": 131,
+        "value": 127,
+        "worst": 127,
         "thresh": 24,
         "when_failed": "",
         "flags": {
@@ -199,8 +200,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 12896501934,
-          "string": "174 (Average 177)"
+          "value": 12896829619,
+          "string": "179 (Average 182)"
         }
       },
       {
@@ -221,8 +222,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 784,
-          "string": "784"
+          "value": 494,
+          "string": "494"
         }
       },
       {
@@ -272,8 +273,8 @@
       {
         "id": 8,
         "name": "Seek_Time_Performance",
-        "value": 118,
-        "worst": 118,
+        "value": 115,
+        "worst": 115,
         "thresh": 20,
         "when_failed": "",
         "flags": {
@@ -287,15 +288,15 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 33,
-          "string": "33"
+          "value": 34,
+          "string": "34"
         }
       },
       {
         "id": 9,
         "name": "Power_On_Hours",
-        "value": 95,
-        "worst": 95,
+        "value": 91,
+        "worst": 91,
         "thresh": 0,
         "when_failed": "",
         "flags": {
@@ -309,8 +310,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 35077,
-          "string": "35077"
+          "value": 66980,
+          "string": "66980"
         }
       },
       {
@@ -353,8 +354,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 783,
-          "string": "783"
+          "value": 493,
+          "string": "493"
         }
       },
       {
@@ -375,8 +376,8 @@
           "auto_keep": true
         },
         "raw": {
-          "value": 1371,
-          "string": "1371"
+          "value": 1663,
+          "string": "1663"
         }
       },
       {
@@ -397,15 +398,15 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 1371,
-          "string": "1371"
+          "value": 1663,
+          "string": "1663"
         }
       },
       {
         "id": 194,
         "name": "Temperature_Celsius",
-        "value": 187,
-        "worst": 187,
+        "value": 200,
+        "worst": 200,
         "thresh": 0,
         "when_failed": "",
         "flags": {
@@ -419,8 +420,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 240519020576,
-          "string": "32 (Min/Max 13/56)"
+          "value": 231928627230,
+          "string": "30 (Min/Max 6/54)"
         }
       },
       {
@@ -518,11 +519,11 @@
     "threshold_percent": 5
   },
   "power_on_time": {
-    "hours": 35077
+    "hours": 66980
   },
-  "power_cycle_count": 783,
+  "power_cycle_count": 493,
   "temperature": {
-    "current": 32
+    "current": 30
   },
   "ata_smart_error_log": {
     "summary": {
@@ -544,10 +545,238 @@
             "string": "Completed without error",
             "passed": true
           },
-          "lifetime_hours": 35065
+          "lifetime_hours": 15145
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 14405
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 13661
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 12943
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 12195
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 11510
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 10766
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 10062
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 9342
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 8598
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 7878
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 7134
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 6462
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 5718
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 5183
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 5155
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 5084
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 4364
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 3620
+        },
+        {
+          "type": {
+            "value": 1,
+            "string": "Short offline"
+          },
+          "status": {
+            "value": 0,
+            "string": "Completed without error",
+            "passed": true
+          },
+          "lifetime_hours": 2902
         }
       ],
-      "count": 1,
+      "count": 20,
       "error_count_total": 0,
       "error_count_outdated": 0
     }
