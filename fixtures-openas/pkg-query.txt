@@ -1,227 +1,227 @@
-avahi-app	0.8_6	1665364	1780603807	Service discovery on a local network
-bash	5.3.20	10414441	1792956467	GNU Project's Bourne Again SHell
-bash-completion	2.18.0,2	1073855	1792956467	Programmable completion library for Bash
-bash-completion-freebsd	1.6.1	37260	1792956467	FreeBSD-oriented extension to the Bash completion library
-bash-completion-zfs	2.4.1	15479	1780602467	OpenZFS extension to the Bash completion library
-brotli	1.2.0,1	972302	1780602467	Generic-purpose lossless compression algorithm
-btop	1.4.7	1822627	1789370079	Monitor of resources
-curl	8.23.0	5954302	1792956468	Command line tool and library for transferring data with URLs
-cyrus-sasl	2.1.28_6	8582257	1789370079	RFC 2222 SASL (Simple Authentication and Security Layer)
-dbus	1.16.2_4,1	949756	1780603805	Message bus system for inter-application communication
-dbus-glib	0.116	1063793	1792956675	GLib bindings for the D-BUS messaging system
-expat	2.8.4	404840	1792956467	XML 1.0 parser written in C
-fastfetch	2.69.0	1871291	1792956657	Like neofetch, but much faster because written in C
-fontconfig	2.17.1,1	1548236	1780610244	XML-based font configuration API for X Windows
-fortuneit	1.99	1979382	1780602467	Funny fortune file in Italian
-freetype2	2.14.3	8693810	1780610244	Free and portable TrueType font rendering engine
-gamin	0.1.10_10	277282	1780603803	File and directory monitoring system
-gdbm	1.26	973102	1780603799	GNU database manager
-gettext-runtime	1.0_1	2057233	1789370083	GNU gettext runtime libraries and programs
-git	2.56.0	65232292	1792956671	Distributed source code management tool 
-glib	2.88.3,2	110754038	1792956674	Some useful routines of C programming (current stable version)
-gmp	6.3.0	2566383	1780603799	Free library for arbitrary precision arithmetic
-gnome_subr	1.0	1912	1780603799	Common startup and shutdown subroutines used by GNOME scripts
-gnutls	3.8.13	8122558	1780603801	GNU Transport Layer Security library
-htop	3.5.3	295497	1789370079	Better top(1) - interactive process viewer
-hwdata	0.411,1	10556549	1792956467	Database of IDs used in PCI, PNP and USB devices
-icu	76.1,1	57025291	1780603799	International Components for Unicode (from IBM)
-indexinfo	0.3.1_1	11766	1780597736	Utility to regenerate the GNU info page index
-ipmitool	1.8.19_3	6230274	1780602374	CLI to manage IPMI systems
-jansson	2.15.1_1	142015	1789370084	C library for encoding, decoding, and manipulating JSON data
-libICE	1.1.2,1	517675	1780603799	Inter Client Exchange library for X11
-libSM	1.2.6,1	109222	1780603799	Session Management library for X11
-libX11	1.8.14,1	5824078	1792956467	Core X11 protocol client library
-libXau	1.0.12	37702	1780603800	Authentication Protocol library for X11
-libXdmcp	1.1.5	66423	1780603804	X Display Manager Control Protocol library
-libarchive	3.8.8,1	1235809	1792956657	Library to create and read several streaming archive formats
-libdaemon	0.14_1	130525	1780603800	Lightweight C library that eases the writing of UNIX daemons
-libedit	3.1.20260512,1	638247	1794089507	Command line editor library
-libevent	2.1.13	2319009	1789370079	API for executing callback functions on events or timeouts
-libffi	3.8.0	200248	1792956468	Foreign Function Interface
-libfontenc	1.1.9	84784	1780610244	The fontenc Library
-libgcrypt	1.12.4	8376416	1792956657	General purpose cryptographic library based on the code from GnuPG
-libgpg-error	1.61	1859323	1789370084	Common error values for all GnuPG components
-libiconv	1.18_1	3657746	1780603800	Character set conversion library
-libidn2	2.3.8	646660	1780602468	Implementation of IDNA2008 internationalized domain names
-libinotify	20240724_3	90238	1780603800	Kevent based inotify compatible library
-liblz4	1.10.0_2,1	781282	1780603800	LZ4 compression library, lossless and very fast
-libnghttp2	1.70.0	767559	1792956468	HTTP/2 C Library
-libpsl	0.23.3	171880	1792956468	C library to handle the Public Suffix List
-libssh2	1.11.1_1,3	487059	1789370080	Library implementing the SSH2 protocol
-libsunacl	1.0.1_1	19036	1780603800	Wrapper providing SunOS NFSv4 ACL API
-libtasn1	4.21.0	786958	1780603800	ASN.1 structure parser library
-libunistring	1.4.2	3409135	1780602467	Unicode string library
-libunwind	20250904	1149805	1780602468	Generic stack unwinding library
-libxcb	1.17.0	5277372	1780603804	The X protocol C-language Binding (XCB) library
-libxml2	2.15.4	3891551	1792956658	XML parser library for GNOME
-lmdb0	0.9.35	649732	1789370084	OpenLDAP Lightning Memory-Mapped Database (legacy)
-mkfontscale	1.2.4	43486	1789370080	Creates an index of scalable font files for X
-mpdecimal	4.0.1	747472	1780602468	C/C++ arbitrary precision decimal floating point libraries
-nano	9.2	3111503	1792956468	Nano's ANOther editor, an enhanced free Pico clone
-nerd-fonts	3.5.1	243	1792956651	Meta-port for all Nerd Fonts
-nerd-fonts-0xproto	3.5.1	22752524	1792956468	0xProto Nerd Font
-nerd-fonts-3270	3.5.1	24813151	1792956468	3270 Nerd Font
-nerd-fonts-adwaitamono	3.5.1	49172538	1792956468	AdwaitaMono Nerd Font
-nerd-fonts-agave	3.5.1	16013616	1792956468	Agave Nerd Font
-nerd-fonts-annotationmono	3.5.1	115929524	1792956468	AnnotationMono Nerd Font
-nerd-fonts-anonymicepro	3.5.1	31433302	1792956470	AnonymicePro Nerd Font
-nerd-fonts-arimo	3.5.1	23983369	1792956471	Arimo Nerd Font
-nerd-fonts-atkynsonmono	3.5.1	55005349	1792956471	AtkynsonMono Nerd Font
-nerd-fonts-aurulentsansmono	3.5.1	6817688	1792956471	AurulentSansMono Nerd Font
-nerd-fonts-bigblueterminal	3.5.1	14345854	1792956471	BigBlueTerminal Nerd Font
-nerd-fonts-bitstromwera	3.5.1	30415447	1792956471	BitstromWera Nerd Font
-nerd-fonts-blexmono	3.5.1	118022136	1792956472	BlexMono Nerd Font
-nerd-fonts-caskaydiacove	3.5.1	103781428	1792956472	CaskaydiaCove Nerd Font
-nerd-fonts-caskaydiamono	3.5.1	102854140	1792956473	CaskaydiaMono Nerd Font
-nerd-fonts-codenewroman	3.5.1	64894155	1792956473	CodeNewRoman Nerd Font
-nerd-fonts-comicshannsmono	3.5.1	14455024	1792956474	ComicShannsMono Nerd Font
-nerd-fonts-commitmono	3.5.1	28527012	1792956474	CommitMono Nerd Font
-nerd-fonts-cousine	3.5.1	33475297	1792956474	Cousine Nerd Font
-nerd-fonts-d2coding	3.4.0	39609645	1780610246	D2Coding Nerd Font
-nerd-fonts-d2koding	3.5.1	40224416	1792956474	D2Koding Nerd Font
-nerd-fonts-daddytimemono	3.5.1	7748460	1792956474	DaddyTimeMono Nerd Font
-nerd-fonts-dejavusansmono	3.5.1	33287761	1792956474	DejaVuSansMono Nerd Font
-nerd-fonts-departuremono	3.5.1	6747071	1792956475	DepartureMono Nerd Font
-nerd-fonts-droidsansmono	3.5.1	7474314	1792956475	DroidSansMono Nerd Font
-nerd-fonts-envycoder	3.5.1	23034748	1792956475	EnvyCodeR Nerd Font
-nerd-fonts-fantasquesansmono	3.5.1	31767246	1792956475	FantasqueSansMono Nerd Font
-nerd-fonts-firacode	3.5.1	49766522	1792956475	FiraCode Nerd Font
-nerd-fonts-firamono	3.5.1	21369124	1792956476	FiraMono Nerd Font
-nerd-fonts-geistmono	3.5.1	127475218	1792956477	GeistMono Nerd Font
-nerd-fonts-gohu	3.5.1	30934222	1792956495	Gohu Nerd Font
-nerd-fonts-gomono	3.5.1	31932440	1792956496	GoMono Nerd Font
-nerd-fonts-googlesanscode	3.5.1	92656497	1792956496	GoogleSansCode Nerd Font
-nerd-fonts-hack	3.5.1	33593622	1792956496	Hack Nerd Font
-nerd-fonts-hasklug	3.5.1	99986238	1792956496	Hasklug Nerd Font
-nerd-fonts-heavydata	3.5.1	4962077	1792956496	HeavyData Nerd Font
-nerd-fonts-hurmit	3.5.1	41232387	1792956496	Hurmit Nerd Font
-nerd-fonts-imwriting	3.5.1	67059008	1792956497	iMWriting Nerd Font
-nerd-fonts-inconsolata	3.5.1	14461030	1792956497	Inconsolata Nerd Font
-nerd-fonts-inconsolatago	3.5.1	14843432	1792956497	InconsolataGo Nerd Font
-nerd-fonts-inconsolatalgc	3.5.1	31000766	1792956497	InconsolataLGC Nerd Font
-nerd-fonts-intonemono	3.5.1	58751973	1792956498	IntoneMono Nerd Font
-nerd-fonts-iosevka	3.5.1	1196956545	1792956498	Iosevka Nerd Font
-nerd-fonts-iosevkaterm	3.5.1	1196483161	1792956506	IosevkaTerm Nerd Font
-nerd-fonts-iosevkatermslab	3.5.1	671787541	1792956516	IosevkaTermSlab Nerd Font
-nerd-fonts-jetbrainsmono	3.5.1	243181733	1792956521	JetBrainsMono Nerd Font
-nerd-fonts-lekton	3.5.1	21508982	1792956524	Lekton Nerd Font
-nerd-fonts-lilex	3.5.1	75521810	1792956524	Lilex Nerd Font
-nerd-fonts-literation	3.5.1	79063285	1792956525	Literation Nerd Font
-nerd-fonts-martianmono	3.5.1	43882790	1792956526	MartianMono Nerd Font
-nerd-fonts-meslo	3.5.1	212147447	1792956527	Meslo Nerd Font
-nerd-fonts-monaspice	3.5.1	411886709	1792956557	Monaspice Nerd Font
-nerd-fonts-monofur	3.5.1	24041819	1792956572	Monofur Nerd Font
-nerd-fonts-monoid	3.5.1	29811135	1792956572	Monoid Nerd Font
-nerd-fonts-mononoki	3.5.1	29520978	1792956573	Mononoki Nerd Font
-nerd-fonts-mplus	3.5.1	334646561	1792956573	MPlus Nerd Font
-nerd-fonts-noto	3.5.1	1138172053	1792956575	Noto Nerd Font
-nerd-fonts-opendyslexic	3.5.1	43371035	1792956586	OpenDyslexic Nerd Font
-nerd-fonts-overpass	3.5.1	101160807	1792956587	Overpass Nerd Font
-nerd-fonts-profont	3.5.1	14285962	1792956588	ProFont Nerd Font
-nerd-fonts-proggyclean	3.5.1	22802649	1792956588	ProggyClean Nerd Font
-nerd-fonts-recmono	3.5.1	130549435	1792956588	RecMono Nerd Font
-nerd-fonts-robotomono	3.5.1	92874227	1792956589	RobotoMono Nerd Font
-nerd-fonts-saucecodepro	3.5.1	103533512	1792956590	SauceCodePro Nerd Font
-nerd-fonts-shuretechmono	3.5.1	7029194	1792956591	ShureTechMono Nerd Font
-nerd-fonts-spacemono	3.5.1	28930344	1792956591	SpaceMono Nerd Font
-nerd-fonts-symbols	3.5.1	5150140	1792956591	Symbols Nerd Font
-nerd-fonts-terminess	3.5.1	33276995	1792956591	Terminess Nerd Font
-nerd-fonts-tinos	3.5.1	23128402	1792956592	Tinos Nerd Font
-nerd-fonts-ubuntu	3.5.1	45845929	1792956592	Ubuntu Nerd Font
-nerd-fonts-ubuntumono	3.5.1	29753493	1792956593	UbuntuMono Nerd Font
-nerd-fonts-ubuntusans	3.5.1	103472745	1792956593	UbuntuSans Nerd Font
-nerd-fonts-victormono	3.5.1	161179316	1792956644	VictorMono Nerd Font
-nerd-fonts-zedmono	3.5.1	741803383	1792956648	ZedMono Nerd Font
-nettle	3.10.2	8698947	1780603800	Low-level cryptographic library
-ohmyzsh	20241128	6771414	1780602871	Community-driven framework for managing your zsh configuration
-openipmi	2.0.29_1	5528257	1780602374	Complex IPMI management software
-openldap26-client	2.6.15_1	6097410	1792956657	Open source LDAP client implementation
-p11-kit	0.26.5_1	4644827	1792956651	Library for loading and enumerating of PKCS#11 modules
-p5-Authen-SASL	2.2100	112456	1792956652	Perl5 module for SASL authentication
-p5-Crypt-URandom	0.55	64091	1792956652	Perl extension to provide non blocking randomness
-p5-Digest-HMAC	1.05	36298	1780602469	Perl5 interface to HMAC Message-Digest Algorithms
-p5-Error	0.17030	64443	1780602469	Error/exception handling in object-oriented programming style
-p5-IO-Socket-SSL	2.099	851241	1789370082	Perl5 interface to SSL sockets
-p5-MIME-Base32	1.303	14831	1780602469	Perl5 module for Base32 encodings
-p5-MIME-Base64	3.16	64437	1780602469	Perl5 module for Base64 and Quoted-Printable encodings
-p5-Mozilla-CA	20260813	193538	1789370081	Perl extension for Mozilla CA cert bundle in PEM format
-p5-Net-SSLeay	1.94	1195270	1780602469	Perl5 interface to SSL
-p5-URI	5.34	263181	1780602469	Perl5 interface to Uniform Resource Identifier (URI) references
-pcre2	10.49	8475573	1792956652	Perl Compatible Regular Expressions library, version 2
-perl5	5.42.3	65437143	1789370080	Practical Extraction and Report Language
-pkg	2.8.4	54370517	1792955882	Package manager
-png	1.6.58	1140053	1789370082	Library for manipulating PNG images
-popt	1.19,2	91210	1792956658	C library for parsing command line parameters
-py311-aioquic	1.3.0_1	1434911	1780603804	Implementation of QUIC and HTTP/3
-py311-anyio	4.12.1	1854746	1780603804	High level compatibility layer for multiple asynchronous event loop implementations
-py311-async_generator	1.10_1	263752	1780603802	Tiny library to add async generators to Python 3.5
-py311-attrs	25.4.0	682511	1780603802	Python attributes without boilerplate
-py311-certifi	2026.1.4	302575	1780603802	Mozilla SSL certificates
-py311-cffi	2.0.0	1488212	1780603803	Foreign Function Interface for Python calling C code
-py311-cryptography	46.0.7,1	6899210	1780603803	Cryptographic recipes and primitives for Python developers
-py311-h11	0.16.0	284992	1780603802	Pure-Python, bring-your-own-I/O implementation of HTTP/1.1
-py311-h2	4.1.0_1	685326	1780603802	HTTP/2 State-Machine based protocol implementation
-py311-hpack	4.0.0_1	615459	1780603802	HTTP/2 header encoding (HPACK) logic implementation
-py311-httpcore	1.0.9	1015831	1780603804	Minimal low-level HTTP client
-py311-hyperframe	6.0.0_1	133262	1780603802	Python module that decodes binary streams into HTTP/2 frames
-py311-idna	3.11	954799	1780603802	Internationalized Domain Names in Applications (IDNA)
-py311-outcome	1.3.0_2	50678	1780603802	Capture the outcome of Python function calls
-py311-packaging	26.3	1585955	1792956662	Core utilities for Python packages
-py311-pyasn1	0.6.0	1344680	1780603803	ASN.1 toolkit for Python
-py311-pyasn1-modules	0.4.1	3035719	1780603803	Collection of ASN.1 data structures for py-pyasn1
-py311-pycparser	2.23	1879951	1780603803	C parser in Python
-py311-pylsqpack	0.3.23	907654	1780603804	Python wrapper for the ls-qpack QPACK library
-py311-pyopenssl	26.0.0,1	778251	1780603804	Python interface to the OpenSSL library
-py311-service-identity	24.2.0	108472	1780603804	Service identity verification for pyOpenSSL & cryptography
-py311-sniffio	1.3.1	54046	1780603804	Sniff out which async library your code is running under
-py311-socksio	1.0.0_1	119789	1780603804	Sans-I/O implementation of SOCKS4, SOCKS4A, and SOCKS5
-py311-sortedcontainers	2.4.0_1	435511	1780603804	Python Sorted Container Types: SortedList, SortedDict, and SortedSet
-py311-trio	0.33.0	6909495	1780603804	Library for async concurrency and I/O
-py311-truststore	0.10.4	184606	1780603804	Verify certificates using native system trust stores
-py311-typing-extensions	4.15.0	550765	1780603804	Backported and Experimental Type Hints for Python 3.5+
-py312-aioquic	1.3.0_1	1380337	1789370093	Implementation of QUIC and HTTP/3
-py312-anyio	4.15.1	2024161	1792956678	High level compatibility layer for multiple asynchronous event loop implementations
-py312-async_generator	1.10_1	241162	1789370090	Tiny library to add async generators to Python 3.5
-py312-attrs	26.1.0	649932	1789370090	Python attributes without boilerplate
-py312-certifi	2026.7.22	274321	1792956673	Mozilla SSL certificates
-py312-cffi	2.1.1	1411225	1792956675	Foreign Function Interface for Python calling C code
-py312-cryptography	50.0.1,1	8254645	1792956675	Cryptographic recipes and primitives for Python developers
-py312-dnspython	2.8.0_1,1	3862861	1789370094	DNS toolkit for Python
-py312-h11	0.16.0	264646	1789370090	Pure-Python, bring-your-own-I/O implementation of HTTP/1.1
-py312-h2	4.4.1	728854	1792956673	Pure-Python HTTP/2 protocol implementation
-py312-hpack	4.2.0	622216	1789370090	Pure-Python HPACK header encoding
-py312-httpcore	1.0.9	960055	1789370093	Minimal low-level HTTP client
-py312-httpx	0.28.1_2	971661	1789370093	Next generation HTTP client
-py312-hyperframe	6.1.0	132588	1789370090	Pure-Python HTTP/2 framing
-py312-idna	3.20	694038	1792956673	Internationalized Domain Names in Applications (IDNA)
-py312-markdown	3.10.3	1108362	1792956673	Python implementation of Markdown
-py312-outcome	1.3.0_2	48068	1789370090	Capture the outcome of Python function calls
-py312-packaging	26.3	1499556	1792956673	Core utilities for Python packages
-py312-pycparser	3.0	662307	1792956675	C parser in Python
-py312-pylsqpack	0.3.24	909687	1789370093	Python wrapper for the ls-qpack QPACK library
-py312-pyopenssl	26.4.0,1	706943	1792956678	Python interface to the OpenSSL library
-py312-service-identity	26.1.0	98277	1789370093	Service identity verification for pyOpenSSL & cryptography
-py312-sniffio	1.3.1	51018	1789370093	Sniff out which async library your code is running under
-py312-socksio	1.0.0_1	114122	1789370093	Sans-I/O implementation of SOCKS4, SOCKS4A, and SOCKS5
-py312-sortedcontainers	2.4.0_1	415005	1789370093	Python Sorted Container Types: SortedList, SortedDict, and SortedSet
-py312-trio	0.34.0	6316888	1792956677	Library for async concurrency and I/O
-py312-truststore	0.10.4_1	176220	1792956678	Verify certificates using native system trust stores
-py312-typing-extensions	4.16.0	529391	1792956678	Backported and Experimental Type Hints for Python 3.5+
-python	3.12_3,2	38	1789370094	"meta-port" for the default version of Python interpreter
-python3	3_4	87	1789370094	Meta-port for the Python interpreter 3.x
-python311	3.11.17	211720646	1792956659	Interpreted object-oriented programming language
-python312	3.12.15	230078444	1792956668	Interpreted object-oriented programming language
-readline	8.3.6	3239985	1792956658	Library for editing command lines as they are typed
-rsync	3.5.1	1057077	1792956652	Network file distribution/synchronization utility
-samba423	4.23.11_3	95274234	1792956678	Free SMB/CIFS and AD/DC server and client for Unix
-smartmontools	7.5_2	2160163	1780602374	S.M.A.R.T. disk monitoring tools
-sqlite3	3.54.1,1	6893948	1794089507	SQL database engine in a C library
-sudo	1.9.17p2_2	8429090	1780597736	Allow others to run commands as root
-talloc244	2.4.4	170593	1792956678	Hierarchical pool based memory allocator
-tdb1	1.4.14,1	247847	1789370094	Trivial Database
-tevent017	0.17.1_1	308969	1792956678	Talloc based event loop library
-xorgproto	2025.1	1487750	1789370082	X Window System unified protocol definitions
-xxhash	0.8.4	548966	1792956652	Extremely fast non-cryptographic hash algorithm
-yyjson	0.13.0	628953	1792956657	Fastest JSON library in C
-zsh	5.9.2	20821617	1792956657	The Z shell
-zstd	1.5.7_2	3043783	1789370082	Fast real-time compression algorithm
+avahi-app	0.8_6	1665364	1780603807	1	1	FreeBSD-ports	net/avahi-app	Service discovery on a local network
+bash	5.3.20	10414441	1792956467	1	0	FreeBSD-ports	shells/bash	GNU Project's Bourne Again SHell
+bash-completion	2.18.0,2	1073855	1792956467	0	0	FreeBSD-ports	shells/bash-completion	Programmable completion library for Bash
+bash-completion-freebsd	1.6.1	37260	1792956467	1	1	FreeBSD-ports	shells/bash-completion-freebsd	FreeBSD-oriented extension to the Bash completion library
+bash-completion-zfs	2.4.1	15479	1780602467	1	1	FreeBSD-ports	shells/bash-completion-zfs	OpenZFS extension to the Bash completion library
+brotli	1.2.0,1	972302	1780602467	1	3	FreeBSD-ports	archivers/brotli	Generic-purpose lossless compression algorithm
+btop	1.4.7	1822627	1789370079	0	0	FreeBSD-ports	sysutils/btop	Monitor of resources
+curl	8.23.0	5954302	1792956468	1	1	FreeBSD-ports	ftp/curl	Command line tool and library for transferring data with URLs
+cyrus-sasl	2.1.28_6	8582257	1789370079	1	1	FreeBSD-ports	security/cyrus-sasl2	RFC 2222 SASL (Simple Authentication and Security Layer)
+dbus	1.16.2_4,1	949756	1780603805	1	2	FreeBSD-ports	devel/dbus	Message bus system for inter-application communication
+dbus-glib	0.116	1063793	1792956675	1	1	FreeBSD-ports	devel/dbus-glib	GLib bindings for the D-BUS messaging system
+expat	2.8.4	404840	1792956467	1	8	FreeBSD-ports	textproc/expat2	XML 1.0 parser written in C
+fastfetch	2.69.0	1871291	1792956657	0	0	FreeBSD-ports	sysutils/fastfetch	Like neofetch, but much faster because written in C
+fontconfig	2.17.1,1	1548236	1780610244	1	73	FreeBSD-ports	x11-fonts/fontconfig	XML-based font configuration API for X Windows
+fortuneit	1.99	1979382	1780602467	0	0	FreeBSD-ports	misc/fortuneit	Funny fortune file in Italian
+freetype2	2.14.3	8693810	1780610244	1	2	FreeBSD-ports	print/freetype2	Free and portable TrueType font rendering engine
+gamin	0.1.10_10	277282	1780603803	1	1	FreeBSD-ports	devel/gamin	File and directory monitoring system
+gdbm	1.26	973102	1780603799	1	1	FreeBSD-ports	databases/gdbm	GNU database manager
+gettext-runtime	1.0_1	2057233	1789370083	1	18	FreeBSD-ports	devel/gettext-runtime	GNU gettext runtime libraries and programs
+git	2.56.0	65232292	1792956671	0	0	FreeBSD-ports	devel/git	Distributed source code management tool 
+glib	2.88.3,2	110754038	1792956674	1	3	FreeBSD-ports	devel/glib20	Some useful routines of C programming (current stable version)
+gmp	6.3.0	2566383	1780603799	1	2	FreeBSD-ports	math/gmp	Free library for arbitrary precision arithmetic
+gnome_subr	1.0	1912	1780603799	1	1	FreeBSD-ports	sysutils/gnome_subr	Common startup and shutdown subroutines used by GNOME scripts
+gnutls	3.8.13	8122558	1780603801	1	1	FreeBSD-ports	security/gnutls	GNU Transport Layer Security library
+htop	3.5.3	295497	1789370079	0	0	FreeBSD-ports	sysutils/htop	Better top(1) - interactive process viewer
+hwdata	0.411,1	10556549	1792956467	1	1	FreeBSD-ports	misc/hwdata	Database of IDs used in PCI, PNP and USB devices
+icu	76.1,1	57025291	1780603799	1	1	FreeBSD-ports	devel/icu	International Components for Unicode (from IBM)
+indexinfo	0.3.1_1	11766	1780597736	1	14	FreeBSD-ports	print/indexinfo	Utility to regenerate the GNU info page index
+ipmitool	1.8.19_3	6230274	1780602374	0	0	FreeBSD-ports	sysutils/ipmitool	CLI to manage IPMI systems
+jansson	2.15.1_1	142015	1789370084	1	1	FreeBSD-ports	devel/jansson	C library for encoding, decoding, and manipulating JSON data
+libICE	1.1.2,1	517675	1780603799	1	2	FreeBSD-ports	x11/libICE	Inter Client Exchange library for X11
+libSM	1.2.6,1	109222	1780603799	1	1	FreeBSD-ports	x11/libSM	Session Management library for X11
+libX11	1.8.14,1	5824078	1792956467	1	1	FreeBSD-ports	x11/libX11	Core X11 protocol client library
+libXau	1.0.12	37702	1780603800	1	1	FreeBSD-ports	x11/libXau	Authentication Protocol library for X11
+libXdmcp	1.1.5	66423	1780603804	1	1	FreeBSD-ports	x11/libXdmcp	X Display Manager Control Protocol library
+libarchive	3.8.8,1	1235809	1792956657	1	1	FreeBSD-ports	archivers/libarchive	Library to create and read several streaming archive formats
+libdaemon	0.14_1	130525	1780603800	1	1	FreeBSD-ports	devel/libdaemon	Lightweight C library that eases the writing of UNIX daemons
+libedit	3.1.20260512,1	638247	1794089507	1	1	FreeBSD-ports	devel/libedit	Command line editor library
+libevent	2.1.13	2319009	1789370079	1	1	FreeBSD-ports	devel/libevent	API for executing callback functions on events or timeouts
+libffi	3.8.0	200248	1792956468	1	6	FreeBSD-ports	devel/libffi	Foreign Function Interface
+libfontenc	1.1.9	84784	1780610244	1	1	FreeBSD-ports	x11-fonts/libfontenc	The fontenc Library
+libgcrypt	1.12.4	8376416	1792956657	1	1	FreeBSD-ports	security/libgcrypt	General purpose cryptographic library based on the code from GnuPG
+libgpg-error	1.61	1859323	1789370084	1	1	FreeBSD-ports	security/libgpg-error	Common error values for all GnuPG components
+libiconv	1.18_1	3657746	1780603800	1	4	FreeBSD-ports	converters/libiconv	Character set conversion library
+libidn2	2.3.8	646660	1780602468	1	3	FreeBSD-ports	dns/libidn2	Implementation of IDNA2008 internationalized domain names
+libinotify	20240724_3	90238	1780603800	1	1	FreeBSD-ports	devel/libinotify	Kevent based inotify compatible library
+liblz4	1.10.0_2,1	781282	1780603800	1	3	FreeBSD-ports	archivers/liblz4	LZ4 compression library, lossless and very fast
+libnghttp2	1.70.0	767559	1792956468	1	1	FreeBSD-ports	www/libnghttp2	HTTP/2 C Library
+libpsl	0.23.3	171880	1792956468	1	1	FreeBSD-ports	dns/libpsl	C library to handle the Public Suffix List
+libssh2	1.11.1_1,3	487059	1789370080	1	1	FreeBSD-ports	security/libssh2	Library implementing the SSH2 protocol
+libsunacl	1.0.1_1	19036	1780603800	1	1	FreeBSD-ports	sysutils/libsunacl	Wrapper providing SunOS NFSv4 ACL API
+libtasn1	4.21.0	786958	1780603800	1	3	FreeBSD-ports	security/libtasn1	ASN.1 structure parser library
+libunistring	1.4.2	3409135	1780602467	1	3	FreeBSD-ports	devel/libunistring	Unicode string library
+libunwind	20250904	1149805	1780602468	1	2	FreeBSD-ports	devel/libunwind	Generic stack unwinding library
+libxcb	1.17.0	5277372	1780603804	1	1	FreeBSD-ports	x11/libxcb	The X protocol C-language Binding (XCB) library
+libxml2	2.15.4	3891551	1792956658	1	1	FreeBSD-ports	textproc/libxml2	XML parser library for GNOME
+lmdb0	0.9.35	649732	1789370084	1	1	FreeBSD-ports	databases/lmdb0	OpenLDAP Lightning Memory-Mapped Database (legacy)
+mkfontscale	1.2.4	43486	1789370080	1	73	FreeBSD-ports	x11-fonts/mkfontscale	Creates an index of scalable font files for X
+mpdecimal	4.0.1	747472	1780602468	1	2	FreeBSD-ports	math/mpdecimal	C/C++ arbitrary precision decimal floating point libraries
+nano	9.2	3111503	1792956468	0	0	FreeBSD-ports	editors/nano	Nano's ANOther editor, an enhanced free Pico clone
+nerd-fonts	3.5.1	243	1792956651	0	0	FreeBSD-ports	x11-fonts/nerd-fonts	Meta-port for all Nerd Fonts
+nerd-fonts-0xproto	3.5.1	22752524	1792956468	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-0xproto	0xProto Nerd Font
+nerd-fonts-3270	3.5.1	24813151	1792956468	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-3270	3270 Nerd Font
+nerd-fonts-adwaitamono	3.5.1	49172538	1792956468	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-adwaitamono	AdwaitaMono Nerd Font
+nerd-fonts-agave	3.5.1	16013616	1792956468	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-agave	Agave Nerd Font
+nerd-fonts-annotationmono	3.5.1	115929524	1792956468	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-annotationmono	AnnotationMono Nerd Font
+nerd-fonts-anonymicepro	3.5.1	31433302	1792956470	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-anonymicepro	AnonymicePro Nerd Font
+nerd-fonts-arimo	3.5.1	23983369	1792956471	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-arimo	Arimo Nerd Font
+nerd-fonts-atkynsonmono	3.5.1	55005349	1792956471	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-atkynsonmono	AtkynsonMono Nerd Font
+nerd-fonts-aurulentsansmono	3.5.1	6817688	1792956471	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-aurulentsansmono	AurulentSansMono Nerd Font
+nerd-fonts-bigblueterminal	3.5.1	14345854	1792956471	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-bigblueterminal	BigBlueTerminal Nerd Font
+nerd-fonts-bitstromwera	3.5.1	30415447	1792956471	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-bitstromwera	BitstromWera Nerd Font
+nerd-fonts-blexmono	3.5.1	118022136	1792956472	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-blexmono	BlexMono Nerd Font
+nerd-fonts-caskaydiacove	3.5.1	103781428	1792956472	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-caskaydiacove	CaskaydiaCove Nerd Font
+nerd-fonts-caskaydiamono	3.5.1	102854140	1792956473	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-caskaydiamono	CaskaydiaMono Nerd Font
+nerd-fonts-codenewroman	3.5.1	64894155	1792956473	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-codenewroman	CodeNewRoman Nerd Font
+nerd-fonts-comicshannsmono	3.5.1	14455024	1792956474	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-comicshannsmono	ComicShannsMono Nerd Font
+nerd-fonts-commitmono	3.5.1	28527012	1792956474	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-commitmono	CommitMono Nerd Font
+nerd-fonts-cousine	3.5.1	33475297	1792956474	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-cousine	Cousine Nerd Font
+nerd-fonts-d2coding	3.4.0	39609645	1780610246	1	0	FreeBSD-ports	x11-fonts/nerd-fonts-d2coding	D2Coding Nerd Font
+nerd-fonts-d2koding	3.5.1	40224416	1792956474	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-d2koding	D2Koding Nerd Font
+nerd-fonts-daddytimemono	3.5.1	7748460	1792956474	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-daddytimemono	DaddyTimeMono Nerd Font
+nerd-fonts-dejavusansmono	3.5.1	33287761	1792956474	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-dejavusansmono	DejaVuSansMono Nerd Font
+nerd-fonts-departuremono	3.5.1	6747071	1792956475	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-departuremono	DepartureMono Nerd Font
+nerd-fonts-droidsansmono	3.5.1	7474314	1792956475	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-droidsansmono	DroidSansMono Nerd Font
+nerd-fonts-envycoder	3.5.1	23034748	1792956475	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-envycoder	EnvyCodeR Nerd Font
+nerd-fonts-fantasquesansmono	3.5.1	31767246	1792956475	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-fantasquesansmono	FantasqueSansMono Nerd Font
+nerd-fonts-firacode	3.5.1	49766522	1792956475	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-firacode	FiraCode Nerd Font
+nerd-fonts-firamono	3.5.1	21369124	1792956476	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-firamono	FiraMono Nerd Font
+nerd-fonts-geistmono	3.5.1	127475218	1792956477	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-geistmono	GeistMono Nerd Font
+nerd-fonts-gohu	3.5.1	30934222	1792956495	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-gohu	Gohu Nerd Font
+nerd-fonts-gomono	3.5.1	31932440	1792956496	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-gomono	GoMono Nerd Font
+nerd-fonts-googlesanscode	3.5.1	92656497	1792956496	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-googlesanscode	GoogleSansCode Nerd Font
+nerd-fonts-hack	3.5.1	33593622	1792956496	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-hack	Hack Nerd Font
+nerd-fonts-hasklug	3.5.1	99986238	1792956496	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-hasklug	Hasklug Nerd Font
+nerd-fonts-heavydata	3.5.1	4962077	1792956496	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-heavydata	HeavyData Nerd Font
+nerd-fonts-hurmit	3.5.1	41232387	1792956496	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-hurmit	Hurmit Nerd Font
+nerd-fonts-imwriting	3.5.1	67059008	1792956497	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-imwriting	iMWriting Nerd Font
+nerd-fonts-inconsolata	3.5.1	14461030	1792956497	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-inconsolata	Inconsolata Nerd Font
+nerd-fonts-inconsolatago	3.5.1	14843432	1792956497	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-inconsolatago	InconsolataGo Nerd Font
+nerd-fonts-inconsolatalgc	3.5.1	31000766	1792956497	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-inconsolatalgc	InconsolataLGC Nerd Font
+nerd-fonts-intonemono	3.5.1	58751973	1792956498	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-intonemono	IntoneMono Nerd Font
+nerd-fonts-iosevka	3.5.1	1196956545	1792956498	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-iosevka	Iosevka Nerd Font
+nerd-fonts-iosevkaterm	3.5.1	1196483161	1792956506	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-iosevkaterm	IosevkaTerm Nerd Font
+nerd-fonts-iosevkatermslab	3.5.1	671787541	1792956516	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-iosevkatermslab	IosevkaTermSlab Nerd Font
+nerd-fonts-jetbrainsmono	3.5.1	243181733	1792956521	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-jetbrainsmono	JetBrainsMono Nerd Font
+nerd-fonts-lekton	3.5.1	21508982	1792956524	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-lekton	Lekton Nerd Font
+nerd-fonts-lilex	3.5.1	75521810	1792956524	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-lilex	Lilex Nerd Font
+nerd-fonts-literation	3.5.1	79063285	1792956525	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-literation	Literation Nerd Font
+nerd-fonts-martianmono	3.5.1	43882790	1792956526	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-martianmono	MartianMono Nerd Font
+nerd-fonts-meslo	3.5.1	212147447	1792956527	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-meslo	Meslo Nerd Font
+nerd-fonts-monaspice	3.5.1	411886709	1792956557	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-monaspice	Monaspice Nerd Font
+nerd-fonts-monofur	3.5.1	24041819	1792956572	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-monofur	Monofur Nerd Font
+nerd-fonts-monoid	3.5.1	29811135	1792956572	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-monoid	Monoid Nerd Font
+nerd-fonts-mononoki	3.5.1	29520978	1792956573	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-mononoki	Mononoki Nerd Font
+nerd-fonts-mplus	3.5.1	334646561	1792956573	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-mplus	MPlus Nerd Font
+nerd-fonts-noto	3.5.1	1138172053	1792956575	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-noto	Noto Nerd Font
+nerd-fonts-opendyslexic	3.5.1	43371035	1792956586	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-opendyslexic	OpenDyslexic Nerd Font
+nerd-fonts-overpass	3.5.1	101160807	1792956587	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-overpass	Overpass Nerd Font
+nerd-fonts-profont	3.5.1	14285962	1792956588	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-profont	ProFont Nerd Font
+nerd-fonts-proggyclean	3.5.1	22802649	1792956588	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-proggyclean	ProggyClean Nerd Font
+nerd-fonts-recmono	3.5.1	130549435	1792956588	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-recmono	RecMono Nerd Font
+nerd-fonts-robotomono	3.5.1	92874227	1792956589	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-robotomono	RobotoMono Nerd Font
+nerd-fonts-saucecodepro	3.5.1	103533512	1792956590	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-saucecodepro	SauceCodePro Nerd Font
+nerd-fonts-shuretechmono	3.5.1	7029194	1792956591	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-shuretechmono	ShureTechMono Nerd Font
+nerd-fonts-spacemono	3.5.1	28930344	1792956591	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-spacemono	SpaceMono Nerd Font
+nerd-fonts-symbols	3.5.1	5150140	1792956591	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-symbols	Symbols Nerd Font
+nerd-fonts-terminess	3.5.1	33276995	1792956591	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-terminess	Terminess Nerd Font
+nerd-fonts-tinos	3.5.1	23128402	1792956592	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-tinos	Tinos Nerd Font
+nerd-fonts-ubuntu	3.5.1	45845929	1792956592	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-ubuntu	Ubuntu Nerd Font
+nerd-fonts-ubuntumono	3.5.1	29753493	1792956593	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-ubuntumono	UbuntuMono Nerd Font
+nerd-fonts-ubuntusans	3.5.1	103472745	1792956593	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-ubuntusans	UbuntuSans Nerd Font
+nerd-fonts-victormono	3.5.1	161179316	1792956644	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-victormono	VictorMono Nerd Font
+nerd-fonts-zedmono	3.5.1	741803383	1792956648	1	1	FreeBSD-ports	x11-fonts/nerd-fonts-zedmono	ZedMono Nerd Font
+nettle	3.10.2	8698947	1780603800	1	1	FreeBSD-ports	security/nettle	Low-level cryptographic library
+ohmyzsh	20241128	6771414	1780602871	0	0	FreeBSD-ports	shells/ohmyzsh	Community-driven framework for managing your zsh configuration
+openipmi	2.0.29_1	5528257	1780602374	0	0	FreeBSD-ports	sysutils/openipmi	Complex IPMI management software
+openldap26-client	2.6.15_1	6097410	1792956657	1	1	FreeBSD-ports	databases/openldap26-client	Open source LDAP client implementation
+p11-kit	0.26.5_1	4644827	1792956651	1	1	FreeBSD-ports	security/p11-kit	Library for loading and enumerating of PKCS#11 modules
+p5-Authen-SASL	2.2100	112456	1792956652	1	1	FreeBSD-ports	security/p5-Authen-SASL	Perl5 module for SASL authentication
+p5-Crypt-URandom	0.55	64091	1792956652	1	1	FreeBSD-ports	security/p5-Crypt-URandom	Perl extension to provide non blocking randomness
+p5-Digest-HMAC	1.05	36298	1780602469	1	1	FreeBSD-ports	security/p5-Digest-HMAC	Perl5 interface to HMAC Message-Digest Algorithms
+p5-Error	0.17030	64443	1780602469	1	1	FreeBSD-ports	lang/p5-Error	Error/exception handling in object-oriented programming style
+p5-IO-Socket-SSL	2.099	851241	1789370082	1	1	FreeBSD-ports	security/p5-IO-Socket-SSL	Perl5 interface to SSL sockets
+p5-MIME-Base32	1.303	14831	1780602469	1	1	FreeBSD-ports	converters/p5-MIME-Base32	Perl5 module for Base32 encodings
+p5-MIME-Base64	3.16	64437	1780602469	1	1	FreeBSD-ports	converters/p5-MIME-Base64	Perl5 module for Base64 and Quoted-Printable encodings
+p5-Mozilla-CA	20260813	193538	1789370081	1	1	FreeBSD-ports	www/p5-Mozilla-CA	Perl extension for Mozilla CA cert bundle in PEM format
+p5-Net-SSLeay	1.94	1195270	1780602469	1	1	FreeBSD-ports	security/p5-Net-SSLeay	Perl5 interface to SSL
+p5-URI	5.34	263181	1780602469	1	1	FreeBSD-ports	net/p5-URI	Perl5 interface to Uniform Resource Identifier (URI) references
+pcre2	10.49	8475573	1792956652	1	2	FreeBSD-ports	devel/pcre2	Perl Compatible Regular Expressions library, version 2
+perl5	5.42.3	65437143	1789370080	1	11	FreeBSD-ports	lang/perl5.42	Practical Extraction and Report Language
+pkg	2.8.4	54370517	1792955882	0	0	FreeBSD-ports	ports-mgmt/pkg	Package manager
+png	1.6.58	1140053	1789370082	1	1	FreeBSD-ports	graphics/png	Library for manipulating PNG images
+popt	1.19,2	91210	1792956658	1	2	FreeBSD-ports	devel/popt	C library for parsing command line parameters
+py311-aioquic	1.3.0_1	1434911	1780603804	1	0	FreeBSD-ports	www/py-aioquic	Implementation of QUIC and HTTP/3
+py311-anyio	4.12.1	1854746	1780603804	1	1	FreeBSD-ports	devel/py-anyio	High level compatibility layer for multiple asynchronous event loop implementations
+py311-async_generator	1.10_1	263752	1780603802	1	1	FreeBSD-ports	devel/py-async_generator	Tiny library to add async generators to Python 3.5
+py311-attrs	25.4.0	682511	1780603802	1	3	FreeBSD-ports	devel/py-attrs	Python attributes without boilerplate
+py311-certifi	2026.1.4	302575	1780603802	1	2	FreeBSD-ports	security/py-certifi	Mozilla SSL certificates
+py311-cffi	2.0.0	1488212	1780603803	1	2	FreeBSD-ports	devel/py-cffi	Foreign Function Interface for Python calling C code
+py311-cryptography	46.0.7,1	6899210	1780603803	1	3	FreeBSD-ports	security/py-cryptography	Cryptographic recipes and primitives for Python developers
+py311-h11	0.16.0	284992	1780603802	1	1	FreeBSD-ports	net/py-h11	Pure-Python, bring-your-own-I/O implementation of HTTP/1.1
+py311-h2	4.1.0_1	685326	1780603802	1	1	FreeBSD-ports	www/py-h2	HTTP/2 State-Machine based protocol implementation
+py311-hpack	4.0.0_1	615459	1780603802	1	1	FreeBSD-ports	www/py-hpack	HTTP/2 header encoding (HPACK) logic implementation
+py311-httpcore	1.0.9	1015831	1780603804	1	0	FreeBSD-ports	www/py-httpcore	Minimal low-level HTTP client
+py311-hyperframe	6.0.0_1	133262	1780603802	1	1	FreeBSD-ports	www/py-hyperframe	Python module that decodes binary streams into HTTP/2 frames
+py311-idna	3.11	954799	1780603802	1	2	FreeBSD-ports	dns/py-idna	Internationalized Domain Names in Applications (IDNA)
+py311-outcome	1.3.0_2	50678	1780603802	1	1	FreeBSD-ports	devel/py-outcome	Capture the outcome of Python function calls
+py311-packaging	26.3	1585955	1792956662	1	0	FreeBSD-ports	devel/py-packaging	Core utilities for Python packages
+py311-pyasn1	0.6.0	1344680	1780603803	1	2	FreeBSD-ports	devel/py-pyasn1	ASN.1 toolkit for Python
+py311-pyasn1-modules	0.4.1	3035719	1780603803	1	1	FreeBSD-ports	devel/py-pyasn1-modules	Collection of ASN.1 data structures for py-pyasn1
+py311-pycparser	2.23	1879951	1780603803	1	1	FreeBSD-ports	devel/py-pycparser	C parser in Python
+py311-pylsqpack	0.3.23	907654	1780603804	1	1	FreeBSD-ports	www/py-pylsqpack	Python wrapper for the ls-qpack QPACK library
+py311-pyopenssl	26.0.0,1	778251	1780603804	1	1	FreeBSD-ports	security/py-pyopenssl	Python interface to the OpenSSL library
+py311-service-identity	24.2.0	108472	1780603804	1	1	FreeBSD-ports	security/py-service-identity	Service identity verification for pyOpenSSL & cryptography
+py311-sniffio	1.3.1	54046	1780603804	1	1	FreeBSD-ports	devel/py-sniffio	Sniff out which async library your code is running under
+py311-socksio	1.0.0_1	119789	1780603804	1	0	FreeBSD-ports	net/py-socksio	Sans-I/O implementation of SOCKS4, SOCKS4A, and SOCKS5
+py311-sortedcontainers	2.4.0_1	435511	1780603804	1	1	FreeBSD-ports	devel/py-sortedcontainers	Python Sorted Container Types: SortedList, SortedDict, and SortedSet
+py311-trio	0.33.0	6909495	1780603804	1	0	FreeBSD-ports	net/py-trio	Library for async concurrency and I/O
+py311-truststore	0.10.4	184606	1780603804	1	1	FreeBSD-ports	security/py-truststore	Verify certificates using native system trust stores
+py311-typing-extensions	4.15.0	550765	1780603804	1	2	FreeBSD-ports	devel/py-typing-extensions	Backported and Experimental Type Hints for Python 3.5+
+py312-aioquic	1.3.0_1	1380337	1789370093	1	1	FreeBSD-ports	www/py-aioquic	Implementation of QUIC and HTTP/3
+py312-anyio	4.15.1	2024161	1792956678	1	2	FreeBSD-ports	devel/py-anyio	High level compatibility layer for multiple asynchronous event loop implementations
+py312-async_generator	1.10_1	241162	1789370090	1	1	FreeBSD-ports	devel/py-async_generator	Tiny library to add async generators to Python 3.5
+py312-attrs	26.1.0	649932	1789370090	1	3	FreeBSD-ports	devel/py-attrs	Python attributes without boilerplate
+py312-certifi	2026.7.22	274321	1792956673	1	3	FreeBSD-ports	security/py-certifi	Mozilla SSL certificates
+py312-cffi	2.1.1	1411225	1792956675	1	2	FreeBSD-ports	devel/py-cffi	Foreign Function Interface for Python calling C code
+py312-cryptography	50.0.1,1	8254645	1792956675	1	4	FreeBSD-ports	security/py-cryptography	Cryptographic recipes and primitives for Python developers
+py312-dnspython	2.8.0_1,1	3862861	1789370094	1	1	FreeBSD-ports	dns/py-dnspython	DNS toolkit for Python
+py312-h11	0.16.0	264646	1789370090	1	1	FreeBSD-ports	net/py-h11	Pure-Python, bring-your-own-I/O implementation of HTTP/1.1
+py312-h2	4.4.1	728854	1792956673	1	3	FreeBSD-ports	www/py-h2	Pure-Python HTTP/2 protocol implementation
+py312-hpack	4.2.0	622216	1789370090	1	1	FreeBSD-ports	www/py-hpack	Pure-Python HPACK header encoding
+py312-httpcore	1.0.9	960055	1789370093	1	2	FreeBSD-ports	www/py-httpcore	Minimal low-level HTTP client
+py312-httpx	0.28.1_2	971661	1789370093	1	1	FreeBSD-ports	www/py-httpx	Next generation HTTP client
+py312-hyperframe	6.1.0	132588	1789370090	1	1	FreeBSD-ports	www/py-hyperframe	Pure-Python HTTP/2 framing
+py312-idna	3.20	694038	1792956673	1	4	FreeBSD-ports	dns/py-idna	Internationalized Domain Names in Applications (IDNA)
+py312-markdown	3.10.3	1108362	1792956673	1	1	FreeBSD-ports	textproc/py-markdown	Python implementation of Markdown
+py312-outcome	1.3.0_2	48068	1789370090	1	1	FreeBSD-ports	devel/py-outcome	Capture the outcome of Python function calls
+py312-packaging	26.3	1499556	1792956673	1	1	FreeBSD-ports	devel/py-packaging	Core utilities for Python packages
+py312-pycparser	3.0	662307	1792956675	1	1	FreeBSD-ports	devel/py-pycparser	C parser in Python
+py312-pylsqpack	0.3.24	909687	1789370093	1	1	FreeBSD-ports	www/py-pylsqpack	Python wrapper for the ls-qpack QPACK library
+py312-pyopenssl	26.4.0,1	706943	1792956678	1	1	FreeBSD-ports	security/py-pyopenssl	Python interface to the OpenSSL library
+py312-service-identity	26.1.0	98277	1789370093	1	1	FreeBSD-ports	security/py-service-identity	Service identity verification for pyOpenSSL & cryptography
+py312-sniffio	1.3.1	51018	1789370093	1	1	FreeBSD-ports	devel/py-sniffio	Sniff out which async library your code is running under
+py312-socksio	1.0.0_1	114122	1789370093	1	1	FreeBSD-ports	net/py-socksio	Sans-I/O implementation of SOCKS4, SOCKS4A, and SOCKS5
+py312-sortedcontainers	2.4.0_1	415005	1789370093	1	1	FreeBSD-ports	devel/py-sortedcontainers	Python Sorted Container Types: SortedList, SortedDict, and SortedSet
+py312-trio	0.34.0	6316888	1792956677	1	1	FreeBSD-ports	net/py-trio	Library for async concurrency and I/O
+py312-truststore	0.10.4_1	176220	1792956678	1	1	FreeBSD-ports	security/py-truststore	Verify certificates using native system trust stores
+py312-typing-extensions	4.16.0	529391	1792956678	1	2	FreeBSD-ports	devel/py-typing-extensions	Backported and Experimental Type Hints for Python 3.5+
+python	3.12_3,2	38	1789370094	0	0	FreeBSD-ports	lang/python	"meta-port" for the default version of Python interpreter
+python3	3_4	87	1789370094	1	1	FreeBSD-ports	lang/python3	Meta-port for the Python interpreter 3.x
+python311	3.11.17	211720646	1792956659	1	27	FreeBSD-ports	lang/python311	Interpreted object-oriented programming language
+python312	3.12.15	230078444	1792956668	1	36	FreeBSD-ports	lang/python312	Interpreted object-oriented programming language
+readline	8.3.6	3239985	1792956658	1	7	FreeBSD-ports	devel/readline	Library for editing command lines as they are typed
+rsync	3.5.1	1057077	1792956652	0	0	FreeBSD-ports	net/rsync	Network file distribution/synchronization utility
+samba423	4.23.11_3	95274234	1792956678	0	0	FreeBSD-ports	net/samba423	Free SMB/CIFS and AD/DC server and client for Unix
+smartmontools	7.5_2	2160163	1780602374	0	0	FreeBSD-ports	sysutils/smartmontools	S.M.A.R.T. disk monitoring tools
+sqlite3	3.54.1,1	6893948	1794089507	0	0	FreeBSD-ports	databases/sqlite3	SQL database engine in a C library
+sudo	1.9.17p2_2	8429090	1780597736	0	0	FreeBSD-ports	security/sudo	Allow others to run commands as root
+talloc244	2.4.4	170593	1792956678	1	2	FreeBSD-ports	devel/talloc244	Hierarchical pool based memory allocator
+tdb1	1.4.14,1	247847	1789370094	1	1	FreeBSD-ports	databases/tdb1	Trivial Database
+tevent017	0.17.1_1	308969	1792956678	1	1	FreeBSD-ports	devel/tevent017	Talloc based event loop library
+xorgproto	2025.1	1487750	1789370082	1	1	FreeBSD-ports	x11/xorgproto	X Window System unified protocol definitions
+xxhash	0.8.4	548966	1792956652	1	1	FreeBSD-ports	devel/xxhash	Extremely fast non-cryptographic hash algorithm
+yyjson	0.13.0	628953	1792956657	1	1	FreeBSD-ports	devel/yyjson	Fastest JSON library in C
+zsh	5.9.2	20821617	1792956657	0	1	FreeBSD-ports	shells/zsh	The Z shell
+zstd	1.5.7_2	3043783	1789370082	1	4	FreeBSD-ports	archivers/zstd	Fast real-time compression algorithm

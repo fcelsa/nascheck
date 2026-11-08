@@ -26,8 +26,8 @@
     "exit_status": 64
   },
   "local_time": {
-    "time_t": 1794139835,
-    "asctime": "Sun Nov  8 13:10:35 2026 CET"
+    "time_t": 1794144364,
+    "asctime": "Sun Nov  8 14:26:04 2026 CET"
   },
   "device": {
     "name": "/dev/ada5",
@@ -309,8 +309,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 68772,
-          "string": "68772"
+          "value": 68774,
+          "string": "68774"
         }
       },
       {
@@ -404,8 +404,8 @@
       {
         "id": 194,
         "name": "Temperature_Celsius",
-        "value": 176,
-        "worst": 176,
+        "value": 187,
+        "worst": 187,
         "thresh": 0,
         "when_failed": "",
         "flags": {
@@ -419,8 +419,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 244813529122,
-          "string": "34 (Min/Max 6/57)"
+          "value": 244813529120,
+          "string": "32 (Min/Max 6/57)"
         }
       },
       {
@@ -518,11 +518,11 @@
     "threshold_percent": 5
   },
   "power_on_time": {
-    "hours": 68772
+    "hours": 68774
   },
   "power_cycle_count": 873,
   "temperature": {
-    "current": 34
+    "current": 32
   },
   "ata_smart_error_log": {
     "summary": {

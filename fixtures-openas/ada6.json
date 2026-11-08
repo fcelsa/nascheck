@@ -26,8 +26,8 @@
     "exit_status": 0
   },
   "local_time": {
-    "time_t": 1794139836,
-    "asctime": "Sun Nov  8 13:10:36 2026 CET"
+    "time_t": 1794144365,
+    "asctime": "Sun Nov  8 14:26:05 2026 CET"
   },
   "device": {
     "name": "/dev/ada6",
@@ -310,8 +310,8 @@
           "auto_keep": false
         },
         "raw": {
-          "value": 48250,
-          "string": "48250"
+          "value": 48251,
+          "string": "48251"
         }
       },
       {
@@ -519,7 +519,7 @@
     "threshold_percent": 5
   },
   "power_on_time": {
-    "hours": 48250
+    "hours": 48251
   },
   "power_cycle_count": 2166,
   "temperature": {
