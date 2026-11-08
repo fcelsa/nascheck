@@ -1,12 +1,36 @@
 # nascheck
 
-Disk health monitor for FreeBSD and Linux, in the terminal.
-It reads SMART data of SATA (HDD and SSD) and NVMe disks through
-`smartctl`, and the state of ZFS pools through `zpool`.
+Disk, ZFS and system health of a FreeBSD or Linux NAS at a glance, in the
+terminal.
 
-> **Status: early development (phase 5).** A daemon collects SMART data,
-> temperatures and the state of ZFS pools into a local database; a
-> terminal interface, `status` and `check` report on it without root.
+![nascheck: the disks and pools, the packages and the Health page](docs/nascheck.gif)
+
+## Why
+
+nascheck is a weekend project. I wanted a fast terminal tool, with hardly
+any dependencies and no web server, database server or container to run,
+that tells me at a glance whether my NAS is healthy: the SMART data of every
+disk, the state of the ZFS pools, the temperatures. I did not want to
+install something like [Scrutiny](https://github.com/AnalogJ/scrutiny) for
+that. Along the way it grew a little: a page about the machine, one to look
+up the installed packages in a moment, and a Health page that also reads
+the history.
+
+On its first day it found problems I did not know I had: a disk whose
+self-test fails, CRC errors that point to a cable rather than to a disk,
+and a pool whose snapshots had stopped months ago.
+
+The code was written by Claude (Anthropic's Claude Opus 5.5, at high
+effort), directed by me and tried on a real NAS: FreeBSD 15.1, 12 disks,
+four ZFS pools. A test suite runs it on FreeBSD and on seven Linux
+distributions.
+
+## What it does
+
+It reads the SMART data of SATA (HDD and SSD) and NVMe disks through
+`smartctl`, and the state of ZFS pools through `zpool`. A daemon collects
+them, with temperatures, into a local database; a terminal interface,
+`status` and `check` report on it without root.
 
 ## Requirements
 
