@@ -328,6 +328,55 @@ zfs_datasets(struct buf *b, const char *pool, struct dataset **out)
 	return (int)n;
 }
 
+int
+zfs_snapshots(struct buf *b, struct snapshots **out)
+{
+	char *argv[] = { tool("NASCHECK_ZFS", "zfs"), "list", "-H", "-p",
+	    "-o", "name,creation", "-t", "snapshot", NULL };
+	char *line, *next, *at, *t;
+	struct snapshots *sn = NULL;
+	size_t n = 0, cap = 0, i;
+	int64_t created;
+	void *p;
+	int code;
+
+	*out = NULL;
+	if (run_capture(argv, b, 1, &code) == -1 || code != 0)
+		return -1;
+	/* "tank/home@daily-2026-11-08<TAB>1794614400": snapshots of one
+	 * dataset usually follow each other, so look at the last one first. */
+	for (line = b->data; line != NULL && *line != '\0'; line = next) {
+		if ((next = strchr(line, '\n')) != NULL)
+			*next++ = '\0';
+		if ((at = strchr(line, '@')) == NULL ||
+		    (t = strchr(at, '\t')) == NULL)
+			continue;
+		*at = '\0';
+		created = strtoll(t + 1, NULL, 10);
+		for (i = n; i > 0 && strcmp(sn[i - 1].dataset, line) != 0; i--)
+			;
+		if (i == 0) {
+			if (n == cap) {
+				cap = cap ? cap * 2 : 32;
+				if ((p = realloc(sn, cap * sizeof(*sn))) == NULL) {
+					free(sn);
+					return -1;
+				}
+				sn = p;
+			}
+			sn[n].dataset = line;
+			sn[n].newest = created;
+			sn[n++].count = 0;
+			i = n;
+		}
+		sn[i - 1].count++;
+		if (created > sn[i - 1].newest)
+			sn[i - 1].newest = created;
+	}
+	*out = sn;
+	return (int)n;
+}
+
 void
 zfs_layout_note(const struct vdev *v, size_t ntop, char *buf, size_t size)
 {

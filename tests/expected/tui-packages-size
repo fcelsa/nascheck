@@ -1,4 +1,4 @@
- nascheck  1 Disks  2 System  3 Packages                   CRITICAL · 4 disks · 2 pools · 4 with findings   live read
+ nascheck  1 Disks  2 System  3 Packages  4 Health         CRITICAL · 4 disks · 2 pools · 4 with findings   live read
 ┌─ Packages ──────────────────────────────────────────────── 8 installed (pkg) · 3 by hand · 2 dependencies · 3 system ┐
 │ Search   type to search names and descriptions                                                                       │
 │ 8 packages · sorted by size                                               ● by hand  ○ dependency  ◆ system          │
@@ -37,5 +37,5 @@
 │ ◆ part of the base system  · from FreeBSD-base  · no package needs it                                                │
 │ Repositories FreeBSD-ports, FreeBSD-base  · base system via pkgbase                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- type to search  arrows select  F5 sort  Esc clear                                            F1-F3/Tab pages  F10 quit
+ type to search  arrows select  F5 sort  Esc clear                                            F1-F4/Tab pages  F10 quit
 exit 0

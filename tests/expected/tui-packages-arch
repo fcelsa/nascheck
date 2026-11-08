@@ -1,4 +1,4 @@
- nascheck  1 Disks  2 System  3 Packages                   CRITICAL · 4 disks · 2 pools · 4 with findings   live read
+ nascheck  1 Disks  2 System  3 Packages  4 Health         CRITICAL · 4 disks · 2 pools · 4 with findings   live read
 ┌─ Packages ──────────────────────────────── 8 installed (6 pacman, 2 flatpak) · 2 by hand · 2 dependencies · 4 system ┐
 │ Search   type to search names and descriptions                                                                       │
 │ 8 packages · sorted by date                                               ● by hand  ○ dependency  ◆ system          │
@@ -37,5 +37,5 @@
 │ ● installed by hand                                                                                                  │
 │ Repositories cachyos-v3, core, extra                                                                                 │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- type to search  arrows select  F5 sort  Esc clear                                            F1-F3/Tab pages  F10 quit
+ type to search  arrows select  F5 sort  Esc clear                                            F1-F4/Tab pages  F10 quit
 exit 0

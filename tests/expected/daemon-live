@@ -4,6 +4,7 @@ ada1     WARNING  no self-test in the log
 tank     WARNING  gpt/disk1: 0 read, 0 write, 3 checksum errors
 tank     WARNING  used 85% (limit 80)
 tank     WARNING  last scrub on 2026-09-01 (limit 35 d)
+tank     WARNING  tank/media: newest snapshot 21 d old (limit 8 d)
 backup   CRITICAL pool is DEGRADED
 backup   CRITICAL da2 is OFFLINE
 backup   WARNING  da3: 2 read, 0 write, 0 checksum errors

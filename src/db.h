@@ -111,12 +111,13 @@ int	db_pool_usage(struct db *db, const char *pool, time_t since,
 	    struct series *out);
 
 /*
- * Raw counters of the oldest snapshot of a disk taken since `since`, to
- * show how they changed. ids/raw hold up to max entries; returns how many,
- * 0 if there is no such snapshot, -1 on error. *when is its time.
+ * Counters of the oldest snapshot of a disk taken since `since`, to show
+ * how they changed. ids/raw (and value, the normalized values, if not
+ * NULL; -1 where unknown) hold up to max entries; returns how many, 0 if
+ * there is no such snapshot, -1 on error. *when is its time.
  */
 int	db_baseline(struct db *db, const char *serial, time_t since, int *ids,
-	    int64_t *raw, int max, time_t *when);
+	    int64_t *raw, int *value, int max, time_t *when);
 
 /*
  * One present disk with its latest report and temperature sample, or a

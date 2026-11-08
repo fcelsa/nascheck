@@ -50,6 +50,11 @@ nvme_media_errors	1 -
 pool_used		80 90
 scrub_max_age		35d
 
+# A dataset with snapshots whose newest one is older than this: the
+# schedule that takes them (zfs-auto-snapshot, sanoid, periodic) stopped.
+# 8 days lets weekly snapshots pass; "-" turns the rule off.
+snapshot_max_age	8d
+
 # ATA attributes: id, then limits on the raw value. The first ata_attr
 # line replaces this whole list.
 ata_attr 5   1 -	# Reallocated_Sector_Ct

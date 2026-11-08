@@ -45,6 +45,7 @@ struct config {
 	uint8_t		nata;
 	struct limit	pool_used;		/* percent of the pool size */
 	int64_t		scrub_max_age;		/* seconds, or LIMIT_OFF */
+	int64_t		snapshot_max_age;	/* newest snapshot of a dataset */
 };
 
 /* Fill c with the built-in defaults. */

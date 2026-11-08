@@ -1,0 +1,15 @@
+CRITICAL: 4 disks, 2 pools, 1 critical, 3 warning
+ada0     WARNING  Reallocated_Sector_Ct 8 (limit 1)
+ada0     WARNING  Reallocated_Sector_Ct +3 in 7 days (now 8)
+ada0     WARNING  CRC errors +4 in 7 days: check the cable or backplane
+ada1     WARNING  no self-test in the log
+tank     WARNING  gpt/disk1: 0 read, 0 write, 3 checksum errors
+tank     WARNING  used 85% (limit 80)
+tank     WARNING  last scrub on 2026-09-01 (limit 35 d)
+tank     WARNING  full in about 50 days at the pace of the last 28 days
+tank     WARNING  tank/media: newest snapshot 21 d old (limit 8 d)
+backup   CRITICAL pool is DEGRADED
+backup   CRITICAL da2 is OFFLINE
+backup   WARNING  da3: 2 read, 0 write, 0 checksum errors
+backup   CRITICAL 2 permanent errors in files (zpool status -v)
+exit 2

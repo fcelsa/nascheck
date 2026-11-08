@@ -60,6 +60,10 @@ root; 120x40 is the reference size, 80x24 the minimum.
   its repository and how many packages need it; below, the enabled
   repositories and how the base system is updated. F5 sorts by name,
   size or install date.
+- **Health** (page 4): every problem of every disk and pool in one list,
+  the worst first, then the notes: what changed over the last week, CRC
+  errors that point to a cable, SSD wear and pool growth projected, the
+  age of the newest snapshot of each dataset. See the rules below.
 
 | Key | Action |
 | --- | --- |
@@ -214,6 +218,24 @@ Compatible with Nagios, Icinga and Zabbix plugins, and handy in cron:
 | ZFS | read, write or checksum errors on a vdev | warning |
 | ZFS | allocated space at 80% / 90% | warning, critical |
 | ZFS | no completed scrub, or the last one older than 35 days | warning |
+| ZFS | a dataset whose newest snapshot is older than `snapshot_max_age` (8 days): its schedule stopped | warning |
+
+With the daemon's history, the trends:
+
+| Disks and pools | Problem | Level |
+| --- | --- | --- |
+| ATA | attributes 5, 187, 188, 197, 198 grew over the last week | warning |
+| ATA | CRC errors (199) grew over the last week: the cable or backplane, not the disk | warning |
+| NVMe | media errors grew over the last week | warning |
+| SSD, NVMe | 100% wear within a year at the pace of the last month | warning |
+| ZFS | pool full within 90 days at the pace of the last month | warning |
+
+The rest is a note on the Health page: past CRC errors, wear and data
+written a day, how fast a pool grows, how many datasets have snapshots
+and how old the newest is. SATA SSDs have no standard wear attribute: it
+is found by name (`Wear_Leveling_Count`, `SSD_Life_Left`,
+`Media_Wearout_Indicator`, `Percent_Lifetime_Remain`, ...), since the same
+id means different things to different makers.
 
 Thresholds live in `/usr/local/etc/nascheck.conf`; see
 [nascheck.conf.sample](nascheck.conf.sample), installed next to it, for
@@ -226,7 +248,7 @@ the keywords and the defaults used when the file does not exist.
 3. Daemon: daily SMART report, temperature samples, SQLite, rc.d — **done**
 4. ZFS pools: state, errors, scrub, vdev to disk mapping — **done**
 5. ncurses interface with pages: disks and pools, system, packages — **done**
-6. Temperature graphs — **done**; next: a page with all disks and sensors
+6. Temperature graphs, sensors, the Health page with trends — **done**
 7. Packaging: FreeBSD port, Linux static build
 
 ## Tests

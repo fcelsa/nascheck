@@ -1,4 +1,4 @@
- nascheck  1 Disks  2 System  3 Packages                  CRITICAL · 12 disks · 4 pools · 4 with findings   live read
+ nascheck  1 Disks  2 System  3 Packages  4 Health        CRITICAL · 12 disks · 4 pools · 4 with findings   live read
 ┌─ Devices ──────────────────────┐┌─ ada2 ─────────────────────────────────────────────────────────────────── CRITICAL ┐
 │ DISKS                     °C   ││ WDC WD5000AADS-00S9B0 · HDD 500G · firmware 01.00A01                               │
 │ ● ada0   HDD   500G        32  ││ powered on 61448 h (7.0 years) · 29°C · pool openasrz › raidz2-0                   │
@@ -37,5 +37,5 @@
 │                                                                                                                      │
 │                                                                                                                      │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- arrows select  PgUp/PgDn scroll  t period  r refresh                                           F1-F3/Tab pages  q quit
+ arrows select  PgUp/PgDn scroll  t period  r refresh                                           F1-F4/Tab pages  q quit
 exit 0

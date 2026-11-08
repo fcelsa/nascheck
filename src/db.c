@@ -604,10 +604,10 @@ db_pool_usage(struct db *db, const char *pool, time_t since,
 
 int
 db_baseline(struct db *db, const char *serial, time_t since, int *ids,
-    int64_t *raw, int max, time_t *when)
+    int64_t *raw, int *value, int max, time_t *when)
 {
 	static const char q[] =
-	    "SELECT s.time, a.id, a.raw FROM attribute a"
+	    "SELECT s.time, a.id, a.raw, a.value FROM attribute a"
 	    " JOIN snapshot s ON s.id = a.snapshot"
 	    " WHERE a.snapshot = (SELECT s2.id FROM snapshot s2"
 	    "  JOIN disk d ON d.id = s2.disk"
@@ -623,6 +623,9 @@ db_baseline(struct db *db, const char *serial, time_t since, int *ids,
 	while ((rc = sqlite3_step(st)) == SQLITE_ROW && n < max) {
 		*when = (time_t)sqlite3_column_int64(st, 0);
 		ids[n] = sqlite3_column_int(st, 1);
+		if (value != NULL)
+			value[n] = sqlite3_column_type(st, 3) == SQLITE_NULL ?
+			    -1 : sqlite3_column_int(st, 3);
 		raw[n++] = sqlite3_column_int64(st, 2);
 	}
 	sqlite3_finalize(st);

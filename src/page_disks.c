@@ -65,7 +65,7 @@ load_history(struct tui *t)
 		db_temps(&db, d->serial, now -
 		    tui_periods[t->period].seconds, &t->hist);
 		t->nbase = db_baseline(&db, d->serial, now - DELTA_DAYS * 86400,
-		    t->base_ids, t->base_raw, ATA_MAX_ATTRS, &t->base_time);
+		    t->base_ids, t->base_raw, NULL, ATA_MAX_ATTRS, &t->base_time);
 		if (t->nbase < 0)
 			t->nbase = 0;
 	} else if (p != NULL) {

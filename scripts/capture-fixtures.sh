@@ -27,6 +27,11 @@ if command -v zpool >/dev/null 2>&1; then
 	zpool list -H -p >"$out/zpool-list.txt"
 	zfs list -H -p -o name,used,avail,refer,mountpoint \
 	    -t filesystem,volume >"$out/zfs-list.txt"
+	# Snapshots with their age in seconds, as tests/fake-zfs replays them.
+	now=$(date +%s)
+	zfs list -H -p -o name,creation -t snapshot |
+	    awk -F '\t' -v now="$now" '{ print $1 "\t" now - $2 }' \
+	    >"$out/zfs-snapshots.txt"
 fi
 # Installed packages: name, version, size, install time, comment.
 if command -v pkg >/dev/null 2>&1; then

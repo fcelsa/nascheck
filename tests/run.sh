@@ -62,6 +62,15 @@ check daemon-refresh -c "$tmp/conf" refresh
 check daemon-status -c "$tmp/conf" status
 check daemon-check -c "$tmp/conf" check
 check daemon-live -l -c "$tmp/conf" check
+# A past for the database: trends, warnings and notes.
+if python3 -c 'import sqlite3' 2>/dev/null; then
+	python3 "$dir/history.py" "$tmp/db/nascheck.db"
+	check history-check -c "$tmp/conf" check
+	NASCHECK_TUI_SNAPSHOT=@4 TERM=xterm-256color LC_ALL=C.UTF-8 \
+	    LINES=40 COLUMNS=120 check history-health -c "$tmp/conf"
+else
+	echo "skip history: no python3 with sqlite3"
+fi
 kill "$pid"
 wait "$pid"
 if [ -e "$tmp/nascheck.sock" ]; then

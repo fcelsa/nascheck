@@ -107,6 +107,8 @@ jobs:
                 NASCHECK_TUI_SNAPSHOT=@3sqlite nascheck
             env TERM=xterm-256color LC_ALL=C.UTF-8 LINES=40 COLUMNS=120 \
                 NASCHECK_TUI_SNAPSHOT=G nascheck
+            env TERM=xterm-256color LC_ALL=C.UTF-8 LINES=40 COLUMNS=120 \
+                NASCHECK_TUI_SNAPSHOT=@4 nascheck
             zpool destroy citank
             service nascheck reload
             service nascheck stop

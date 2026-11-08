@@ -46,6 +46,7 @@ static const struct config defaults = {
 	.nata = 4,
 	.pool_used = { 80, 90 },
 	.scrub_max_age = 35 * DAY,
+	.snapshot_max_age = 8 * DAY,	/* weekly snapshots pass */
 };
 
 void
@@ -110,6 +111,19 @@ parse_duration(const char *s, int64_t *v)
 		return "expected a positive duration such as 30s, 5m, 1h, 7d";
 	*v = n;
 	return NULL;
+}
+
+/* "keyword DURATION", or "keyword -" to turn the rule off. */
+static const char *
+parse_age(char **tok, int n, int64_t *v)
+{
+	if (n != 2)
+		return "expected one value";
+	if (strcmp(tok[1], "-") == 0) {
+		*v = LIMIT_OFF;
+		return NULL;
+	}
+	return parse_duration(tok[1], v);
 }
 
 /* A string value that must fit in its field. */
@@ -238,15 +252,10 @@ parse_line(struct config *c, char *line, int *ata_replaced, const char **key)
 	}
 	if (strcmp(tok[0], "pool_used") == 0)
 		return parse_limit(tok + 1, n - 1, 0, &c->pool_used);
-	if (strcmp(tok[0], "scrub_max_age") == 0) {
-		if (n != 2)
-			return "expected one value";
-		if (strcmp(tok[1], "-") == 0) {
-			c->scrub_max_age = LIMIT_OFF;
-			return NULL;
-		}
-		return parse_duration(tok[1], &c->scrub_max_age);
-	}
+	if (strcmp(tok[0], "scrub_max_age") == 0)
+		return parse_age(tok, n, &c->scrub_max_age);
+	if (strcmp(tok[0], "snapshot_max_age") == 0)
+		return parse_age(tok, n, &c->snapshot_max_age);
 	if (strcmp(tok[0], "ata_attr") == 0)
 		return parse_ata(c, tok + 1, n - 1, ata_replaced);
 	return "unknown keyword";

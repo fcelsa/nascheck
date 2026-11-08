@@ -1,11 +1,21 @@
 #!/bin/sh
-# Stand-in for zfs: `zfs list ... -r POOL` replays the datasets of POOL
-# from zfs-list.txt in the fixtures.
+# Stand-in for zfs, replaying the fixtures:
+#   zfs list ... -r POOL        the datasets of POOL from zfs-list.txt
+#   zfs list ... -t snapshot    zfs-snapshots.txt, whose times are seconds
+#                               before now, so that ages do not drift
 
 dir=${NASCHECK_FIXTURES:-$(dirname "$0")/fixtures}
 
 [ "$1" = list ] || exit 2
-for arg; do pool=$arg; done	# the pool is the last argument
+for arg; do
+	[ "$arg" = snapshot ] && snap=1
+	pool=$arg	# the pool is the last argument
+done
+if [ -n "$snap" ]; then
+	[ -r "$dir/zfs-snapshots.txt" ] || exit 1
+	exec awk -F '\t' -v now="$(date +%s)" '{ print $1 "\t" now - $2 }' \
+	    "$dir/zfs-snapshots.txt"
+fi
 [ -r "$dir/zfs-list.txt" ] || exit 1
 awk -F '\t' -v p="$pool" '$1 == p || index($1, p "/") == 1' \
     "$dir/zfs-list.txt"

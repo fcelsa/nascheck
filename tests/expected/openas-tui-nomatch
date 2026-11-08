@@ -1,4 +1,4 @@
- nascheck  1 Disks  2 System  3 Packages                  CRITICAL · 12 disks · 4 pools · 4 with findings   live read
+ nascheck  1 Disks  2 System  3 Packages  4 Health        CRITICAL · 12 disks · 4 pools · 4 with findings   live read
 ┌─ Packages ────────────────────────────────────────────────────── 227 installed (pkg) · 19 by hand · 208 dependencies ┐
 │ Search qzzx                                                                                                          │
 │ 0 matching · sorted by relevance                                          ● by hand  ○ dependency  ◆ system          │
@@ -37,5 +37,5 @@
 │                                                                                                                      │
 │                                                                                                                      │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- type to search  arrows select  F5 sort  Esc clear                                            F1-F3/Tab pages  F10 quit
+ type to search  arrows select  F5 sort  Esc clear                                            F1-F4/Tab pages  F10 quit
 exit 0

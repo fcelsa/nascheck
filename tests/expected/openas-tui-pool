@@ -1,4 +1,4 @@
- nascheck  1 Disks  2 System  3 Packages                  CRITICAL · 12 disks · 4 pools · 4 with findings   live read
+ nascheck  1 Disks  2 System  3 Packages  4 Health        CRITICAL · 12 disks · 4 pools · 4 with findings   live read
 ┌─ Devices ──────────────────────┐┌─ openasrz ───────────────────────────────────────────────────────────────────── OK ┐
 │ DISKS                     °C   ││ ONLINE · 2.0T usable (3.0T raw) · 34% used · scrub 2026-11-08                      │
 │ ● ada0   HDD   500G        32  ││                                                                                    │
@@ -37,5 +37,5 @@
 │                                                                                                                      │
 │                                                                                                                      │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- arrows select  PgUp/PgDn scroll  t period  r refresh                                           F1-F3/Tab pages  q quit
+ arrows select  PgUp/PgDn scroll  t period  r refresh                                           F1-F4/Tab pages  q quit
 exit 0

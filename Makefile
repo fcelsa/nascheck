@@ -27,8 +27,9 @@ CURSES_LIBS=	-lncursesw
 
 SRCS=		src/main.c src/config.c src/daemon.c src/data.c src/db.c \
 		src/health.c src/json.c src/run.c src/smart.c src/zfs.c \
-		src/tui.c src/page_disks.c src/page_packages.c src/page_system.c \
-		src/pkgs.c src/sensors.c src/sysinfo.c
+		src/tui.c src/page_disks.c src/page_health.c src/page_packages.c \
+		src/page_system.c \
+		src/pkgs.c src/sensors.c src/sysinfo.c src/trend.c
 OBJS=		${SRCS:.c=.o} vendor/yyjson/yyjson.o
 
 # Debug build with AddressSanitizer and UndefinedBehaviorSanitizer.
@@ -45,7 +46,7 @@ ${PROG}: ${OBJS}
 
 ${OBJS}: src/config.h src/daemon.h src/data.h src/db.h src/health.h \
 		src/json.h src/pkgs.h src/run.h src/sensors.h src/smart.h \
-		src/sysinfo.h \
+		src/sysinfo.h src/trend.h \
 		src/tui.h src/wcurses.h src/zfs.h vendor/yyjson/yyjson.h
 
 test: ${PROG}

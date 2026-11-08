@@ -1,4 +1,4 @@
- nascheck  1 Disks  2 System  3 Packages                   CRITICAL · 4 disks · 2 pools · 4 with findings   live read
+ nascheck  1 Disks  2 System  3 Packages  4 Health         CRITICAL · 4 disks · 2 pools · 4 with findings   live read
 ┌─ Packages ────────────────────────────────────────────────── 4 installed (rpm) · 1 by hand · 1 dependency · 2 system ┐
 │ Search   type to search names and descriptions                                                                       │
 │ 4 packages · sorted by date                                               ● by hand  ○ dependency  ◆ system          │
@@ -37,5 +37,5 @@
 │ ● installed by hand  · from updates                                                                                  │
 │ Repositories fedora, fedora-cisco-openh264, updates                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- type to search  arrows select  F5 sort  Esc clear                                            F1-F3/Tab pages  F10 quit
+ type to search  arrows select  F5 sort  Esc clear                                            F1-F4/Tab pages  F10 quit
 exit 0

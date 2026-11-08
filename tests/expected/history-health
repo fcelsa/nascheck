@@ -1,0 +1,41 @@
+ nascheck  1 Disks  2 System  3 Packages  4 Health  CRITICAL · 4 disks · 2 pools · 4 with findings   daemon 0 min ago
+┌─ Health ───────────────────────────────────────────────────────────────────────── 3 critical · 10 warnings · 5 notes ┐
+│ ✖ CRIT  backup  pool is DEGRADED                                                                                     │
+│ ✖ CRIT  backup  da2 is OFFLINE                                                                                       │
+│ ✖ CRIT  backup  2 permanent errors in files (zpool status -v)                                                        │
+│ ▲ WARN  ada0    Reallocated_Sector_Ct 8 (limit 1)                                                                    │
+│ ▲ WARN  ada0    Reallocated_Sector_Ct +3 in 7 days (now 8)                                                           │
+│ ▲ WARN  ada0    CRC errors +4 in 7 days: check the cable or backplane                                                │
+│ ▲ WARN  ada1    no self-test in the log                                                                              │
+│ ▲ WARN  tank    gpt/disk1: 0 read, 0 write, 3 checksum errors                                                        │
+│ ▲ WARN  tank    used 85% (limit 80)                                                                                  │
+│ ▲ WARN  tank    last scrub on 2026-09-01 (limit 35 d)                                                                │
+│ ▲ WARN  tank    full in about 50 days at the pace of the last 28 days                                                │
+│ ▲ WARN  tank    tank/media: newest snapshot 21 d old (limit 8 d)                                                     │
+│ ▲ WARN  backup  da3: 2 read, 0 write, 0 checksum errors                                                              │
+│ ● note  ada1    worn 2%, 100% in about 7.8 years at this pace; writes 5.2G a day                                     │
+│ ● note  nvme0   worn 3%, 100% in about 3.9 years at this pace; writes 5.0G a day                                     │
+│ ● note  backup  used space steady over 28 days                                                                       │
+│ ● note  tank    snapshots of 3 datasets, the newest 30 min ago                                                       │
+│ ● note  backup  snapshots of 1 dataset, the newest 5 d ago                                                           │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ arrows scroll  r refresh                                                                       F1-F4/Tab pages  q quit
+exit 0

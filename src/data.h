@@ -12,6 +12,15 @@
 #include "smart.h"
 #include "zfs.h"
 
+/*
+ * Something worth knowing that is not a problem: a projection, a past
+ * event (trend.c). Problems are findings of the disk or pool.
+ */
+struct note {
+	char		subject[40];	/* disk, pool */
+	char		text[100];
+};
+
 /* The disks and pools to report on, read live or from the database. */
 struct set {
 	struct disk	*disks;
@@ -20,6 +29,8 @@ struct set {
 	struct zfs	 zfs;		/* pools, when no device was named */
 	struct health	*dh;		/* evaluation of each disk */
 	struct health	*ph;		/* and of each pool */
+	struct note	*notes;
+	size_t		 nnotes;
 	time_t		 heartbeat;	/* last update by the daemon */
 	int		 from_db;	/* loaded from the database */
 	int		 partial;	/* some data could not be read */
@@ -34,7 +45,10 @@ struct set {
 int		 get_set(const struct config *c, struct buf *b, char **names,
 		    size_t count, int live, struct set *set);
 
-/* Evaluate every disk and pool into set->dh and set->ph. 0 or -1. */
+/*
+ * Evaluate every disk and pool into set->dh and set->ph, with what the
+ * history says (trend.c). 0 or -1.
+ */
 int		 evaluate(const struct config *c, struct set *set, time_t now);
 
 void		 set_free(struct set *s);

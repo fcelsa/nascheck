@@ -39,7 +39,7 @@ const int tui_nperiods = sizeof(tui_periods) / sizeof(tui_periods[0]);
 
 /* The pages, in tab order: F1, F2, ... (and 1, 2, ...) select them. */
 static const struct page *const pages[] = {
-	&page_disks, &page_system, &page_packages,
+	&page_disks, &page_system, &page_packages, &page_health,
 };
 #define NPAGES	((int)(sizeof(pages) / sizeof(pages[0])))
 

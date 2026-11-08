@@ -83,6 +83,7 @@ extern const int tui_nperiods;
 extern const struct page page_disks;
 extern const struct page page_system;
 extern const struct page page_packages;
+extern const struct page page_health;
 
 /*
  * Run the interface until the user quits. With NASCHECK_TUI_SNAPSHOT set,

@@ -83,6 +83,19 @@ struct dataset {
  */
 int	zfs_datasets(struct buf *b, const char *pool, struct dataset **out);
 
+/* The snapshots of a dataset: how many, and when the newest was taken. */
+struct snapshots {
+	const char	*dataset;	/* tank/home */
+	int64_t		 newest;	/* creation time */
+	int		 count;
+};
+
+/*
+ * The datasets that have snapshots, from `zfs list -t snapshot`, split in
+ * place in b. Returns the count with a malloc'ed array in *out, or -1.
+ */
+int	zfs_snapshots(struct buf *b, struct snapshots **out);
+
 /*
  * What a top-level vdev means for redundancy, in one line; ntop is the
  * number of top-level data vdevs of its pool.

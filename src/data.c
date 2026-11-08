@@ -8,6 +8,7 @@
 
 #include "data.h"
 #include "db.h"
+#include "trend.h"
 
 /* Decimal units, as printed on disk labels: 4.0T, 960G. */
 const char *
@@ -64,6 +65,7 @@ set_free(struct set *s)
 	free(s->when);
 	free(s->dh);
 	free(s->ph);
+	free(s->notes);
 	zfs_free(&s->zfs);
 	memset(s, 0, sizeof(*s));
 }
@@ -272,7 +274,7 @@ evaluate(const struct config *c, struct set *set, time_t now)
 	}
 	for (i = 0; i < set->zfs.n; i++)
 		health_pool(c, &set->zfs.pools[i], now, &set->ph[i]);
-	return 0;
+	return trends(c, set, now);
 }
 
 const char *

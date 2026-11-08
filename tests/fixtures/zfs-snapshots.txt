@@ -1,0 +1,7 @@
+tank/home@daily-1	90000
+tank/home@daily-2	3700
+tank/home@hourly-9	1800
+tank/media@weekly-1	2592000
+tank/media@weekly-2	1900000
+tank/vm@before-upgrade	40000
+backup@monthly-1	432000

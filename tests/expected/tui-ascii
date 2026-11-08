@@ -1,4 +1,4 @@
- nascheck  1 Disks  2 System  3 Packages                  CRITICAL  live read
+ nascheck  1 Disks  2 System  3 Packages  4 Health        CRITICAL  live read
 +- Devices ------------------++- tank -------------------------------- WARNING +
 | DISKS                 C    || ONLINE - 4.0T usable (4.0T raw) - 85% used - s |
 | * ada0   HDD   4.0T    41  ||                                                |
@@ -6,9 +6,10 @@
 | * ada2   -        -     -  || ! gpt/disk1: 0 read, 0 write, 3 checksum error |
 | * nvme0  NVMe  1.0T    47  || ! used 85% (limit 80)                          |
 |                            || ! last scrub on 2026-09-01 (limit 35 d)        |
-| ZFS POOLS           used   ||                                                |
-|>* tank        4.0T ### 85% || LAYOUT                                         |
-| * backup      3.0T #.. 16% || mirror-0      2-way mirror: full copy on each  |
+| ZFS POOLS           used   || ! tank/media: newest snapshot 21 d old (limit  |
+|>* tank        4.0T ### 85% ||                                                |
+| * backup      3.0T #.. 16% || LAYOUT                                         |
+|                            || mirror-0      2-way mirror: full copy on each  |
 |                            ||               disk, survives 1 failure         |
 |                            || logs          intent log (SLOG): speeds up     |
 |                            ||               synchronous writes               |
@@ -19,7 +20,6 @@
 |                            || mirror-0       ONLINE                          |
 |                            ||   gpt/disk0    ONLINE   /dev/ada0p1  ada0 WARN |
 |                            ||   gpt/disk1    ONLINE   /dev/ada1p1  ada1 WARN |
-|                            || gpt/log0       ONLINE   /dev/ada1p2  ada1 WARN |
 +----------------------------++----------------------------------- v PgDn -----+
- arrows select  PgUp/PgDn scroll  t period  r refresh   F1-F3/Tab pages  q quit
+ arrows select  PgUp/PgDn scroll  t period  r refresh   F1-F4/Tab pages  q quit
 exit 0
