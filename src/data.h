@@ -34,6 +34,7 @@ struct set {
 	time_t		 heartbeat;	/* last update by the daemon */
 	int		 from_db;	/* loaded from the database */
 	int		 partial;	/* some data could not be read */
+	const char	*problem;	/* why there is nothing to show, or NULL */
 };
 
 /*

@@ -256,6 +256,8 @@ cmd_status(const struct config *c, struct buf *b, char **names, size_t count,
 	if ((silence = daemon_silence(c, &set, now)) >= 0)
 		fprintf(stderr, "nascheck: no update from the daemon for "
 		    "%ld min\n", silence);
+	if (set.problem != NULL)
+		fprintf(stderr, "nascheck: %s\n", set.problem);
 	print_header();
 	for (i = 0; i < set.n; i++)
 		print_disk(&set.disks[i], &set.dh[i]);
@@ -307,8 +309,8 @@ cmd_check(const struct config *c, struct buf *b, char **names, size_t count,
 
 	/* Missing data makes the result unknown, unless already critical. */
 	silence = daemon_silence(c, &set, now);
-	code = worst == LEVEL_CRIT || (!set.partial && silence < 0) ?
-	    (int)worst : EXIT_UNKNOWN;
+	code = worst == LEVEL_CRIT || (!set.partial && silence < 0 &&
+	    set.problem == NULL) ? (int)worst : EXIT_UNKNOWN;
 	printf("%s: %zu disks, %zu pools, %zu critical, %zu warning%s\n",
 	    code == EXIT_UNKNOWN ? "UNKNOWN" : level_name(worst), set.n,
 	    set.zfs.n, ncrit, nwarn,
@@ -317,6 +319,8 @@ cmd_check(const struct config *c, struct buf *b, char **names, size_t count,
 		if (silence >= 0)
 			printf("%-8s %-8s no update from the daemon for "
 			    "%ld min\n", "-", "UNKNOWN", silence);
+		if (set.problem != NULL)
+			printf("%-8s %-8s %s\n", "-", "UNKNOWN", set.problem);
 		for (i = 0; i < set.n; i++)
 			print_findings(short_name(&set.disks[i]), &set.dh[i]);
 		for (i = 0; i < set.zfs.n; i++)

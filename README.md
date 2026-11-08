@@ -63,7 +63,9 @@ make install     # program, sample configuration, rc.d script or
 
 `nascheck` without a command opens a terminal interface in the style of
 btop. It reads the daemon's database as a normal user, so it needs no
-root; 120x40 is the reference size, 80x24 the minimum.
+root; 120x40 is the reference size, 80x24 the minimum. Without the daemon
+it reads the disks itself, which only root can do (`sudo nascheck`); a
+normal user is told so, and `check` answers UNKNOWN.
 
 - **Disks** (page 1): disks and pools on the left; on the right the
   details of the selection (findings, SMART attributes and how they

@@ -46,6 +46,12 @@ check check-critical -c tests/conf/base.conf check /dev/ada4 /dev/nvme1 /dev/ada
 check config-bad -c tests/conf/bad.conf check
 check config-missing -c tests/conf/missing.conf status
 check usage frobnicate
+# A normal user cannot open the disks: the reason, and UNKNOWN.
+if [ "$(id -u)" -ne 0 ]; then
+	NASCHECK_SMARTCTL=$dir/fake-smartctl-user check check-user \
+	    -c tests/conf/base.conf check /dev/sda /dev/nvme0
+	NASCHECK_SMARTCTL=$dir/fake-smartctl
+fi
 
 # The daemon, with its database and socket in a temporary directory.
 tmp=$(mktemp -d)

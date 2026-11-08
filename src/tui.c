@@ -359,7 +359,8 @@ load(struct tui *t)
 	set_free(&t->set);
 	if (get_set(t->cfg, t->b, NULL, 0, t->live, &t->set) != 0 ||
 	    evaluate(t->cfg, &t->set, time(NULL)) != 0)
-		snprintf(t->msg, sizeof(t->msg), "no data available");
+		snprintf(t->msg, sizeof(t->msg), "%s", t->set.problem != NULL ?
+		    t->set.problem : "no data available");
 	for (i = 0; i < NPAGES; i++)
 		if (pages[i]->reload != NULL)
 			pages[i]->reload(t);

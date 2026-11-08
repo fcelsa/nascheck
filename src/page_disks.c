@@ -383,7 +383,12 @@ draw_disk(struct tui *t, struct view *v, const struct disk *d,
 		return;
 	}
 	if (d->state == READ_ERROR) {
-		vput(t, v, COLOR_PAIR(C_CRIT), "Read failed: %s", d->error);
+		if (t->set.problem != NULL) {
+			vwrap(t, v, vrow(v), 0, COLOR_PAIR(C_WARN) | A_BOLD,
+			    t->set.problem);
+			vrow(v);
+		}
+		vwrap(t, v, vrow(v), 0, COLOR_PAIR(C_CRIT), d->error);
 		return;
 	}
 	snprintf(line, sizeof(line), "%s %s %s %s %s firmware %s", d->model,
@@ -710,7 +715,11 @@ draw(struct tui *t, int y, int x, int h, int w)
 		draw_pool(t, &v, p, &t->set.ph[t->sel - t->set.n]);
 	} else {
 		tui_box(t, y, x + lw, th, rw, NULL, NULL);
-		vput(t, &v, COLOR_PAIR(C_DIM), "%s", "No disks found.");
+		if (t->set.problem != NULL)
+			vwrap(t, &v, vrow(&v), 0, COLOR_PAIR(C_WARN) | A_BOLD,
+			    t->set.problem);
+		else
+			vput(t, &v, COLOR_PAIR(C_DIM), "%s", "No disks found.");
 	}
 	/* Tell when there is more above or below, on the bottom border:
 	 * the top one carries the title and the level. */

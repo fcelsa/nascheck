@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "data.h"
 #include "db.h"
@@ -107,16 +108,22 @@ read_live(struct buf *b, char **names, size_t count, struct set *set)
 	size_t i, kept = 0;
 	int rc;
 
-	if ((rc = get_disks(b, names, count, &set->disks, &set->n)) != 0)
+	if ((rc = get_disks(b, names, count, &set->disks, &set->n)) != 0) {
+		if (rc == -1 && errno == ENOENT)
+			set->problem = "smartctl not found: install smartmontools";
 		return rc;
+	}
 	for (i = 0; i < set->n; i++) {
 		d = &set->disks[kept];
 		if (i != kept)
 			*d = set->disks[i];
 		if (smart_read(b, d, READ_FULL) == -1) {
 			/* Without smartctl there is nothing more to try. */
-			if (errno == ENOENT)
+			if (errno == ENOENT) {
+				set->problem = "smartctl not found: install "
+				    "smartmontools";
 				return -1;
+			}
 			fprintf(stderr, "nascheck: %s: %s\n", d->path,
 			    errno == EPROTO ? "smartctl output is not JSON" :
 			    strerror(errno));
@@ -129,6 +136,15 @@ read_live(struct buf *b, char **names, size_t count, struct set *set)
 		kept++;
 	}
 	set->n = kept;
+	/*
+	 * The disk nodes belong to root (and the disk or operator group): a
+	 * user finds none, or none that opens. Say so rather than show none.
+	 */
+	for (i = 0; i < set->n && set->disks[i].state == READ_ERROR; i++)
+		;
+	if (i == set->n && geteuid() != 0)
+		set->problem = "only root can read the disks: use sudo, or run "
+		    "the daemon and read its database";
 	if (count == 0 && zfs_read(b, &set->zfs) == -1) {
 		fprintf(stderr, "nascheck: zpool: %s\n", errno == EPROTO ?
 		    "no JSON output (OpenZFS 2.3 or later is required)" :

@@ -1,0 +1,5 @@
+UNKNOWN: 2 disks, 0 pools, 0 critical, 2 warning
+-        UNKNOWN  only root can read the disks: use sudo, or run the daemon and read its database
+sda      WARNING  cannot read SMART data: Smartctl open device: /dev/sda failed: Permission denied
+nvme0    WARNING  cannot read SMART data: Smartctl open device: /dev/nvme0 failed: Permission denied
+exit 3

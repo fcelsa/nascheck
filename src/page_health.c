@@ -109,7 +109,10 @@ draw(struct tui *t, int y, int x, int h, int w)
 	if (hp.top + (size_t)hp.rows > hp.n)
 		hp.top = hp.n > (size_t)hp.rows ? hp.n - (size_t)hp.rows : 0;
 
-	if (first)
+	if (first && t->set.problem != NULL)
+		tui_text(t, y + 1, left, iw, COLOR_PAIR(C_WARN) | A_BOLD, "%s",
+		    t->set.problem);
+	else if (first)
 		tui_text(t, y + 1, left, iw, COLOR_PAIR(C_OK) | A_BOLD, "%s",
 		    "No problems: every disk and pool is fine.");
 	for (r = 0; r < hp.rows && hp.top + (size_t)r < hp.n; r++) {

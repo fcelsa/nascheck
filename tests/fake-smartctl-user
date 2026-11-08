@@ -1,0 +1,10 @@
+#!/bin/sh
+# smartctl run by a normal user: the scan lists the nodes, none opens.
+case "$*" in
+*--scan*)
+	echo '{"smartctl":{"exit_status":0},"devices":[{"name":"/dev/sda","type":"sat"},{"name":"/dev/nvme0","type":"nvme"}]}' ;;
+*)
+	for dev; do :; done
+	printf '{"smartctl":{"exit_status":2,"messages":[{"string":"Smartctl open device: %s failed: Permission denied","severity":"error"}]}}\n' "$dev"
+	exit 2 ;;
+esac
