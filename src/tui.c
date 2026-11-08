@@ -572,6 +572,8 @@ tui_run(const struct config *cfg, int live)
 	    "/usr/share/terminfo:/usr/lib/terminfo", 0);
 #endif
 	t.utf8 = strcmp(nl_langinfo(CODESET), "UTF-8") == 0;
+	/* Recording a demo: no user, host, address or disk labels shown. */
+	t.demo = getenv("NASCHECK_DEMO") != NULL;
 	t.sym = t.utf8 ? &utf8_sym : &ascii_sym;
 	load(&t);		/* errors still reach the terminal */
 	stamp = db_stamp(cfg);

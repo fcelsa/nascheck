@@ -1,0 +1,41 @@
+ nascheck  1 Disks  2 System  3 Packages  4 Health        CRITICAL · 12 disks · 4 pools · 4 with findings   live read
+┌─ Devices ──────────────────────┐┌─ openasrz ───────────────────────────────────────────────────────────────────── OK ┐
+│ DISKS                     °C   ││ ONLINE · 2.0T usable (3.0T raw) · 34% used · scrub 2026-11-08                      │
+│ ● ada0   HDD   500G        32  ││                                                                                    │
+│ ● ada1   HDD   500G        30  ││ No problems                                                                        │
+│ ● ada2   HDD   500G        29  ││                                                                                    │
+│ ● ada3   HDD   500G        32  ││ LAYOUT                                                                             │
+│ ● ada4   HDD   500G        32  ││ raidz2-0      6 disks, 2 parity: survives 2 failures, 4/6 of raw space usable      │
+│ ● ada5   HDD   500G        32  ││                                                                                    │
+│ ● ada6   HDD   1.0T        24  ││ VDEV                             STATE    READ WRITE CKSUM DEVICE       DISK       │
+│ ● ada7   HDD   1.0T        27  ││ raidz2-0                         ONLINE      0     0     0                         │
+│ ● ada8   SSD   120G        26  ││   gpt/disk1                      ONLINE      0     0     0  /dev/ada5p1  ada5 OK   │
+│ ● ada9   HDD   6.0T        21  ││   gpt/disk2                      ONLINE      0     0     0  /dev/ada2p1  ada2 CRIT │
+│ ● ada10  HDD   1.0T        23  ││   gpt/disk3                      ONLINE      0     0     0  /dev/ada0p1  ada0 OK   │
+│ ● ada11  HDD   1.0T        23  ││   gpt/disk4                      ONLINE      0     0     0  /dev/ada3p1  ada3 OK   │
+│                                ││   gpt/disk5                      ONLINE      0     0     0  /dev/ada4p1  ada4 OK   │
+│ ZFS POOLS               used   ││   gpt/disk6                      ONLINE      0     0     0  /dev/ada1p1  ada1 OK   │
+│ ● datastore   2.9T ·····    5% ││                                                                                    │
+│▶● openasrz    2.0T ■■···   34% ││ DATASETS (2)                                                                       │
+│ ● wdpu6       6.0T ·····    0% ││ NAME           USED   REFER  MOUNTPOINT                                            │
+│ ● zroot       117G ■····   18% ││ openasrz       693G    196K  /openasrz                                             │
+│                                ││   z2dataset    693G    693G  /openasrz/z2dataset                                   │
+│                                ││                                                                                    │
+│                                ││                                                                                    │
+│                                ││                                                                                    │
+│                                ││                                                                                    │
+└────────────────────────────────┘└────────────────────────────────────────────────────────────────────────────────────┘
+┌─ Used space openasrz · 24h ───────────────────────────────────────────────────────────────────────── 1h [24h] 7d 30d ┐
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│  History is kept by the daemon, which is not running.                                                                │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ arrows select  PgUp/PgDn scroll  t period  r refresh                                           F1-F4/Tab pages  q quit
+exit 0

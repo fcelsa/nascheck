@@ -163,6 +163,14 @@ NASCHECK_TUI_SNAPSHOT=Gkkt
 check openas-tui-pool -l -c tests/conf/base.conf
 NASCHECK_TUI_SNAPSHOT=G@n
 check openas-tui-datasets -l -c tests/conf/base.conf
+# A demo hides the host, its address and the vdev labels.
+NASCHECK_DEMO=1 NASCHECK_TUI_SNAPSHOT=Gkk
+export NASCHECK_DEMO
+check openas-tui-demo -l -c tests/conf/base.conf
+NASCHECK_TUI_SNAPSHOT=@2
+like tui-demo-system 'admin@nas'
+like tui-demo-ip 'Local IP     192.0.2.10'
+unset NASCHECK_DEMO
 NASCHECK_TUI_SNAPSHOT='@3pyth@d@d'
 check openas-tui-packages -l -c tests/conf/base.conf
 NASCHECK_TUI_SNAPSHOT='@3qzzx'

@@ -65,7 +65,10 @@ make install     # program, sample configuration, rc.d script or
 btop. It reads the daemon's database as a normal user, so it needs no
 root; 120x40 is the reference size, 80x24 the minimum. Without the daemon
 it reads the disks itself, which only root can do (`sudo nascheck`); a
-normal user is told so, and `check` answers UNKNOWN.
+normal user is told so, and `check` answers UNKNOWN. To record a demo,
+`NASCHECK_DEMO=1 nascheck` shows `admin@nas`, an address of the
+documentation range and `disk1`, `disk2`... in place of the user, host,
+local address and vdev labels (which may hold serial numbers).
 
 - **Disks** (page 1): disks and pools on the left; on the right the
   details of the selection (findings, SMART attributes and how they

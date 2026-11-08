@@ -459,8 +459,9 @@ draw_vdevs(struct tui *t, struct view *v, const struct pool *p)
 {
 	const struct set *s = &t->set;
 	const struct vdev *vd;
+	const char *slash;
 	size_t j, k;
-	int r, c, wide = v->w >= 70, nw = v->w - (wide ? 50 : 32);
+	int r, c, wide = v->w >= 70, nw = v->w - (wide ? 50 : 32), leaf = 0;
 
 	if ((r = vrow(v)) >= 0) {
 		if (wide)
@@ -476,8 +477,18 @@ draw_vdevs(struct tui *t, struct view *v, const struct pool *p)
 		if ((r = vrow(v)) < 0)
 			continue;
 		vd = &p->vdevs[j];
-		tui_text(t, r, v->x, nw, 0, "%*s%s", 2 * vd->depth, "",
-		    vd->name);
+		/* A demo shows "gpt/disk3": labels may hold serial numbers. */
+		if (t->demo && vd->children == 0 && (slash = strrchr(vd->name,
+		    '/')) != NULL)
+			tui_text(t, r, v->x, nw, 0, "%*s%.*sdisk%d",
+			    2 * vd->depth, "", (int)(slash - vd->name + 1),
+			    vd->name, ++leaf);
+		else if (t->demo && vd->children == 0)
+			tui_text(t, r, v->x, nw, 0, "%*sdisk%d", 2 * vd->depth,
+			    "", ++leaf);
+		else
+			tui_text(t, r, v->x, nw, 0, "%*s%s", 2 * vd->depth, "",
+			    vd->name);
 		c = v->x + nw + 1;
 		tui_text(t, r, c, 8, COLOR_PAIR(strcmp(vd->state, "ONLINE") ==
 		    0 || strcmp(vd->state, "AVAIL") == 0 ? C_OK : C_CRIT), "%s",

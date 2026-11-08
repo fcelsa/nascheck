@@ -180,16 +180,18 @@ draw(struct tui *t, int y, int x, int h, int w)
 
 	/* user@host, underlined. */
 	c = tui_text(t, r, left, iw, COLOR_PAIR(C_ACCENT) | A_BOLD, "%s",
-	    si->user);
+	    t->demo ? "admin" : si->user);
 	c += tui_text(t, r, left + c, iw - c, 0, "@");
 	c += tui_text(t, r++, left + c, iw - c, COLOR_PAIR(C_ACCENT) | A_BOLD,
-	    "%s", si->host);
+	    "%s", t->demo ? "nas" : si->host);
 	for (i = 0; i < (size_t)c; i++)
 		tui_text(t, r, left + (int)i, 1, COLOR_PAIR(C_DIM), "%s",
 		    t->sym->h);
 	r += 2;
 
-	snprintf(buf, sizeof(buf), "%s%s%s%s", si->ip, si->iface[0] ? " (" : "",
+	/* A demo shows an address of the documentation range (RFC 5737). */
+	snprintf(buf, sizeof(buf), "%s%s%s%s", t->demo && si->ip[0] != '\0' ?
+	    "192.0.2.10" : si->ip, si->iface[0] ? " (" : "",
 	    si->iface, si->iface[0] ? ")" : "");
 	r = row(t, r, left, iw, "Local IP", buf);
 	snprintf(buf, sizeof(buf), "%s, %dx%d", si->term, COLS, LINES);

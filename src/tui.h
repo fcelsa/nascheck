@@ -49,6 +49,7 @@ struct tui {
 	struct buf		*b;
 	int			 live;		/* read the disks, not the db */
 	int			 utf8;
+	int			 demo;	/* NASCHECK_DEMO: hide host, IP, vdev labels */
 	const struct symbols	*sym;
 	struct set		 set;		/* what the pages show */
 	char			 msg[96];	/* footer message */
