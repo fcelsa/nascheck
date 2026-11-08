@@ -787,10 +787,11 @@ reload(struct tui *t)
 
 const struct page page_disks = {
 	"Disks",
-	"arrows select  PgUp/PgDn scroll  t period",
+	"arrows select  PgUp/PgDn scroll  t period  r refresh",
 	draw,
 	key,
 	reload,
+	tui_refresh_disks,
 	0,
 	NULL,
 };

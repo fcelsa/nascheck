@@ -47,7 +47,10 @@ root; 120x40 is the reference size, 80x24 the minimum.
   selected disk, or of the space used by the selected pool.
 - **System** (page 2): the machine at a glance, in the style of fastfetch:
   network address, terminal, OS, hardware, memory, swap, disks and pools
-  with bars of the space used, uptime.
+  with bars of the space used, then the temperature sensors (hwmon or
+  thermal zones on Linux, coretemp/amdtemp and ACPI zones on FreeBSD), one
+  row per chip, colored by the chip's own limits; uptime. It is read when
+  the page is first shown and on `r`.
 - **Packages** (page 3): the packages installed (pkg, dpkg or rpm) with a
   search that is always active: every word typed must match the name or
   the description; the best matches come first (exact name, prefix,
@@ -55,23 +58,23 @@ root; 120x40 is the reference size, 80x24 the minimum.
   the matching text is highlighted. Each package is marked as installed
   by hand (●), as a dependency (○) or part of the base system (◆), with
   its repository and how many packages need it; below, the enabled
-  repositories and how the base system is updated. `S` sorts by name,
+  repositories and how the base system is updated. F5 sorts by name,
   size or install date.
 
 | Key | Action |
 | --- | --- |
-| `1`-`3`, `F1`-`F3`, Tab, Shift-Tab | page |
+| `F1`-`F4`, `Alt`+`1`-`4`, Tab, Shift-Tab | page |
 | arrows, `j` `k`, `g` `G` | select |
 | PgUp, PgDn | scroll the details (page 1) or the list (page 3) |
-| `t`, `T` | graph period: 1h, 24h, 7d, 30d |
-| `r`, `F5` | ask the daemon to read all disks now |
+| `t`, `T` | graph period: 1h, 24h, 7d, 30d (page 1) |
+| `r` | page 1: ask the daemon to read disks and pools now; page 2: read the system and sensors again |
+| `F5` | sort by name, size or date (page 3) |
 | Esc, ^U | clear the search (page 3) |
-| `S` | sort by name, size or date (page 3) |
-| `q`, `F10` | quit |
+| `q`, `F10` | quit (`q` not on page 3) |
 
-On the Packages page letters go to the search field, so there the page
-keys are F1-F3 and Tab, refresh is F5 and quit is F10; the search ignores
-case, so a capital `S` sorts.
+On the Packages page every letter, capitals and `r` and `q` included, goes
+to the search field. `Alt`+digit is the Esc key followed by the digit, as
+most terminals send it.
 
 | Source | By hand / dependency | Base system | Repositories | Install date |
 | --- | --- | --- | --- | --- |

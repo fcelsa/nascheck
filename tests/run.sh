@@ -82,22 +82,36 @@ NASCHECK_TUI_SNAPSHOT=jjjj
 export TERM LC_ALL LINES COLUMNS NASCHECK_TUI_SNAPSHOT
 check tui-small -l -c tests/conf/base.conf
 LC_ALL=C check tui-ascii -l -c tests/conf/base.conf
-# The system page depends on the host: only its layout is checked.
+# like NAME PATTERN: the screen matches the pattern (it depends on the
+# host, so only a part of it is checked).
+like() {
+	if "$prog" -l -c tests/conf/base.conf | grep -q "$2"; then
+		echo "ok   $1"
+	else
+		echo "FAIL $1"
+		fail=1
+	fi
+}
+# Alt+2 opens the system page, a digit alone does not.
+NASCHECK_TUI_SNAPSHOT=@a2
+like tui-system 'Uptime .* minute'
 NASCHECK_TUI_SNAPSHOT=2
-if "$prog" -l -c tests/conf/base.conf | grep -q 'Uptime .* minute'; then
-	echo "ok   tui-system"
-else
-	echo "FAIL tui-system"
-	fail=1
-fi
+like tui-digit 'Devices'
 LINES=40
 COLUMNS=120
+# Sensors, from /sys on Linux: one row per chip, the rest summed up.
+if [ "$(uname -s)" = Linux ]; then
+	NASCHECK_ROOT=$dir/roots/debian NASCHECK_TUI_SNAPSHOT=@2
+	like tui-sensors 'coretemp   Package id 0 58.C  Core 0 46.C.*+8, up to 91.C'
+	NASCHECK_ROOT=$dir/roots/freebsd
+fi
 # Packages from pkg: base system, by hand, dependencies; the S orders.
 NASCHECK_TUI_SNAPSHOT='@3@d@d'
 check tui-packages -l -c tests/conf/base.conf
-NASCHECK_TUI_SNAPSHOT='@3S'
+NASCHECK_TUI_SNAPSHOT='@3@5'
 check tui-packages-size -l -c tests/conf/base.conf
-NASCHECK_TUI_SNAPSHOT='@3zfSS@d'
+# Capitals and r go to the search, F5 sorts.
+NASCHECK_TUI_SNAPSHOT='@3Zf@5@5@d'
 check tui-packages-date -l -c tests/conf/base.conf
 
 # The other package managers, newest first. Dates come from files here:
@@ -108,7 +122,7 @@ touch -t 202606041200 "$r"/debian/var/lib/dpkg/info/*.list \
 touch -t 202610251200 "$r"/debian/var/lib/dpkg/info/smartmontools:amd64.list \
     "$r"/debian/var/lib/dpkg/info/zfsutils-linux:amd64.list
 touch -t 202611011200 "$r"/debian/var/lib/snapd/snaps/firefox_7177.snap
-NASCHECK_TUI_SNAPSHOT='@3SS'
+NASCHECK_TUI_SNAPSHOT='@3@5@5'
 for distro in debian arch alpine fedora opensuse; do
 	NASCHECK_ROOT=$r/$distro
 	check "tui-packages-$distro" -l -c tests/conf/base.conf

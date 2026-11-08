@@ -327,10 +327,9 @@ footer(struct tui *t)
 	if (t->msg[0] != '\0')
 		x += 3 + tui_text(t, y, x + 3, COLS - x - 3,
 		    COLOR_PAIR(C_ACCENT), "%s", t->msg);
-	/* The global keys on the right; a page that takes text gets F keys. */
-	snprintf(keys, sizeof(keys), pages[t->page]->text_input ?
-	    "F1-F%d/Tab pages  F5 refresh  F10 quit " :
-	    "1-%d pages  r refresh  q quit ", NPAGES);
+	/* The global keys on the right; a page that takes text keeps q. */
+	snprintf(keys, sizeof(keys), "F1-F%d/Tab pages  %s quit ", NPAGES,
+	    pages[t->page]->text_input ? "F10" : "q");
 	cols = (int)strlen(keys);
 	if (x + 3 + cols <= COLS)
 		tui_text(t, y, COLS - cols, cols, COLOR_PAIR(C_DIM), "%s", keys);
@@ -382,9 +381,9 @@ db_stamp(const struct config *c)
 	return stamp;
 }
 
-/* "r": ask the daemon to read the disks, or read them ourselves. */
-static void
-refresh_data(struct tui *t)
+/* "r" on page 1: ask the daemon to read the disks, or read them ourselves. */
+void
+tui_refresh_disks(struct tui *t)
 {
 	if (t->set.from_db) {
 		snprintf(t->msg, sizeof(t->msg), "reading the disks...");
@@ -396,30 +395,31 @@ refresh_data(struct tui *t)
 	load(t);
 }
 
-/* A key for the interface itself; 0 if it is the page's. */
+/*
+ * A key for the interface itself; 0 if it is the page's. Pages: F1..F4,
+ * Alt+1..Alt+4, Tab and Shift-Tab. Letters stay free on a page that takes
+ * text (q, r).
+ */
 static int
 global_key(struct tui *t, int ch)
 {
-	if (ch >= KEY_F(1) && ch < KEY_F(1) + NPAGES) {
-		t->page = ch - KEY_F(1);
+	if ((ch >= KEY_F(1) && ch <= KEY_F(4)) ||
+	    (ch >= KEY_ALT(1) && ch <= KEY_ALT(4))) {
+		ch = ch >= KEY_ALT(1) ? ch - KEY_ALT(1) : ch - KEY_F(1);
+		if (ch < NPAGES)
+			t->page = ch;
 		return 1;
 	}
 	if (ch == '\t' || ch == KEY_BTAB) {
 		t->page = (t->page + (ch == '\t' ? 1 : NPAGES - 1)) % NPAGES;
 		return 1;
 	}
-	if (ch == KEY_F(5) || (!pages[t->page]->text_input &&
-	    (ch == 'r' || ch == 'R'))) {
-		refresh_data(t);
+	if ((ch == 'r' || ch == 'R') && !pages[t->page]->text_input &&
+	    pages[t->page]->reread != NULL) {
+		pages[t->page]->reread(t);
 		return 1;
 	}
-	if (ch == KEY_RESIZE)
-		return 1;
-	if (!pages[t->page]->text_input && ch >= '1' && ch < '1' + NPAGES) {
-		t->page = ch - '1';
-		return 1;
-	}
-	return 0;
+	return ch == KEY_RESIZE;
 }
 
 static int
@@ -429,9 +429,28 @@ quit_key(const struct tui *t, int ch)
 	    (ch == 'q' || ch == 'Q'));
 }
 
+/* Esc followed at once by a digit is Alt+digit; Esc alone stays Esc. */
+static int
+read_key(void)
+{
+	int ch = getch(), next;
+
+	if (ch != 27)
+		return ch;
+	timeout(0);
+	next = getch();
+	timeout(TICK_MS);
+	if (next >= '1' && next <= '9')
+		return KEY_ALT(next - '0');
+	if (next != ERR)
+		ungetch(next);
+	return ch;
+}
+
 /*
- * Testing: keys as text. "@" escapes the others: @1..@9 F1..F9, @t Tab,
- * @d @u down and up, @n @p page down and up, @b backspace, @e Esc.
+ * Testing: keys as text. "@" escapes the others: @1..@9 F1..F9, @a1..@a9
+ * Alt+1..Alt+9, @t Tab, @d @u down and up, @n @p page down and up,
+ * @b backspace, @e Esc.
  */
 static int
 snapshot_key(const char **keys)
@@ -444,6 +463,10 @@ snapshot_key(const char **keys)
 	if (ch >= '1' && ch <= '9')
 		return KEY_F(ch - '0');
 	switch (ch) {
+	case 'a':
+		if (**keys >= '1' && **keys <= '9')
+			return KEY_ALT(*(*keys)++ - '0');
+		return ch;
 	case 't':
 		return '\t';
 	case 'd':
@@ -577,7 +600,7 @@ tui_run(const struct config *cfg, int live)
 			draw(&t);
 			dirty = 0;
 		}
-		ch = getch();
+		ch = read_key();
 		now = time(NULL);
 		if (ch == ERR) {
 			/* Idle: redraw for the clock, reload on new data. */

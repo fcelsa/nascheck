@@ -32,7 +32,7 @@ static struct {
 	int		 sort;		/* enum sort */
 } pg;
 
-/* "S" cycles the order; by name means best first while searching. */
+/* F5 cycles the order; by name means best first while searching. */
 enum sort { SORT_NAME, SORT_SIZE, SORT_DATE, SORTS };
 static const char *const sort_name[SORTS] = { "name", "size", "date" };
 
@@ -428,7 +428,7 @@ key(struct tui *t, int ch)
 	case KEY_END:
 		pg.sel = pg.nhits > 0 ? pg.nhits - 1 : 0;
 		return 1;
-	case 'S':	/* the search ignores case: capitals are free */
+	case KEY_F(5):	/* letters, capitals too, go to the search */
 		pg.sort = (pg.sort + 1) % SORTS;
 		order();
 		return 1;
@@ -469,10 +469,11 @@ fini(struct tui *t)
 
 const struct page page_packages = {
 	"Packages",
-	"type to search  arrows select  S sort  Esc clear",
+	"type to search  arrows select  F5 sort  Esc clear",
 	draw,
 	key,
 	NULL,
+	NULL,		/* the list is read once: no refresh */
 	1,
 	fini,
 };

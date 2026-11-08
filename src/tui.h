@@ -20,9 +20,16 @@ struct page {
 	void		(*draw)(struct tui *t, int y, int x, int h, int w);
 	int		(*key)(struct tui *t, int ch);	/* 1 if handled */
 	void		(*reload)(struct tui *t);	/* new data, or NULL */
+	void		(*reread)(struct tui *t);	/* "r", or NULL */
 	int		text_input;	/* printable keys go to the page */
 	void		(*fini)(struct tui *t);	/* free its state, or NULL */
 };
+
+/* Alt+1..Alt+9 (Esc then the digit), past the keys curses knows. */
+#define KEY_ALT(n)	(KEY_MAX + 1 + (n))
+
+/* Read the disks again: through the daemon, or directly. */
+void	tui_refresh_disks(struct tui *t);
 
 /* Color pairs. */
 enum {

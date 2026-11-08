@@ -63,7 +63,7 @@ jobs:
           env TERM=xterm-256color LC_ALL=C.UTF-8 LINES=40 COLUMNS=120 \
               NASCHECK_SMARTCTL=tests/fake-smartctl \
               NASCHECK_ZPOOL=tests/fake-zpool NASCHECK_ZFS=tests/fake-zfs \
-              NASCHECK_SYSCTL=tests/fake-sysctl NASCHECK_TUI_SNAPSHOT=@3SS \
+              NASCHECK_SYSCTL=tests/fake-sysctl NASCHECK_TUI_SNAPSHOT=@3@5@5 \
               ./nascheck -l -c tests/conf/base.conf | tee /tmp/page
           grep -qF "${{ matrix.expect }}" /tmp/page
 
@@ -102,7 +102,7 @@ jobs:
             env TERM=xterm-256color LC_ALL=C.UTF-8 LINES=40 COLUMNS=120 \
                 NASCHECK_TUI_SNAPSHOT= nascheck
             env TERM=xterm-256color LC_ALL=C.UTF-8 LINES=40 COLUMNS=120 \
-                NASCHECK_TUI_SNAPSHOT=2 nascheck
+                NASCHECK_TUI_SNAPSHOT=@a2 nascheck
             env TERM=xterm-256color LC_ALL=C.UTF-8 LINES=40 COLUMNS=120 \
                 NASCHECK_TUI_SNAPSHOT=@3sqlite nascheck
             env TERM=xterm-256color LC_ALL=C.UTF-8 LINES=40 COLUMNS=120 \

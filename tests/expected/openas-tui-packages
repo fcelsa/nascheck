@@ -37,5 +37,5 @@
 │ ○ installed as a dependency  · from FreeBSD-ports  · needed by 27 packages                                           │
 │ Repositories FreeBSD-ports, FreeBSD-ports-kmods  · base system via freebsd-update                                    │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- type to search  arrows select  S sort  Esc clear                                 F1-F3/Tab pages  F5 refresh  F10 quit
+ type to search  arrows select  F5 sort  Esc clear                                            F1-F3/Tab pages  F10 quit
 exit 0

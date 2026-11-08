@@ -37,5 +37,5 @@
 │ ● installed by hand                                                                                                  │
 │ Repositories repo-oss                                                                                                │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- type to search  arrows select  S sort  Esc clear                                 F1-F3/Tab pages  F5 refresh  F10 quit
+ type to search  arrows select  F5 sort  Esc clear                                            F1-F3/Tab pages  F10 quit
 exit 0

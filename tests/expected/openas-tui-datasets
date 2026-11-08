@@ -37,5 +37,5 @@
 │                                                                                                                      │
 │                                                                                                                      │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
- arrows select  PgUp/PgDn scroll  t period                                                 1-3 pages  r refresh  q quit
+ arrows select  PgUp/PgDn scroll  t period  r refresh                                           F1-F3/Tab pages  q quit
 exit 0
