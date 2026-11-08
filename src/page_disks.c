@@ -3,6 +3,7 @@
 
 #include <curses.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "health.h"
@@ -30,6 +31,20 @@ sel_disk(const struct tui *t)
 	return t->sel < t->set.n ? &t->set.disks[t->sel] : NULL;
 }
 
+/* Datasets come from zfs list, readable by any user. */
+static void
+load_datasets(struct tui *t)
+{
+	const struct pool *p = sel_pool(t);
+
+	free(t->ds);
+	t->ds = NULL;
+	t->nds = 0;
+	if (p != NULL && (t->nds = zfs_datasets(&t->dsbuf, p->name,
+	    &t->ds)) < 0)
+		t->nds = 0;
+}
+
 /* Load the graph series and the attribute baseline of the selection. */
 static void
 load_history(struct tui *t)
@@ -44,6 +59,7 @@ load_history(struct tui *t)
 	t->hist_valid = 1;
 	t->hist.n = 0;
 	t->nbase = 0;
+	load_datasets(t);
 	if (!t->set.from_db || db_open_reader(&db, t->cfg->database) == -1)
 		return;
 	if (d != NULL && d->serial[0] != '\0') {
@@ -59,6 +75,7 @@ load_history(struct tui *t)
 	}
 	db_close(&db);
 }
+
 
 /* "+6", "=", or "" when there is no baseline for this counter. */
 static const char *
@@ -180,7 +197,7 @@ draw_list(struct tui *t, int y, int x, int h, int w)
 			tui_text(t, r, x + 2, 1, tui_level_attr(
 			    s->ph[i - s->n].level), "%s", sy->dot);
 			tui_text(t, r, x + 4, iw - 3, attr, "%-11.11s%5s ",
-			    p->name, fmt_size((uint64_t)p->size, size,
+			    p->name, fmt_size((uint64_t)p->usable, size,
 			    sizeof(size)));
 			tui_text(t, r, x + 21, 5, COLOR_PAIR(C_OK), "%s", bar);
 			tui_text(t, r, x + w - 6, 4, attr, "%3d%%", used);
@@ -190,35 +207,88 @@ draw_list(struct tui *t, int y, int x, int h, int w)
 
 /* ---- right panel ---------------------------------------------------- */
 
-/* Findings, or a short all-clear. */
-static int
-draw_findings(struct tui *t, const struct health *h, int y, int x, int w,
-    int last)
-{
-	uint8_t i;
+/* The details panel scrolls: rows before off and past the end are skipped. */
+struct view {
+	int	y, x, w;	/* first row, column, width */
+	int	rows;		/* visible rows */
+	int	off;		/* rows scrolled away */
+	int	n;		/* rows laid out so far */
+};
 
-	if (y > last)
-		return y;
-	if (h->n == 0) {
-		tui_text(t, y++, x, w, COLOR_PAIR(C_OK), "No problems");
-		return y;
-	}
-	tui_text(t, y++, x, w, COLOR_PAIR(C_TITLE) | A_BOLD, "FINDINGS");
-	for (i = 0; i < h->n && y <= last; i++, y++) {
-		tui_text(t, y, x, 2, tui_level_attr(h->f[i].level), "%s",
-		    h->f[i].level == LEVEL_CRIT ? t->sym->crit : t->sym->warn);
-		tui_text(t, y, x + 2, w - 2, 0, "%s", h->f[i].text);
-	}
-	return y;
+/* Screen row for the next line, or -1 when it is scrolled out of sight. */
+static int
+vrow(struct view *v)
+{
+	int r = v->n++ - v->off;
+
+	return r >= 0 && r < v->rows ? v->y + r : -1;
 }
 
 static void
-draw_ata(struct tui *t, const struct disk *d, int y, int x, int w, int last)
+vput(struct tui *t, struct view *v, int attr, const char *fmt,
+    const char *text)
+{
+	int r = vrow(v);
+
+	if (r >= 0)
+		tui_text(t, r, v->x, v->w, attr, fmt, text);
+}
+
+/*
+ * Text from column indent of the next row on, wrapped at spaces; the first
+ * row may already hold a label before indent. ASCII text only.
+ */
+static void
+vwrap(struct tui *t, struct view *v, int r, int indent, int attr,
+    const char *text)
+{
+	int w = v->w - indent, len;
+
+	while (*text != '\0') {
+		len = (int)strlen(text);
+		if (len > w) {
+			for (len = w; len > 0 && text[len] != ' '; len--)
+				;
+			if (len == 0)
+				len = w;
+		}
+		if (r >= 0)
+			tui_text(t, r, v->x + indent, w, attr, "%.*s", len, text);
+		for (text += len; *text == ' '; text++)
+			;
+		if (*text != '\0')
+			r = vrow(v);
+	}
+}
+
+/* Findings, or a short all-clear. */
+static void
+draw_findings(struct tui *t, struct view *v, const struct health *h)
+{
+	uint8_t i;
+	int r;
+
+	if (h->n == 0) {
+		vput(t, v, COLOR_PAIR(C_OK), "%s", "No problems");
+		return;
+	}
+	vput(t, v, COLOR_PAIR(C_TITLE) | A_BOLD, "%s", "FINDINGS");
+	for (i = 0; i < h->n; i++) {
+		if ((r = vrow(v)) < 0)
+			continue;
+		tui_text(t, r, v->x, 2, tui_level_attr(h->f[i].level), "%s",
+		    h->f[i].level == LEVEL_CRIT ? t->sym->crit : t->sym->warn);
+		tui_text(t, r, v->x + 2, v->w - 2, 0, "%s", h->f[i].text);
+	}
+}
+
+static void
+draw_ata(struct tui *t, struct view *v, const struct disk *d)
 {
 	const struct config *c = t->cfg;
 	const struct ata_attr *a;
 	char dbuf[24], head[16] = "";
-	int i, j, attr, days, wide;
+	int i, j, attr, days, r, wide = v->w >= 66;
 
 	if (t->nbase > 0) {
 		days = (int)((time(NULL) - t->base_time + 43200) / 86400);
@@ -226,15 +296,18 @@ draw_ata(struct tui *t, const struct disk *d, int y, int x, int w, int last)
 		    days > 0 ? days : 1);
 	}
 	/* Narrow screens keep the raw values and their change. */
-	wide = w >= 66;
-	if (wide)
-		tui_text(t, y++, x, w, COLOR_PAIR(C_DIM), "%3s %-24s %3s  %3s  "
-		    "%3s %13s %7s", "ID", "ATTRIBUTE", "VAL", "WST", "THR",
-		    "RAW", head);
-	else
-		tui_text(t, y++, x, w, COLOR_PAIR(C_DIM), "%3s %-22s %10s %6s",
-		    "ID", "ATTRIBUTE", "RAW", head);
-	for (i = 0; i < d->u.ata.nattr && y <= last; i++, y++) {
+	if ((r = vrow(v)) >= 0) {
+		if (wide)
+			tui_text(t, r, v->x, v->w, COLOR_PAIR(C_DIM), "%3s %-24s "
+			    "%3s  %3s  %3s %13s %7s", "ID", "ATTRIBUTE", "VAL",
+			    "WST", "THR", "RAW", head);
+		else
+			tui_text(t, r, v->x, v->w, COLOR_PAIR(C_DIM),
+			    "%3s %-22s %10s %6s", "ID", "ATTRIBUTE", "RAW", head);
+	}
+	for (i = 0; i < d->u.ata.nattr; i++) {
+		if ((r = vrow(v)) < 0)
+			continue;
 		a = &d->u.ata.attr[i];
 		attr = 0;
 		for (j = 0; j < c->nata; j++)
@@ -244,19 +317,19 @@ draw_ata(struct tui *t, const struct disk *d, int y, int x, int w, int last)
 		if (a->failed == 2)
 			attr = COLOR_PAIR(C_CRIT);
 		if (wide)
-			tui_text(t, y, x, w, attr, "%3u %-24.24s %3u  %3u  "
+			tui_text(t, r, v->x, v->w, attr, "%3u %-24.24s %3u  %3u  "
 			    "%3u %13lld %7s", a->id, a->name, a->value,
 			    a->worst, a->thresh, (long long)a->raw,
 			    delta(t, a->id, a->raw, dbuf, sizeof(dbuf)));
 		else
-			tui_text(t, y, x, w, attr, "%3u %-22.22s %10lld %6s",
-			    a->id, a->name, (long long)a->raw,
+			tui_text(t, r, v->x, v->w, attr, "%3u %-22.22s %10lld "
+			    "%6s", a->id, a->name, (long long)a->raw,
 			    delta(t, a->id, a->raw, dbuf, sizeof(dbuf)));
 	}
 }
 
 static void
-draw_nvme(struct tui *t, const struct disk *d, int y, int x, int w, int last)
+draw_nvme(struct tui *t, struct view *v, const struct disk *d)
 {
 	const struct nvme_health *nv = &d->u.nvme;
 	char dbuf[24];
@@ -280,77 +353,211 @@ draw_nvme(struct tui *t, const struct disk *d, int y, int x, int w, int last)
 		    "" },
 	};
 	size_t i;
+	int r;
 
-	for (i = 0; i < sizeof(rows) / sizeof(rows[0]) && y <= last; i++, y++)
-		tui_text(t, y, x, w, 0, "%-22s %12lld%-1s %7s", rows[i].name,
-		    (long long)rows[i].v, rows[i].unit, rows[i].id ?
-		    delta(t, rows[i].id, rows[i].v, dbuf, sizeof(dbuf)) : "");
+	for (i = 0; i < sizeof(rows) / sizeof(rows[0]); i++)
+		if ((r = vrow(v)) >= 0)
+			tui_text(t, r, v->x, v->w, 0, "%-22s %12lld%-1s %7s",
+			    rows[i].name, (long long)rows[i].v, rows[i].unit,
+			    rows[i].id ? delta(t, rows[i].id, rows[i].v, dbuf,
+			    sizeof(dbuf)) : "");
 }
 
 static void
-draw_disk(struct tui *t, const struct disk *d, const struct health *h,
-    int y, int x, int w, int last)
+draw_disk(struct tui *t, struct view *v, const struct disk *d,
+    const struct health *h)
 {
 	const struct symbols *sy = t->sym;
 	const struct selftest *st = &d->last_test;
 	const struct pool *p;
 	const char *parent = "";
-	char size[16];
-	int c;
+	char size[16], line[256];
+	int r, c;
 
 	if (d->state == READ_STANDBY) {
-		tui_text(t, y++, x, w, 0, "Disk in standby: no report yet.");
-		tui_text(t, y, x, w, COLOR_PAIR(C_DIM), "The daemon tries again "
-		    "every %lld min and wakes it after %lld days.",
+		vput(t, v, 0, "%s", "Disk in standby: no report yet.");
+		snprintf(line, sizeof(line), "The daemon tries again every %lld "
+		    "min and wakes it after %lld days.",
 		    (long long)t->cfg->standby_retry / 60,
 		    (long long)t->cfg->wake_after / 86400);
+		vput(t, v, COLOR_PAIR(C_DIM), "%s", line);
 		return;
 	}
 	if (d->state == READ_ERROR) {
-		tui_text(t, y, x, w, COLOR_PAIR(C_CRIT), "Read failed: "
-		    "%s", d->error);
+		vput(t, v, COLOR_PAIR(C_CRIT), "Read failed: %s", d->error);
 		return;
 	}
-	tui_text(t, y++, x, w, 0, "%s %s %s %s %s firmware %s", d->model,
+	snprintf(line, sizeof(line), "%s %s %s %s %s firmware %s", d->model,
 	    sy->sep, disk_kind(d), fmt_size(d->capacity, size, sizeof(size)),
 	    sy->sep, d->firmware);
-	c = tui_text(t, y, x, w, 0, "powered on %lld h (%.1f years) %s %d%sC",
-	    (long long)d->power_on_hours, d->power_on_hours / 8766.0, sy->sep,
-	    d->temp, sy->deg);
-	if ((p = find_pool(t, d, &parent)) != NULL)
-		tui_text(t, y, x + c, w - c, 0, " %s pool %s %s %s", sy->sep,
-		    p->name, sy->arrow, parent);
-	y++;
+	vput(t, v, 0, "%s", line);
+	if ((r = vrow(v)) >= 0) {
+		c = tui_text(t, r, v->x, v->w, 0, "powered on %lld h (%.1f "
+		    "years) %s %d%sC", (long long)d->power_on_hours,
+		    d->power_on_hours / 8766.0, sy->sep, d->temp, sy->deg);
+		if ((p = find_pool(t, d, &parent)) != NULL)
+			tui_text(t, r, v->x + c, v->w - c, 0, " %s pool %s %s %s",
+			    sy->sep, p->name, sy->arrow, parent);
+	}
 	if (st->valid)
-		tui_text(t, y++, x, w, COLOR_PAIR(C_DIM), "last self-test: "
-		    "%s, %s, %lld h ago", st->type, st->passed == 1 ? "passed" :
-		    st->passed == 0 ? "FAILED" : "aborted",
-		    (long long)health_selftest_age(d));
+		snprintf(line, sizeof(line), "last self-test: %s, %s, %lld h ago",
+		    st->type, st->passed == 1 ? "passed" : st->passed == 0 ?
+		    "FAILED" : "aborted", (long long)health_selftest_age(d));
 	else
-		tui_text(t, y++, x, w, COLOR_PAIR(C_DIM), "no self-test in "
-		    "the log");
-	y = draw_findings(t, h, y + 1, x, w, last);
-	y++;
-	if (y > last)
-		return;
+		snprintf(line, sizeof(line), "no self-test in the log");
+	vput(t, v, COLOR_PAIR(C_DIM), "%s", line);
+	vrow(v);
+	draw_findings(t, v, h);
+	vrow(v);
 	if (d->proto == PROTO_ATA)
-		draw_ata(t, d, y, x, w, last);
+		draw_ata(t, v, d);
 	else if (d->proto == PROTO_NVME)
-		draw_nvme(t, d, y, x, w, last);
+		draw_nvme(t, v, d);
+}
+
+/* What the layout survives, top-level vdev by top-level vdev. */
+static void
+draw_layout(struct tui *t, struct view *v, const struct pool *p)
+{
+	enum vdev_section last = SECTION_DATA;
+	const struct vdev *vd;
+	char note[160];
+	size_t j, ntop = 0;
+	int r;
+
+	for (j = 0; j < p->nvdev; j++)
+		ntop += p->vdevs[j].depth == 0 &&
+		    p->vdevs[j].section == SECTION_DATA;
+	vput(t, v, COLOR_PAIR(C_TITLE) | A_BOLD, "%s", "LAYOUT");
+	for (j = 0; j < p->nvdev; j++) {
+		vd = &p->vdevs[j];
+		/* Each data vdev; logs, cache and spares once each. */
+		if (vd->depth != 0 || (vd->section != SECTION_DATA &&
+		    vd->section == last))
+			continue;
+		last = vd->section;
+		zfs_layout_note(vd, ntop, note, sizeof(note));
+		if ((r = vrow(v)) >= 0)
+			tui_text(t, r, v->x, 14, COLOR_PAIR(C_ACCENT), "%s",
+			    vd->section == SECTION_DATA ? vd->name :
+			    vd->section == SECTION_LOGS ? "logs" :
+			    vd->section == SECTION_CACHE ? "cache" : "spares");
+		vwrap(t, v, r, 14, 0, note);
+	}
+	if (ntop > 1)
+		vwrap(t, v, vrow(v), 0, COLOR_PAIR(C_DIM), "data is striped "
+		    "over these vdevs: losing any one of them loses the pool");
+}
+
+/* zpool status layout, with the device behind each leaf and its health. */
+static void
+draw_vdevs(struct tui *t, struct view *v, const struct pool *p)
+{
+	const struct set *s = &t->set;
+	const struct vdev *vd;
+	size_t j, k;
+	int r, c, wide = v->w >= 70, nw = v->w - (wide ? 50 : 32);
+
+	if ((r = vrow(v)) >= 0) {
+		if (wide)
+			tui_text(t, r, v->x, v->w, COLOR_PAIR(C_DIM), "%-*s %-8s "
+			    "%4s %5s %5s %-12s %s", nw, "VDEV", "STATE", "READ",
+			    "WRITE", "CKSUM", "DEVICE", "DISK");
+		else
+			tui_text(t, r, v->x, v->w, COLOR_PAIR(C_DIM),
+			    "%-*s %-8s %-12s %s", nw, "VDEV", "STATE", "DEVICE",
+			    "DISK");
+	}
+	for (j = 0; j < p->nvdev; j++) {
+		if ((r = vrow(v)) < 0)
+			continue;
+		vd = &p->vdevs[j];
+		tui_text(t, r, v->x, nw, 0, "%*s%s", 2 * vd->depth, "",
+		    vd->name);
+		c = v->x + nw + 1;
+		tui_text(t, r, c, 8, COLOR_PAIR(strcmp(vd->state, "ONLINE") ==
+		    0 || strcmp(vd->state, "AVAIL") == 0 ? C_OK : C_CRIT), "%s",
+		    vd->state);
+		c += 9;
+		if (wide) {
+			tui_text(t, r, c, 17, vd->read_errors + vd->write_errors +
+			    vd->checksum_errors > 0 ? (int)COLOR_PAIR(C_WARN) :
+			    0, "%4lld %5lld %5lld", (long long)vd->read_errors,
+			    (long long)vd->write_errors,
+			    (long long)vd->checksum_errors);
+			c += 18;
+		}
+		tui_text(t, r, c, 12, 0, "%s", vd->dev);
+		for (k = 0; vd->disk[0] != '\0' && k < s->n; k++) {
+			if (strcmp(s->disks[k].path, vd->disk) != 0)
+				continue;
+			tui_text(t, r, c + 13, v->x + v->w - c - 13,
+			    s->disks[k].state == READ_OK ?
+			    tui_level_attr(s->dh[k].level) :
+			    (int)COLOR_PAIR(C_DIM), "%s %s",
+			    short_name(&s->disks[k]),
+			    level_short(&s->disks[k], &s->dh[k]));
+			break;
+		}
+	}
+}
+
+/* Filesystems and volumes, indented by depth under the pool. */
+/* A dataset as listed: its last name component, two spaces per level. */
+static const char *
+ds_leaf(const char *name, int *indent)
+{
+	const char *leaf = name;
+
+	for (*indent = 0; *name != '\0'; name++)
+		if (*name == '/') {
+			*indent += 2;
+			leaf = name + 1;
+		}
+	return leaf;
 }
 
 static void
-draw_pool(struct tui *t, const struct pool *p, const struct health *h,
-    int y, int x, int w, int last)
+draw_datasets(struct tui *t, struct view *v)
+{
+	const char *leaf;
+	char used[16], refer[16], title[32];
+	int i, r, n, indent, nw = 4;
+
+	/* The name column fits the widest name, up to half the row. */
+	for (i = 0; i < t->nds; i++) {
+		leaf = ds_leaf(t->ds[i].name, &indent);
+		if ((n = indent + (int)strlen(leaf)) > nw)
+			nw = n;
+	}
+	if (nw > v->w / 2)
+		nw = v->w / 2;
+
+	snprintf(title, sizeof(title), "DATASETS (%d)", t->nds);
+	vput(t, v, COLOR_PAIR(C_TITLE) | A_BOLD, "%s", title);
+	if ((r = vrow(v)) >= 0)
+		tui_text(t, r, v->x, v->w, COLOR_PAIR(C_DIM), "%-*s %7s %7s  %s",
+		    nw, "NAME", "USED", "REFER", "MOUNTPOINT");
+	for (i = 0; i < t->nds; i++) {
+		if ((r = vrow(v)) < 0)
+			continue;
+		leaf = ds_leaf(t->ds[i].name, &indent);
+		tui_text(t, r, v->x, nw, 0, "%*s%s", indent, "", leaf);
+		tui_text(t, r, v->x + nw + 1, v->w - nw - 1, COLOR_PAIR(C_DIM),
+		    "%7s %7s  %s", fmt_size((uint64_t)t->ds[i].used, used,
+		    sizeof(used)), fmt_size((uint64_t)t->ds[i].refer, refer,
+		    sizeof(refer)), t->ds[i].mountpoint);
+	}
+}
+
+static void
+draw_pool(struct tui *t, struct view *v, const struct pool *p,
+    const struct health *h)
 {
 	const struct symbols *sy = t->sym;
-	const struct set *s = &t->set;
-	const struct vdev *v;
-	char size[16], day[16];
+	char usable[16], raw[16], day[16], line[256];
 	struct tm tm;
 	time_t end = (time_t)p->scan_end;
-	size_t j, k;
-	int c, nw, wide;
 
 	/* Last scan: running, done on a day, or none at all. */
 	if (strcmp(p->scan_state, "SCANNING") == 0) {
@@ -361,51 +568,22 @@ draw_pool(struct tui *t, const struct pool *p, const struct health *h,
 	} else {
 		snprintf(day, sizeof(day), "never");
 	}
-	tui_text(t, y++, x, w, 0, "%s %s %s %s %lld%% used %s %s %s",
-	    p->state, sy->sep, fmt_size((uint64_t)p->size, size, sizeof(size)),
-	    sy->sep, p->size > 0 ? (long long)(p->alloc * 100 / p->size) : 0LL,
-	    sy->sep, strcmp(p->scan_func, "RESILVER") == 0 ? "resilver" :
-	    "scrub", day);
-	y = draw_findings(t, h, y + 1, x, w, last) + 1;
-	if (y > last)
-		return;
-	/* Columns: name, state, [read write cksum,] disk, its health. */
-	wide = w >= 70;
-	nw = w - (wide ? 34 : 22) - 9;
-	if (wide)
-		tui_text(t, y++, x, w, COLOR_PAIR(C_DIM), "%-*s %-8s %4s %5s "
-		    "%5s %-6s", nw, "VDEV", "STATE", "READ", "WRITE", "CKSUM",
-		    "DISK");
-	else
-		tui_text(t, y++, x, w, COLOR_PAIR(C_DIM), "%-*s %-8s %-6s",
-		    nw, "VDEV", "STATE", "DISK");
-	for (j = 0; j < p->nvdev && y <= last; j++, y++) {
-		v = &p->vdevs[j];
-		c = x;
-		tui_text(t, y, c, nw, 0, "%*s%s", 2 * v->depth, "", v->name);
-		c += nw + 1;
-		tui_text(t, y, c, 8, COLOR_PAIR(strcmp(v->state, "ONLINE") ==
-		    0 || strcmp(v->state, "AVAIL") == 0 ? C_OK : C_CRIT), "%s",
-		    v->state);
-		c += 9;
-		if (wide) {
-			tui_text(t, y, c, 17, v->read_errors + v->write_errors +
-			    v->checksum_errors > 0 ? (int)COLOR_PAIR(C_WARN) :
-			    0, "%4lld %5lld %5lld", (long long)v->read_errors,
-			    (long long)v->write_errors,
-			    (long long)v->checksum_errors);
-			c += 18;
-		}
-		for (k = 0; v->disk[0] != '\0' && k < s->n; k++) {
-			if (strcmp(s->disks[k].path, v->disk) != 0)
-				continue;
-			tui_text(t, y, c, 6, 0, "%s", short_name(&s->disks[k]));
-			tui_text(t, y, c + 7, x + w - c - 7, s->disks[k].state ==
-			    READ_OK ? tui_level_attr(s->dh[k].level) :
-			    (int)COLOR_PAIR(C_DIM), "%s",
-			    level_short(&s->disks[k], &s->dh[k]));
-			break;
-		}
+	snprintf(line, sizeof(line), "%s %s %s usable (%s raw) %s %lld%% used "
+	    "%s %s %s", p->state, sy->sep, fmt_size((uint64_t)p->usable,
+	    usable, sizeof(usable)), fmt_size((uint64_t)p->size, raw,
+	    sizeof(raw)), sy->sep, p->size > 0 ?
+	    (long long)(p->alloc * 100 / p->size) : 0LL, sy->sep,
+	    strcmp(p->scan_func, "RESILVER") == 0 ? "resilver" : "scrub", day);
+	vput(t, v, 0, "%s", line);
+	vrow(v);
+	draw_findings(t, v, h);
+	vrow(v);
+	draw_layout(t, v, p);
+	vrow(v);
+	draw_vdevs(t, v, p);
+	if (t->nds > 0) {
+		vrow(v);
+		draw_datasets(t, v);
 	}
 }
 
@@ -516,28 +694,35 @@ draw(struct tui *t, int y, int x, int h, int w)
 	const struct pool *p = sel_pool(t);
 	int gh = h >= 34 ? 12 : h >= 26 ? 9 : 0, th = h - gh, lw = w >= 110 ?
 	    34 : 30, rw = w - lw;
-	char title[96];
+	struct view v = { y + 1, x + lw + 2, rw - 4, th - 2, 0, 0 };
 
 	if (t->sel >= items(t))
 		t->sel = items(t) > 0 ? items(t) - 1 : 0;
 	load_history(t);
 	draw_list(t, y, x, th, lw);
+	v.off = t->detail_off;
 	if (d != NULL) {
-		snprintf(title, sizeof(title), "%s", short_name(d));
-		tui_box(t, y, x + lw, th, rw, title, d->state == READ_OK ?
-		    level_name(t->set.dh[t->sel].level) : NULL);
-		draw_disk(t, d, &t->set.dh[t->sel], y + 1, x + lw + 2, rw - 4,
-		    y + th - 2);
+		tui_box(t, y, x + lw, th, rw, short_name(d), d->state ==
+		    READ_OK ? level_name(t->set.dh[t->sel].level) : NULL);
+		draw_disk(t, &v, d, &t->set.dh[t->sel]);
 	} else if (p != NULL) {
 		tui_box(t, y, x + lw, th, rw, p->name,
 		    level_name(t->set.ph[t->sel - t->set.n].level));
-		draw_pool(t, p, &t->set.ph[t->sel - t->set.n], y + 1,
-		    x + lw + 2, rw - 4, y + th - 2);
+		draw_pool(t, &v, p, &t->set.ph[t->sel - t->set.n]);
 	} else {
 		tui_box(t, y, x + lw, th, rw, NULL, NULL);
-		tui_text(t, y + 1, x + lw + 2, rw - 4, COLOR_PAIR(C_DIM),
-		    "No disks found.");
+		vput(t, &v, COLOR_PAIR(C_DIM), "%s", "No disks found.");
 	}
+	/* Tell when there is more above or below, on the bottom border:
+	 * the top one carries the title and the level. */
+	t->detail_n = v.n;
+	t->detail_rows = v.rows;
+	if (v.off > 0)
+		tui_text(t, y + th - 1, x + w - 24, 10, COLOR_PAIR(C_ACCENT),
+		    " %s PgUp ", t->utf8 ? "▲" : "^");
+	if (v.n > v.off + v.rows)
+		tui_text(t, y + th - 1, x + w - 14, 10, COLOR_PAIR(C_ACCENT),
+		    " %s PgDn ", t->utf8 ? "▼" : "v");
 	if (gh > 0)
 		draw_graph(t, y + th, x, gh, w);
 }
@@ -568,14 +753,30 @@ key(struct tui *t, int ch)
 		break;
 	case 't':
 		t->period = (t->period + 1) % tui_nperiods;
-		break;
+		t->hist_valid = 0;
+		return 1;
 	case 'T':
 		t->period = (t->period + tui_nperiods - 1) % tui_nperiods;
-		break;
+		t->hist_valid = 0;
+		return 1;
+	case KEY_NPAGE:
+		/* Scroll the details half a panel, not past their end. */
+		t->detail_off += t->detail_rows / 2;
+		if (t->detail_off > t->detail_n - t->detail_rows)
+			t->detail_off = t->detail_n - t->detail_rows;
+		if (t->detail_off < 0)
+			t->detail_off = 0;
+		return 1;
+	case KEY_PPAGE:
+		t->detail_off -= t->detail_rows / 2;
+		if (t->detail_off < 0)
+			t->detail_off = 0;
+		return 1;
 	default:
 		return 0;
 	}
 	t->hist_valid = 0;
+	t->detail_off = 0;
 	return 1;
 }
 
@@ -587,8 +788,10 @@ reload(struct tui *t)
 
 const struct page page_disks = {
 	"Disks",
-	"arrows select  t period",
+	"arrows select  PgUp/PgDn scroll  t period",
 	draw,
 	key,
 	reload,
+	0,
+	NULL,
 };

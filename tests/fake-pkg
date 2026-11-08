@@ -1,0 +1,9 @@
+#!/bin/sh
+# Stand-in for pkg: `pkg query FORMAT` replays pkg-query.txt from the
+# fixtures.
+
+dir=${NASCHECK_FIXTURES:-$(dirname "$0")/fixtures}
+
+[ "$1" = query ] || exit 2
+[ -r "$dir/pkg-query.txt" ] || exit 1
+cat "$dir/pkg-query.txt"

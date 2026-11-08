@@ -20,6 +20,8 @@ struct page {
 	void		(*draw)(struct tui *t, int y, int x, int h, int w);
 	int		(*key)(struct tui *t, int ch);	/* 1 if handled */
 	void		(*reload)(struct tui *t);	/* new data, or NULL */
+	int		text_input;	/* printable keys go to the page */
+	void		(*fini)(struct tui *t);	/* free its state, or NULL */
 };
 
 /* Color pairs. */
@@ -56,6 +58,12 @@ struct tui {
 	int64_t			 base_raw[ATA_MAX_ATTRS];
 	int			 nbase;
 	time_t			 base_time;
+	int			 detail_off;	/* details scrolled by rows */
+	int			 detail_n;	/* rows of the last draw */
+	int			 detail_rows;	/* rows of the panel */
+	struct buf		 dsbuf;		/* datasets of the pool */
+	struct dataset		*ds;
+	int			 nds;
 };
 
 struct period {
@@ -67,6 +75,7 @@ extern const struct period tui_periods[];
 extern const int tui_nperiods;
 extern const struct page page_disks;
 extern const struct page page_system;
+extern const struct page page_packages;
 
 /*
  * Run the interface until the user quits. With NASCHECK_TUI_SNAPSHOT set,

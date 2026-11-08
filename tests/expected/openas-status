@@ -13,13 +13,13 @@ ada10    WARN   HDD  WDC WD1003FZEX-00MK2A0   MASKED                 1.0T   23C 
 ada11    WARN   HDD  TOSHIBA HDWD110          MASKED                 1.0T   23C   29672 PASSED       - realloc 0, pending 0, uncorr 0
 
 POOL / VDEV                    STATE     READ WRITE CKSUM DISK   HEALTH NOTES
-datastore                      ONLINE                            WARN   4.0T, 5% used, never scrubbed
+datastore                      ONLINE                            WARN   2.9T, 5% used, never scrubbed
   raidz1-0                     ONLINE       0     0     0
     gpt/478L83VFS              ONLINE       0     0     0 ada6   WARN
     gpt/WD-WCC3F2267722        ONLINE       0     0     0 ada10  WARN
     gpt/WD-WMAW31236855        ONLINE       0     0     0 ada7   WARN
     gpt/283XLPKNS              ONLINE       0     0     0 ada11  WARN
-openasrz                       ONLINE                            WARN   3.0T, 34% used, resilver 2026-10-25
+openasrz                       ONLINE                            WARN   2.0T, 34% used, resilver 2026-10-25
   raidz2-0                     ONLINE       0     0     0
     gpt/zfs-90eae6ca820c426b   ONLINE       0     0     0 ada5   WARN
     gpt/zfs-5f966b29ab9b3ddc   ONLINE       0     0     0 ada2   WARN

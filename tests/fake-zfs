@@ -1,0 +1,11 @@
+#!/bin/sh
+# Stand-in for zfs: `zfs list ... -r POOL` replays the datasets of POOL
+# from zfs-list.txt in the fixtures.
+
+dir=${NASCHECK_FIXTURES:-$(dirname "$0")/fixtures}
+
+[ "$1" = list ] || exit 2
+for arg; do pool=$arg; done	# the pool is the last argument
+[ -r "$dir/zfs-list.txt" ] || exit 1
+awk -F '\t' -v p="$pool" '$1 == p || index($1, p "/") == 1' \
+    "$dir/zfs-list.txt"

@@ -38,8 +38,10 @@ const struct period tui_periods[] = {
 };
 const int tui_nperiods = sizeof(tui_periods) / sizeof(tui_periods[0]);
 
-/* The pages, in tab order: keys 1, 2, ... select them. */
-static const struct page *const pages[] = { &page_disks, &page_system };
+/* The pages, in tab order: F1, F2, ... (and 1, 2, ...) select them. */
+static const struct page *const pages[] = {
+	&page_disks, &page_system, &page_packages,
+};
 #define NPAGES	((int)(sizeof(pages) / sizeof(pages[0])))
 
 /* Columns taken by the first n bytes of s, stopping at width w. */
@@ -318,14 +320,21 @@ header(struct tui *t)
 static void
 footer(struct tui *t)
 {
-	int x, y = LINES - 1;
+	char keys[48];
+	int x, y = LINES - 1, cols;
 
-	x = tui_text(t, y, 0, COLS, COLOR_PAIR(C_DIM), " %s", pages[t->page]->help);
-	x += tui_text(t, y, x, COLS - x, COLOR_PAIR(C_DIM),
-	    "   1-%d pages  r refresh  q quit", NPAGES);
+	x = tui_text(t, y, 0, COLS, COLOR_PAIR(C_DIM), " %s",
+	    pages[t->page]->help);
 	if (t->msg[0] != '\0')
-		tui_text(t, y, x + 3, COLS - x - 3, COLOR_PAIR(C_ACCENT),
-		    "%s", t->msg);
+		x += 3 + tui_text(t, y, x + 3, COLS - x - 3,
+		    COLOR_PAIR(C_ACCENT), "%s", t->msg);
+	/* The global keys on the right; a page that takes text gets F keys. */
+	snprintf(keys, sizeof(keys), pages[t->page]->text_input ?
+	    "F1-F%d/Tab pages  F5 refresh  F10 quit " :
+	    "1-%d pages  r refresh  q quit ", NPAGES);
+	cols = (int)strlen(keys);
+	if (x + 3 + cols <= COLS)
+		tui_text(t, y, COLS - cols, cols, COLOR_PAIR(C_DIM), "%s", keys);
 }
 
 static void
@@ -392,15 +401,66 @@ refresh_data(struct tui *t)
 static int
 global_key(struct tui *t, int ch)
 {
-	if (ch >= '1' && ch < '1' + NPAGES) {
-		t->page = ch - '1';
+	if (ch >= KEY_F(1) && ch < KEY_F(1) + NPAGES) {
+		t->page = ch - KEY_F(1);
 		return 1;
 	}
-	if (ch == 'r' || ch == 'R') {
+	if (ch == '\t' || ch == KEY_BTAB) {
+		t->page = (t->page + (ch == '\t' ? 1 : NPAGES - 1)) % NPAGES;
+		return 1;
+	}
+	if (ch == KEY_F(5) || (!pages[t->page]->text_input &&
+	    (ch == 'r' || ch == 'R'))) {
 		refresh_data(t);
 		return 1;
 	}
-	return ch == KEY_RESIZE;
+	if (ch == KEY_RESIZE)
+		return 1;
+	if (!pages[t->page]->text_input && ch >= '1' && ch < '1' + NPAGES) {
+		t->page = ch - '1';
+		return 1;
+	}
+	return 0;
+}
+
+static int
+quit_key(const struct tui *t, int ch)
+{
+	return ch == KEY_F(10) || (!pages[t->page]->text_input &&
+	    (ch == 'q' || ch == 'Q'));
+}
+
+/*
+ * Testing: keys as text. "@" escapes the others: @1..@9 F1..F9, @t Tab,
+ * @d @u down and up, @n @p page down and up, @b backspace, @e Esc.
+ */
+static int
+snapshot_key(const char **keys)
+{
+	int ch = (unsigned char)*(*keys)++;
+
+	if (ch != '@' || **keys == '\0')
+		return ch;
+	ch = (unsigned char)*(*keys)++;
+	if (ch >= '1' && ch <= '9')
+		return KEY_F(ch - '0');
+	switch (ch) {
+	case 't':
+		return '\t';
+	case 'd':
+		return KEY_DOWN;
+	case 'u':
+		return KEY_UP;
+	case 'n':
+		return KEY_NPAGE;
+	case 'p':
+		return KEY_PPAGE;
+	case 'b':
+		return KEY_BACKSPACE;
+	case 'e':
+		return 27;
+	}
+	return ch;
 }
 
 /* Testing: print the screen as text, one line per row. */
@@ -443,6 +503,7 @@ snapshot(struct tui *t, const char *keys)
 	const char *term = getenv("TERM");
 	SCREEN *scr;
 	FILE *null;
+	int ch;
 
 	if ((null = fopen("/dev/null", "w")) == NULL ||
 	    (scr = newterm(term != NULL ? term : "xterm-256color", null,
@@ -450,10 +511,15 @@ snapshot(struct tui *t, const char *keys)
 		return 1;
 	set_term(scr);
 	init_colors();
-	for (; *keys != '\0'; keys++)
-		if (!global_key(t, *keys))
-			pages[t->page]->key(t, *keys);
+	/* Draw after every key, as the interactive loop does: pages learn
+	 * their geometry while drawing. */
 	draw(t);
+	while (*keys != '\0') {
+		ch = snapshot_key(&keys);
+		if (!global_key(t, ch))
+			pages[t->page]->key(t, ch);
+		draw(t);
+	}
 	dump_screen();
 	endwin();
 	delscreen(scr);
@@ -468,7 +534,7 @@ tui_run(const struct config *cfg, int live)
 	const char *keys = getenv("NASCHECK_TUI_SNAPSHOT");
 	struct buf b = { 0 };
 	time_t stamp, now, minute = 0, watched = 0;
-	int ch, dirty = 1, rc = 0, saved_err = -1, null;
+	int ch, dirty = 1, rc = 0, saved_err = -1, null, i;
 
 	memset(&t, 0, sizeof(t));
 	t.cfg = cfg;
@@ -502,6 +568,7 @@ tui_run(const struct config *cfg, int live)
 	cbreak();
 	noecho();
 	keypad(stdscr, TRUE);
+	set_escdelay(25);	/* Esc alone, without waiting a second */
 	curs_set(0);
 	timeout(TICK_MS);
 	init_colors();
@@ -529,7 +596,7 @@ tui_run(const struct config *cfg, int live)
 			}
 			continue;
 		}
-		if (ch == 'q' || ch == 'Q')
+		if (quit_key(&t, ch))
 			break;
 		t.msg[0] = '\0';
 		if (global_key(&t, ch) || pages[t.page]->key(&t, ch))
@@ -541,8 +608,13 @@ tui_run(const struct config *cfg, int live)
 		close(saved_err);
 	}
 out:
+	for (i = 0; i < NPAGES; i++)
+		if (pages[i]->fini != NULL)
+			pages[i]->fini(&t);
 	set_free(&t.set);
 	series_free(&t.hist);
+	free(t.ds);
+	buf_free(&t.dsbuf);
 	buf_free(&b);
 	return rc;
 }

@@ -149,7 +149,7 @@ pool_notes(const struct pool *p, char *buf, size_t size)
 	time_t end = (time_t)p->scan_end;
 	size_t len;
 
-	snprintf(buf, size, "%s, %lld%% used", fmt_size((uint64_t)p->size,
+	snprintf(buf, size, "%s, %lld%% used", fmt_size((uint64_t)p->usable,
 	    total, sizeof(total)), p->size > 0 ?
 	    (long long)(p->alloc * 100 / p->size) : 0LL);
 	len = strlen(buf);

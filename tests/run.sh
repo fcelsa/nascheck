@@ -6,13 +6,16 @@
 prog=$(cd "$(dirname "$1")" && pwd)/$(basename "$1")
 dir=$(cd "$(dirname "$0")" && pwd)
 cd "$dir/.." || exit 1
-# Fakes for smartctl, zpool and sysctl replay the fixtures; dates are
-# printed in UTC.
+# Fakes for smartctl, zpool, zfs, sysctl and pkg replay the fixtures;
+# dates are printed in UTC.
 NASCHECK_SMARTCTL=$dir/fake-smartctl
 NASCHECK_ZPOOL=$dir/fake-zpool
+NASCHECK_ZFS=$dir/fake-zfs
 NASCHECK_SYSCTL=$dir/fake-sysctl
+NASCHECK_PKG=$dir/fake-pkg
 TZ=UTC
-export NASCHECK_SMARTCTL NASCHECK_ZPOOL NASCHECK_SYSCTL TZ
+export NASCHECK_SMARTCTL NASCHECK_ZPOOL NASCHECK_ZFS NASCHECK_SYSCTL \
+    NASCHECK_PKG TZ
 fail=0
 
 # check NAME ARGS...: run nascheck ARGS and diff with expected/NAME.
@@ -78,8 +81,9 @@ NASCHECK_TUI_SNAPSHOT=jjjj
 export TERM LC_ALL LINES COLUMNS NASCHECK_TUI_SNAPSHOT
 check tui-small -l -c tests/conf/base.conf
 LC_ALL=C check tui-ascii -l -c tests/conf/base.conf
+# The system page depends on the host: only its layout is checked.
 NASCHECK_TUI_SNAPSHOT=2
-if "$prog" -l -c tests/conf/base.conf | grep -q 'OS  '; then
+if "$prog" -l -c tests/conf/base.conf | grep -q 'Uptime .* minutes'; then
 	echo "ok   tui-system"
 else
 	echo "FAIL tui-system"
@@ -98,6 +102,12 @@ NASCHECK_TUI_SNAPSHOT=jj
 check openas-tui-disk -l -c tests/conf/base.conf
 NASCHECK_TUI_SNAPSHOT=Gkkt
 check openas-tui-pool -l -c tests/conf/base.conf
+NASCHECK_TUI_SNAPSHOT=G@n
+check openas-tui-datasets -l -c tests/conf/base.conf
+NASCHECK_TUI_SNAPSHOT='@3pyth@d@d'
+check openas-tui-packages -l -c tests/conf/base.conf
+NASCHECK_TUI_SNAPSHOT='@3qzzx'
+check openas-tui-nomatch -l -c tests/conf/base.conf
 unset NASCHECK_TUI_SNAPSHOT
 # The sample configuration must match the built-in defaults.
 cp "$dir/expected/openas-check" "$dir/expected/openas-sample"

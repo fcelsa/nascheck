@@ -61,6 +61,7 @@ add_vdev(struct pool *p, size_t *cap, yyjson_val *v, uint8_t depth,
 	/* yyjson_obj_foreach must not see NULL: it computes NULL + 1. */
 	if (!yyjson_is_obj(kids = yyjson_obj_get(v, "vdevs")))
 		return 0;	/* a leaf */
+	vd->children = (uint16_t)yyjson_obj_size(kids);
 	yyjson_obj_foreach(kids, idx, max, key, kid) {
 		if (add_vdev(p, cap, kid, depth + 1, section) == -1)
 			return -1;
@@ -97,6 +98,8 @@ parse_pool(yyjson_val *pv, struct pool *p)
 	root = yyjson_obj_get(yyjson_obj_get(pv, "vdevs"), p->name);
 	p->alloc = json_int(root, "/alloc_space", 0);
 	p->size = json_int(root, "/total_space", 0);
+	/* "Deflated" space: what raidz leaves after parity. */
+	p->usable = json_int(root, "/def_space", p->size);
 	if (yyjson_is_obj(top = yyjson_obj_get(root, "vdevs"))) {
 		yyjson_obj_foreach(top, idx, max, key, v) {
 			if (add_vdev(p, &cap, v, 0, SECTION_DATA) == -1)
@@ -199,12 +202,15 @@ linux_disk(const char *part, char *dst, size_t size)
 /*
  * FreeBSD: kern.geom.conftxt lists every GEOM provider, one per line,
  * indented by depth: "0 DISK ada0 ...", "1 PART ada0p1 ...",
- * "2 LABEL gpt/data0 ...". A provider belongs to the last DISK above it.
+ * "2 LABEL gpt/data0 ...". A provider belongs to the last DISK above it;
+ * a label stands for the provider right above it (the partition).
  */
 static int
-geom_disk(const char *conftxt, const char *name, char *dst, size_t size)
+geom_lookup(const char *conftxt, const char *name, char *disk, size_t dsize,
+    char *dev, size_t vsize)
 {
-	char disk[ZFS_NAME] = "", cls[16], prov[ZFS_NAME];
+	char stack[8][ZFS_NAME], cls[16], prov[ZFS_NAME];
+	int isdisk = 0;
 	const char *line = conftxt, *next;
 	unsigned depth;
 
@@ -212,17 +218,20 @@ geom_disk(const char *conftxt, const char *name, char *dst, size_t size)
 		next = strchr(line, '\n');
 		if (next != NULL)
 			next++;
-		if (sscanf(line, "%u %15s %63s", &depth, cls, prov) != 3)
+		if (sscanf(line, "%u %15s %63s", &depth, cls, prov) != 3 ||
+		    depth >= 8)
 			continue;
+		memcpy(stack[depth], prov, sizeof(prov));
 		if (depth == 0)
-			snprintf(disk, sizeof(disk), "%s",
-			    strcmp(cls, "DISK") == 0 ? prov : "");
-		if (strcmp(prov, name) == 0) {
-			if (disk[0] == '\0')
-				return -1;	/* md, not a physical disk */
-			snprintf(dst, size, "/dev/%s", disk);
-			return 0;
-		}
+			isdisk = strcmp(cls, "DISK") == 0;
+		if (strcmp(prov, name) != 0)
+			continue;
+		if (!isdisk)
+			return -1;	/* md, not a physical disk */
+		snprintf(disk, dsize, "/dev/%s", stack[0]);
+		snprintf(dev, vsize, "/dev/%s", strcmp(cls, "LABEL") == 0 &&
+		    depth > 0 ? stack[depth - 1] : prov);
+		return 0;
 	}
 	return -1;
 }
@@ -232,7 +241,8 @@ zfs_map_disks(struct buf *b, struct zfs *z)
 {
 	char *argv[] = { tool("NASCHECK_SYSCTL", "sysctl"), "-n",
 	    "kern.geom.conftxt", NULL };
-	char real[PATH_MAX], *conftxt = NULL;
+	char real[PATH_MAX], disk[ZFS_NAME + 8], dev[ZFS_NAME + 8];
+	char *conftxt = NULL;
 	const char *base;
 	struct vdev *vd;
 	size_t i, j;
@@ -245,22 +255,107 @@ zfs_map_disks(struct buf *b, struct zfs *z)
 	for (i = 0; i < z->n; i++) {
 		for (j = 0; j < z->pools[i].nvdev; j++) {
 			vd = &z->pools[i].vdevs[j];
-			vd->disk[0] = '\0';
+			vd->disk[0] = vd->dev[0] = '\0';
 			/* Only leaves on a device; not files. */
 			if (strcmp(vd->type, "disk") != 0 ||
 			    strncmp(vd->path, "/dev/", 5) != 0)
 				continue;
 			if (conftxt != NULL) {
-				found = geom_disk(conftxt, vd->path + 5, real,
-				    sizeof(real)) == 0;
+				found = geom_lookup(conftxt, vd->path + 5, disk,
+				    sizeof(disk), dev, sizeof(dev)) == 0;
 			} else if ((found = realpath(vd->path, real) != NULL)) {
+				/* Linux: /dev/disk/by-id/... -> /dev/sdb1. */
+				snprintf(dev, sizeof(dev), "%.*s", ZFS_NAME, real);
 				base = strrchr(real, '/');
-				linux_disk(base != NULL ? base + 1 : real, real,
-				    sizeof(real));
+				linux_disk(base != NULL ? base + 1 : real, disk,
+				    sizeof(disk));
 			}
-			if (found && strlen(real) < sizeof(vd->disk))
-				memcpy(vd->disk, real, strlen(real) + 1);
+			if (!found)
+				continue;
+			if (strlen(disk) < sizeof(vd->disk))
+				memcpy(vd->disk, disk, strlen(disk) + 1);
+			if (strlen(dev) < sizeof(vd->dev))
+				memcpy(vd->dev, dev, strlen(dev) + 1);
 		}
 	}
 	free(conftxt);
+}
+
+int
+zfs_datasets(struct buf *b, const char *pool, struct dataset **out)
+{
+	char *argv[] = { tool("NASCHECK_ZFS", "zfs"), "list", "-H", "-p",
+	    "-o", "name,used,avail,refer,mountpoint", "-t",
+	    "filesystem,volume", "-r", (char *)pool, NULL };
+	char *line, *next, *f[5];
+	struct dataset *ds = NULL, *d;
+	size_t n = 0, cap = 0;
+	void *p;
+	int code, k;
+
+	*out = NULL;
+	if (run_capture(argv, b, 1, &code) == -1)
+		return -1;
+	/* One dataset per line, five tab-separated fields; split in place. */
+	for (line = b->data; line != NULL && *line != '\0'; line = next) {
+		if ((next = strchr(line, '\n')) != NULL)
+			*next++ = '\0';
+		for (k = 0; k < 5; k++) {
+			f[k] = line;
+			if (k < 4 && (line = strchr(line, '\t')) != NULL)
+				*line++ = '\0';
+			if (line == NULL)
+				break;
+		}
+		if (k < 4)
+			continue;
+		if (n == cap) {
+			cap = cap ? cap * 2 : 32;
+			if ((p = realloc(ds, cap * sizeof(*ds))) == NULL) {
+				free(ds);
+				return -1;
+			}
+			ds = p;
+		}
+		d = &ds[n++];
+		d->name = f[0];
+		d->used = strtoll(f[1], NULL, 10);
+		d->avail = strtoll(f[2], NULL, 10);
+		d->refer = strtoll(f[3], NULL, 10);
+		d->mountpoint = f[4];
+	}
+	*out = ds;
+	return (int)n;
+}
+
+void
+zfs_layout_note(const struct vdev *v, size_t ntop, char *buf, size_t size)
+{
+	int parity, n = v->children;
+
+	if (v->section == SECTION_LOGS)
+		snprintf(buf, size, "intent log (SLOG): speeds up synchronous "
+		    "writes");
+	else if (v->section == SECTION_CACHE)
+		snprintf(buf, size, "read cache (L2ARC): losing it loses no "
+		    "data");
+	else if (v->section == SECTION_SPARES)
+		snprintf(buf, size, "hot spare: takes the place of a failed "
+		    "disk");
+	else if (strcmp(v->type, "mirror") == 0)
+		snprintf(buf, size, "%d-way mirror: full copy on each disk, "
+		    "survives %d failure%s", n, n - 1, n - 1 == 1 ? "" : "s");
+	else if (strcmp(v->type, "raidz") == 0) {
+		/* The parity level is in the name: raidz2-0. */
+		parity = isdigit((unsigned char)v->name[5]) ?
+		    v->name[5] - '0' : 1;
+		snprintf(buf, size, "%d disks, %d parity: survives %d failure%s, "
+		    "%d/%d of raw space usable", n, parity, parity,
+		    parity == 1 ? "" : "s", n - parity, n);
+	} else if (strncmp(v->type, "draid", 5) == 0)
+		snprintf(buf, size, "dRAID: distributed parity and spare space");
+	else
+		snprintf(buf, size, "single disk, no redundancy: damage is "
+		    "found, not repaired%s", ntop > 1 ? "; losing it loses the "
+		    "pool" : "");
 }

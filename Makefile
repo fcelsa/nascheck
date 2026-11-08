@@ -27,7 +27,8 @@ CURSES_LIBS=	-lncursesw
 
 SRCS=		src/main.c src/config.c src/daemon.c src/data.c src/db.c \
 		src/health.c src/json.c src/run.c src/smart.c src/zfs.c \
-		src/tui.c src/page_disks.c src/page_system.c src/sysinfo.c
+		src/tui.c src/page_disks.c src/page_packages.c src/page_system.c \
+		src/pkgs.c src/sysinfo.c
 OBJS=		${SRCS:.c=.o} vendor/yyjson/yyjson.o
 
 # Debug build with AddressSanitizer and UndefinedBehaviorSanitizer.
@@ -43,7 +44,8 @@ ${PROG}: ${OBJS}
 	${CC} ${NC_CPPFLAGS} ${NC_CFLAGS} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
 
 ${OBJS}: src/config.h src/daemon.h src/data.h src/db.h src/health.h \
-		src/json.h src/run.h src/smart.h src/sysinfo.h src/tui.h \
+		src/json.h src/pkgs.h src/run.h src/smart.h src/sysinfo.h \
+		src/tui.h \
 		src/zfs.h vendor/yyjson/yyjson.h
 
 test: ${PROG}

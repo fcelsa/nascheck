@@ -41,18 +41,31 @@ root; 120x40 is the reference size, 80x24 the minimum.
 
 - **Disks** (page 1): disks and pools on the left; on the right the
   details of the selection (findings, SMART attributes and how they
-  changed over the last 30 days, or the pool layout with the health of
-  each disk); below, a graph of the temperature of the selected disk, or
-  of the space used by the selected pool.
-- **System** (page 2): the machine at a glance, in the style of fastfetch.
+  changed over the last 30 days; for a pool its usable and raw size, what
+  its layout survives, the vdev tree with the `/dev` node and health of
+  each disk, and its datasets); below, a graph of the temperature of the
+  selected disk, or of the space used by the selected pool.
+- **System** (page 2): the machine at a glance, in the style of fastfetch:
+  network address, terminal, OS, hardware, memory, swap, disks and pools
+  with bars of the space used, uptime.
+- **Packages** (page 3): the packages installed (pkg, dpkg or rpm) with a
+  search that is always active: every word typed must match the name or
+  the description; the best matches come first (exact name, prefix,
+  name, description, then letters in order: `zfst` finds `zfs-stats`) and
+  the matching text is highlighted.
 
 | Key | Action |
 | --- | --- |
-| `1`, `2` | page |
+| `1`-`3`, `F1`-`F3`, Tab, Shift-Tab | page |
 | arrows, `j` `k`, `g` `G` | select |
+| PgUp, PgDn | scroll the details (page 1) or the list (page 3) |
 | `t`, `T` | graph period: 1h, 24h, 7d, 30d |
-| `r` | ask the daemon to read all disks now |
-| `q` | quit |
+| `r`, `F5` | ask the daemon to read all disks now |
+| Esc, ^U | clear the search (page 3) |
+| `q`, `F10` | quit |
+
+On the Packages page letters go to the search field, so there the page
+keys are F1-F3 and Tab, refresh is F5 and quit is F10.
 
 Graphs use Braille characters in a UTF-8 terminal and plain characters
 elsewhere (the FreeBSD console without X); 256 colors when the terminal
@@ -188,13 +201,14 @@ the keywords and the defaults used when the file does not exist.
 2. Health rules from a config file, `nascheck check` with exit codes — **done**
 3. Daemon: daily SMART report, temperature samples, SQLite, rc.d — **done**
 4. ZFS pools: state, errors, scrub, vdev to disk mapping — **done**
-5. ncurses interface with pages: disks and pools, system — **done**
+5. ncurses interface with pages: disks and pools, system, packages — **done**
 6. Temperature graphs — **done**; next: a page with all disks and sensors
 7. Packaging: FreeBSD port, Linux static build
 
 ## Tests
 
-`tests/fake-smartctl`, `fake-zpool` and `fake-sysctl` replay the reports
+`tests/fake-smartctl`, `fake-zpool`, `fake-zfs`, `fake-sysctl` and
+`fake-pkg` replay the reports
 in `tests/fixtures`, so the whole program runs without disks or pools. The
 interface is tested with `NASCHECK_TUI_SNAPSHOT=keys`: it takes the keys,
 prints one screen as text and exits. To record reports from a real machine
