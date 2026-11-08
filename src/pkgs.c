@@ -230,7 +230,7 @@ each_file(struct packages *ps, const char *dir, const char *suffix,
 	free(ents);
 }
 
-/* "[id]" sections, with "enabled=" (yum, dnf, zypper) or not (pacman). */
+/* "[id]" sections, with "enabled=" (zypper) or not (pacman). */
 static void
 ini_repos(struct packages *ps, FILE *fp)
 {
@@ -662,6 +662,32 @@ dnf_reasons(struct packages *ps)
 	return 0;
 }
 
+/*
+ * The enabled repositories as dnf sees them: their files moved over time
+ * (/etc/yum.repos.d, /usr/share/dnf5/repos.d) and overrides change them.
+ * "repolist" reads the configuration only.
+ */
+static int
+dnf_repos(struct packages *ps)
+{
+	char *dnf5[] = { "dnf5", "-q", "-C", "repolist", "--enabled", NULL };
+	char *dnf4[] = { "dnf", "-q", "-C", "repolist", "--enabled", NULL };
+	char *cur, *line;
+	struct buf b = { 0 };
+	int rc = -1;
+
+	if (run(dnf5, &b) == 0 || run(dnf4, &b) == 0) {
+		rc = 0;
+		for (cur = b.data; (line = next_line(&cur)) != NULL;) {
+			line[strcspn(line, " \t")] = '\0';
+			if (strcmp(line, "repo") != 0)	/* "repo id  repo name" */
+				add_repo(ps, line);
+		}
+	}
+	buf_free(&b);
+	return rc;
+}
+
 /* rpm itself keeps no reason: ask dnf, or read zypper's list. */
 static void
 rpm_finish(struct packages *ps)
@@ -671,8 +697,11 @@ rpm_finish(struct packages *ps)
 	size_t cap = 0, i;
 	FILE *fp;
 
-	if (dnf_reasons(ps) == -1 &&
-	    (fp = host_open("/var/lib/zypp/AutoInstalled")) != NULL) {
+	if (dnf_reasons(ps) == 0) {
+		dnf_repos(ps);
+		return;
+	}
+	if ((fp = host_open("/var/lib/zypp/AutoInstalled")) != NULL) {
 		for (i = 0; i < ps->n; i++)
 			ps->p[i].kind = PKG_MANUAL;
 		while (getline(&line, &cap, fp) != -1) {
@@ -683,7 +712,6 @@ rpm_finish(struct packages *ps)
 		free(line);
 		fclose(fp);
 	}
-	each_file(ps, "/etc/yum.repos.d", ".repo", ini_repos);
 	each_file(ps, "/etc/zypp/repos.d", ".repo", ini_repos);
 }
 

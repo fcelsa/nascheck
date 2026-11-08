@@ -1,7 +1,0 @@
-[fedora]
-name=Fedora $releasever - $basearch
-enabled=1
-
-[fedora-debuginfo]
-name=Fedora - Debug
-enabled=0

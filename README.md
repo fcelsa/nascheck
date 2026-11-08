@@ -79,7 +79,7 @@ case, so a capital `S` sorts.
 | dpkg (Debian, Ubuntu, Proxmox) | apt `extended_states` | priority required, important or essential | `sources.list`, `.list`, `.sources` | dpkg's file lists |
 | pacman (Arch, CachyOS, Manjaro) | `%REASON%` | `base` and what it depends on | `pacman.conf` | yes |
 | apk (Alpine) | `/etc/apk/world` | `alpine-base` and what it depends on | `/etc/apk/repositories` | — |
-| rpm + dnf (Fedora, RHEL, Rocky, Alma) | dnf's reason | installed by group (the installer) | `yum.repos.d`, and each package's | yes |
+| rpm + dnf (Fedora, RHEL, Rocky, Alma) | dnf's reason | installed by group (the installer) | `dnf repolist`, and each package's | yes |
 | rpm + zypper (openSUSE) | `AutoInstalled` | — | `zypp/repos.d` | yes |
 | flatpak | applications / runtimes | — | each package's remote | deployment date |
 | snap | applications / bases | snapd, core, kernel, gadget | each package's channel | snap file date |

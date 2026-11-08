@@ -1,6 +1,15 @@
 #!/bin/sh
-# dnf5 repoquery --installed --qf '%{name}\t%{reason}\t%{from_repo}\n'
+# dnf5 repoquery --installed --qf '%{name}\t%{reason}\t%{from_repo}\n',
+# dnf5 repolist --enabled
 t=$(printf '\t')
+for arg; do
+	[ "$arg" = repolist ] && exec cat <<END
+repo id                 repo name
+fedora                  Fedora 45 - x86_64
+fedora-cisco-openh264   Fedora 45 openh264 (From Cisco) - x86_64
+updates                 Fedora 45 - x86_64 - Updates
+END
+done
 cat <<END
 kernel-core${t}Group${t}anaconda
 bash${t}Group${t}anaconda
