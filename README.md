@@ -12,7 +12,7 @@ It reads SMART data of SATA (HDD and SSD) and NVMe disks through
 
 - FreeBSD 14 or later, or Linux
 - smartmontools 7.0 or later (JSON output)
-- SQLite 3.35 or later
+- SQLite 3.24 or later
 - ncurses with wide characters (in the FreeBSD base system)
 - for ZFS: OpenZFS 2.3 or later (`zpool status -j`), as in FreeBSD 15
 - a C11 compiler and `make` (BSD make or GNU make)
@@ -20,6 +20,32 @@ It reads SMART data of SATA (HDD and SSD) and NVMe disks through
 ```sh
 pkg install smartmontools sqlite3                         # FreeBSD
 apt install smartmontools libsqlite3-dev libncurses-dev   # Debian, Ubuntu
+```
+
+## Binaries
+
+Each [release](https://github.com/fcelsa/nascheck/releases) has static
+binaries, with their checksums in `SHA256SUMS`; the machine needs only
+smartmontools (and ZFS for pools):
+
+| Archive | System |
+| --- | --- |
+| `nascheck-VERSION-freebsd-amd64.tar.gz` | FreeBSD 15, amd64 |
+| `nascheck-VERSION-linux-x86_64.tar.gz` | Linux x86_64, any distribution |
+| `nascheck-VERSION-linux-aarch64.tar.gz` | Linux arm64 (Raspberry Pi 4 and 5, ...) |
+
+```sh
+sha256sum -c --ignore-missing SHA256SUMS
+tar -xzf nascheck-1.0.0-linux-x86_64.tar.gz
+cd nascheck-1.0.0-linux-x86_64
+sudo install -m 0755 nascheck /usr/local/sbin/
+sudo install -m 0644 nascheck.conf.sample /usr/local/etc/
+# Linux, systemd:
+sudo install -m 0644 nascheck.service /etc/systemd/system/
+sudo systemctl enable --now nascheck
+# FreeBSD:
+sudo install -m 0555 nascheck.rc /usr/local/etc/rc.d/nascheck
+sudo sysrc nascheck_enable=YES && sudo service nascheck start
 ```
 
 ## Build
@@ -249,7 +275,14 @@ the keywords and the defaults used when the file does not exist.
 4. ZFS pools: state, errors, scrub, vdev to disk mapping — **done**
 5. ncurses interface with pages: disks and pools, system, packages — **done**
 6. Temperature graphs, sensors, the Health page with trends — **done**
-7. Packaging: FreeBSD port, Linux static build
+7. Static binaries for FreeBSD and Linux, released by GitHub Actions — **done**
+
+Next: ECC memory error counters (EDAC on Linux, MCA on FreeBSD).
+
+Releasing: set `VERSION` in the Makefile, add its section to
+[CHANGELOG.md](CHANGELOG.md), commit, then push a tag `vVERSION`; the
+`release` workflow builds the binaries on FreeBSD and Alpine Linux, tests
+them and publishes them. Run by hand, it only builds them.
 
 ## Tests
 

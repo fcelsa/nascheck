@@ -1,3 +1,5 @@
 nascheck
 *.o
 tests/*.out
+nascheck-*.tar.gz
+nascheck-*-*/

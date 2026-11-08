@@ -564,6 +564,12 @@ tui_run(const struct config *cfg, int live)
 	t.live = live;
 	t.period = 1;		/* 24h */
 	setlocale(LC_ALL, "");
+#if defined(NASCHECK_STATIC) && defined(__linux__)
+	/* A static binary knows the terminfo directory of the system it was
+	 * built on only: give it those of the usual distributions. */
+	setenv("TERMINFO_DIRS", "/etc/terminfo:/lib/terminfo:"
+	    "/usr/share/terminfo:/usr/lib/terminfo", 0);
+#endif
 	t.utf8 = strcmp(nl_langinfo(CODESET), "UTF-8") == 0;
 	t.sym = t.utf8 ? &utf8_sym : &ascii_sym;
 	load(&t);		/* errors still reach the terminal */

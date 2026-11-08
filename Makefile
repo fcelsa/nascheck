@@ -1,7 +1,7 @@
 # nascheck - portable Makefile for BSD make and GNU make.
 
 PROG=		nascheck
-VERSION=	0.1.0
+VERSION=	1.0.0
 PREFIX?=	/usr/local
 SYSCONFDIR?=	${PREFIX}/etc
 CC?=		cc
@@ -38,7 +38,8 @@ SANITIZE=	-O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined
 all: ${PROG}
 
 ${PROG}: ${OBJS}
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} ${SQLITE_LIBS} ${CURSES_LIBS}
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} ${SQLITE_LIBS} ${CURSES_LIBS} \
+	    ${EXTRA_LIBS}
 
 .SUFFIXES: .c .o
 .c.o:
@@ -54,6 +55,26 @@ test: ${PROG}
 
 sanitize: clean
 	${MAKE} CFLAGS="${SANITIZE}" LDFLAGS="${SANITIZE}" test
+
+# A static binary for the release archives (musl on Linux, FreeBSD);
+# STATIC_LIBS adds what the static libraries need on this system.
+STATIC_LIBS?=	-lm -lpthread
+static: clean
+	${MAKE} CPPFLAGS="-DNASCHECK_STATIC" LDFLAGS="-static" \
+	    EXTRA_LIBS="${STATIC_LIBS}" ${PROG}
+
+# The release archive of this system: the binary, the configuration
+# sample, the service for this system, README and LICENSE.
+BINDIST=	${PROG}-${VERSION}-$$(uname -s | tr A-Z a-z)-$$(uname -m)
+bindist: ${PROG}
+	d=${BINDIST}; rm -rf "$$d" && mkdir "$$d" && \
+	cp ${PROG} nascheck.conf.sample README.md LICENSE "$$d" && \
+	if [ "$$(uname -s)" = FreeBSD ]; then \
+		${SUBST} service/nascheck.in > "$$d/nascheck.rc"; \
+	else \
+		${SUBST} service/nascheck.service.in > "$$d/nascheck.service"; \
+	fi && \
+	tar -czf "$$d.tar.gz" "$$d" && rm -rf "$$d" && echo "$$d.tar.gz"
 
 # The service: an rc.d script on FreeBSD, a systemd unit on Linux.
 SUBST=		sed -e 's|%%PREFIX%%|${PREFIX}|g' \
@@ -85,4 +106,4 @@ uninstall:
 clean:
 	rm -f ${PROG} ${OBJS} tests/*.out
 
-.PHONY: all test sanitize install uninstall clean
+.PHONY: all test sanitize static bindist install uninstall clean
