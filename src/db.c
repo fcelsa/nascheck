@@ -79,7 +79,9 @@ static const char *const sql[ST_COUNT] = {
 	[ST_ROLLBACK] = "ROLLBACK",
 	[ST_DISK] = "INSERT INTO disk (serial, model, path, seen)"
 	    " VALUES (?1, ?2, ?3, 1) ON CONFLICT (serial) DO UPDATE"
-	    " SET model = ?2, path = ?3, seen = 1 RETURNING id",
+	    " SET model = ?2, path = ?3, seen = 1",
+	/* Not RETURNING above: SQLite 3.35, newer than RHEL 9's. */
+	[ST_DISK_ID] = "SELECT id FROM disk WHERE serial = ?1",
 	[ST_CLEAR_PATH] = "UPDATE disk SET path = NULL"
 	    " WHERE path = ?1 AND id <> ?2",
 	[ST_REPORT] = "INSERT OR REPLACE INTO report (disk, time, json)"
@@ -297,11 +299,13 @@ disk_id(struct db *db, const struct disk *d)
 	sqlite3_bind_text(st, 1, d->serial, -1, SQLITE_STATIC);
 	sqlite3_bind_text(st, 2, d->model, -1, SQLITE_STATIC);
 	sqlite3_bind_text(st, 3, d->path, -1, SQLITE_STATIC);
+	if (run(db, ST_DISK) == -1)
+		return -1;
+	st = db->st[ST_DISK_ID];
+	sqlite3_bind_text(st, 1, d->serial, -1, SQLITE_STATIC);
 	if (sqlite3_step(st) == SQLITE_ROW)
 		id = sqlite3_column_int64(st, 0);
-	if (run(db, ST_DISK) == -1)	/* finish the statement */
-		return -1;
-	if (id == -1)
+	if (run(db, ST_DISK_ID) == -1 || id == -1)	/* finish it */
 		return -1;
 
 	/* The node now belongs to this disk only. */

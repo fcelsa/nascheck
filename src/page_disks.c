@@ -1,13 +1,12 @@
 /* page_disks.c - page 1: disks and pools, details and history graph. */
-#define NCURSES_WIDECHAR 1
 
-#include <curses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "health.h"
 #include "tui.h"
+#include "wcurses.h"
 
 #define DELTA_DAYS	30	/* attribute changes over this period */
 

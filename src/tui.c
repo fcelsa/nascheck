@@ -1,9 +1,7 @@
 /* tui.c - the ncurses interface: main loop, header, footer and helpers. */
-#define NCURSES_WIDECHAR 1
 
 #include <sys/stat.h>
 
-#include <curses.h>
 #include <fcntl.h>
 #include <langinfo.h>
 #include <limits.h>
@@ -17,6 +15,7 @@
 
 #include "daemon.h"
 #include "tui.h"
+#include "wcurses.h"
 
 #define TICK_MS		1000	/* getch() timeout: the clock needs no more */
 #define WATCH_SECONDS	5	/* how often to look for new data */

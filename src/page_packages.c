@@ -1,15 +1,14 @@
 /* page_packages.c - page 3: installed packages, with a live search. */
-#define NCURSES_WIDECHAR 1
 
 #include <ctype.h>
 #include <stdarg.h>
-#include <curses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "pkgs.h"
 #include "tui.h"
+#include "wcurses.h"
 
 #define QUERY_MAX	64
 #define WORDS_MAX	8

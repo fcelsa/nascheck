@@ -45,8 +45,7 @@ ${PROG}: ${OBJS}
 
 ${OBJS}: src/config.h src/daemon.h src/data.h src/db.h src/health.h \
 		src/json.h src/pkgs.h src/run.h src/smart.h src/sysinfo.h \
-		src/tui.h \
-		src/zfs.h vendor/yyjson/yyjson.h
+		src/tui.h src/wcurses.h src/zfs.h vendor/yyjson/yyjson.h
 
 test: ${PROG}
 	sh tests/run.sh ./${PROG}

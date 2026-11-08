@@ -1,12 +1,11 @@
 /* page_system.c - page 2: the machine at a glance, in fastfetch style. */
-#define NCURSES_WIDECHAR 1
 
-#include <curses.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "sysinfo.h"
 #include "tui.h"
+#include "wcurses.h"
 
 #define KEY_COLS	13	/* the key column */
 #define VALUE_COLS	40	/* values; bars follow them */
