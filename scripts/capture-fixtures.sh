@@ -25,6 +25,12 @@ if command -v zpool >/dev/null 2>&1; then
 	zpool status -j --json-int -p >"$out/zpool-status-int.json"
 	zpool status -P -p >"$out/zpool-status.txt"
 	zpool list -H -p >"$out/zpool-list.txt"
+	zfs list -H -p -o name,used,avail,refer,mountpoint \
+	    -t filesystem,volume >"$out/zfs-list.txt"
+fi
+# Installed packages: name, version, size, install time, comment.
+if command -v pkg >/dev/null 2>&1; then
+	pkg query '%n\t%v\t%sb\t%t\t%c' >"$out/pkg-query.txt"
 fi
 if [ "$(uname -s)" = FreeBSD ]; then
 	sysctl -n kern.geom.conftxt >"$out/geom-conftxt.txt"
