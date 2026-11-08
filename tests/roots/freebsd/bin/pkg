@@ -1,0 +1,3 @@
+#!/bin/sh
+# pkg: replays tests/fixtures (or NASCHECK_FIXTURES).
+exec "$(dirname "$0")/../../../fake-pkg" "$@"

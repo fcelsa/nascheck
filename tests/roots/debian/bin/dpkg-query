@@ -1,0 +1,12 @@
+#!/bin/sh
+# dpkg-query -W -f FORMAT: the fields nascheck asks for, tab-separated.
+t=$(printf '\t')
+cat <<END
+base-files${t}13.8${t}392${t}${t}${t}${t}${t}ii required yes amd64${t}Debian base system miscellaneous files
+coreutils${t}9.7-3${t}17932${t}${t}${t}${t}${t}ii required yes amd64${t}GNU core utilities
+openssh-server${t}1:10.0p1-7${t}2140${t}${t}${t}${t}${t}ii optional no amd64${t}secure shell (SSH) server, for secure access from remote machines
+smartmontools${t}7.4-3${t}2318${t}${t}${t}${t}${t}ii optional no amd64${t}control and monitor storage systems using S.M.A.R.T.
+libsqlite3-0${t}3.46.1-7${t}1767${t}${t}${t}${t}${t}ii optional no amd64${t}SQLite 3 shared library
+zfsutils-linux${t}2.3.2-2${t}2671${t}${t}${t}${t}${t}ii optional no amd64${t}command-line tools to manage OpenZFS filesystems
+oldtool${t}1.0-1${t}10${t}${t}${t}${t}${t}rc optional no amd64${t}removed, configuration files left
+END

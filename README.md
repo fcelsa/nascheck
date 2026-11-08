@@ -73,11 +73,20 @@ On the Packages page letters go to the search field, so there the page
 keys are F1-F3 and Tab, refresh is F5 and quit is F10; the search ignores
 case, so a capital `S` sorts.
 
-| Manager | By hand / dependency | Base system | Repositories | Install date |
+| Source | By hand / dependency | Base system | Repositories | Install date |
 | --- | --- | --- | --- | --- |
 | pkg (FreeBSD) | `%a` | `FreeBSD-*` packages (pkgbase), else freebsd-update | `pkg -vv`, and each package's | yes |
-| dpkg (Debian, Ubuntu) | apt `extended_states` | priority required, important or essential | `sources.list`, `.list`, `.sources` | from dpkg's file lists |
-| rpm | zypper `AutoInstalled` only | — | `yum.repos.d`, `zypp/repos.d` | yes |
+| dpkg (Debian, Ubuntu, Proxmox) | apt `extended_states` | priority required, important or essential | `sources.list`, `.list`, `.sources` | dpkg's file lists |
+| pacman (Arch, CachyOS, Manjaro) | `%REASON%` | `base` and what it depends on | `pacman.conf` | yes |
+| apk (Alpine) | `/etc/apk/world` | `alpine-base` and what it depends on | `/etc/apk/repositories` | — |
+| rpm + dnf (Fedora, RHEL, Rocky, Alma) | dnf's reason | installed by group (the installer) | `yum.repos.d`, and each package's | yes |
+| rpm + zypper (openSUSE) | `AutoInstalled` | — | `zypp/repos.d` | yes |
+| flatpak | applications / runtimes | — | each package's remote | deployment date |
+| snap | applications / bases | snapd, core, kernel, gadget | each package's channel | snap file date |
+
+The first package manager found is read, then flatpak and snap. Other
+installers (pip, npm, Homebrew, Nix, AppImage, `make install`) keep no
+common record and are not listed.
 
 Graphs use Braille characters in a UTF-8 terminal and plain characters
 elsewhere (the FreeBSD console without X); 256 colors when the terminal
@@ -219,9 +228,10 @@ the keywords and the defaults used when the file does not exist.
 
 ## Tests
 
-`tests/fake-smartctl`, `fake-zpool`, `fake-zfs`, `fake-sysctl` and
-`fake-pkg` replay the reports
-in `tests/fixtures`, so the whole program runs without disks or pools. The
+`tests/fake-smartctl`, `fake-zpool`, `fake-zfs` and `fake-sysctl` replay
+the reports in `tests/fixtures`, so the whole program runs without disks or
+pools. Packages are read from a fake root (`NASCHECK_ROOT`, one per system
+in `tests/roots`: database files, and stand-in commands in `bin/`). The
 interface is tested with `NASCHECK_TUI_SNAPSHOT=keys`: it takes the keys,
 prints one screen as text and exits. To record reports from a real machine
 (serial numbers are masked):

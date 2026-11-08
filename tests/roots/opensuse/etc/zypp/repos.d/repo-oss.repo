@@ -1,0 +1,7 @@
+[repo-oss]
+name=Main Repository
+enabled=1
+autorefresh=1
+
+[repo-source]
+enabled=0

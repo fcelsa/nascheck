@@ -1,0 +1,18 @@
+%NAME%
+ncurses
+
+%VERSION%
+6.5-4
+
+%DESC%
+System V Release 4.0 curses emulation library
+
+%INSTALLDATE%
+1790000000
+
+%SIZE%
+9637888
+
+%REASON%
+1
+

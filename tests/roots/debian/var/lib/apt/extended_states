@@ -1,0 +1,7 @@
+Package: libsqlite3-0
+Architecture: amd64
+Auto-Installed: 1
+
+Package: zfsutils-linux
+Architecture: amd64
+Auto-Installed: 0

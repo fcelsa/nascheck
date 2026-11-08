@@ -1,0 +1,9 @@
+#!/bin/sh
+# dnf5 repoquery --installed --qf '%{name}\t%{reason}\t%{from_repo}\n'
+t=$(printf '\t')
+cat <<END
+kernel-core${t}Group${t}anaconda
+bash${t}Group${t}anaconda
+htop${t}User${t}updates
+ncurses-libs${t}Dependency${t}fedora
+END

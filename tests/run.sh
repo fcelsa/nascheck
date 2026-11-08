@@ -6,16 +6,17 @@
 prog=$(cd "$(dirname "$1")" && pwd)/$(basename "$1")
 dir=$(cd "$(dirname "$0")" && pwd)
 cd "$dir/.." || exit 1
-# Fakes for smartctl, zpool, zfs, sysctl and pkg replay the fixtures;
-# dates are printed in UTC.
+# Fakes for smartctl, zpool, zfs and sysctl replay the fixtures; packages
+# come from a fake root (roots/*: files, and commands in bin/); dates are
+# printed in UTC.
 NASCHECK_SMARTCTL=$dir/fake-smartctl
 NASCHECK_ZPOOL=$dir/fake-zpool
 NASCHECK_ZFS=$dir/fake-zfs
 NASCHECK_SYSCTL=$dir/fake-sysctl
-NASCHECK_PKG=$dir/fake-pkg
+NASCHECK_ROOT=$dir/roots/freebsd
 TZ=UTC
 export NASCHECK_SMARTCTL NASCHECK_ZPOOL NASCHECK_ZFS NASCHECK_SYSCTL \
-    NASCHECK_PKG TZ
+    NASCHECK_ROOT TZ
 fail=0
 
 # check NAME ARGS...: run nascheck ARGS and diff with expected/NAME.
@@ -98,6 +99,21 @@ NASCHECK_TUI_SNAPSHOT='@3S'
 check tui-packages-size -l -c tests/conf/base.conf
 NASCHECK_TUI_SNAPSHOT='@3zfSS@d'
 check tui-packages-date -l -c tests/conf/base.conf
+
+# The other package managers, newest first. Dates come from files here:
+# set them, git does not keep them.
+r=$dir/roots
+touch -t 202606041200 "$r"/debian/var/lib/dpkg/info/*.list \
+    "$r"/debian/var/lib/snapd/snaps/core22_2133.snap
+touch -t 202610251200 "$r"/debian/var/lib/dpkg/info/smartmontools:amd64.list \
+    "$r"/debian/var/lib/dpkg/info/zfsutils-linux:amd64.list
+touch -t 202611011200 "$r"/debian/var/lib/snapd/snaps/firefox_7177.snap
+NASCHECK_TUI_SNAPSHOT='@3SS'
+for distro in debian arch alpine fedora opensuse; do
+	NASCHECK_ROOT=$r/$distro
+	check "tui-packages-$distro" -l -c tests/conf/base.conf
+done
+NASCHECK_ROOT=$r/freebsd
 
 # Reports recorded on a real FreeBSD 15.1 NAS (12 SATA disks, ZFS).
 NASCHECK_FIXTURES=$dir/fixtures/openas

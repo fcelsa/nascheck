@@ -264,7 +264,10 @@ draw_detail(struct tui *t, int y, int x, int w, const struct package *p)
 	line[0] = '\0';
 	if (kind[p->kind] != NULL)
 		append(line, sizeof(line), sep, "%s", kind[p->kind]);
-	if (p->repo[0] != '\0')
+	if (p->source != NULL)
+		append(line, sizeof(line), sep, "%s%s%s", p->source,
+		    p->repo[0] != '\0' ? " from " : "", p->repo);
+	else if (p->repo[0] != '\0')
 		append(line, sizeof(line), sep, "from %s", p->repo);
 	if (p->rdeps == 0)
 		append(line, sizeof(line), sep, "no package needs it");
@@ -289,16 +292,34 @@ draw(struct tui *t, int y, int x, int h, int w)
 {
 	static const char *const kind[PKG_KINDS] = { NULL, "by hand",
 	    "dependencies", "system" };
-	char right[128], name[160];
+	char right[160], name[160];
 	const struct package *p;
 	int rows, r, c, iw = w - 4, left = x + 2, nc, k;
 	size_t i, n;
 
 	if (!pg.loaded)
 		load();
-	if (pg.ps.manager != NULL) {
-		n = (size_t)snprintf(right, sizeof(right), "%zu installed (%s)",
-		    pg.ps.n, pg.ps.manager);
+	if (pg.ps.n > 0) {
+		/* "1058 installed (1041 dpkg, 12 flatpak, 5 snap)" */
+		n = (size_t)snprintf(right, sizeof(right), "%zu installed (",
+		    pg.ps.n);
+		if (pg.ps.manager != NULL && pg.ps.nflatpak + pg.ps.nsnap == 0)
+			n += (size_t)snprintf(right + n, sizeof(right) - n, "%s",
+			    pg.ps.manager);
+		else if (pg.ps.manager != NULL)
+			n += (size_t)snprintf(right + n, sizeof(right) - n,
+			    "%zu %s", pg.ps.n - pg.ps.nflatpak - pg.ps.nsnap,
+			    pg.ps.manager);
+		if (pg.ps.nflatpak > 0 && n < sizeof(right))
+			n += (size_t)snprintf(right + n, sizeof(right) - n,
+			    "%s%zu flatpak", pg.ps.manager != NULL ? ", " : "",
+			    pg.ps.nflatpak);
+		if (pg.ps.nsnap > 0 && n < sizeof(right))
+			n += (size_t)snprintf(right + n, sizeof(right) - n,
+			    "%s%zu snap", pg.ps.manager != NULL ||
+			    pg.ps.nflatpak > 0 ? ", " : "", pg.ps.nsnap);
+		if (n < sizeof(right))
+			n += (size_t)snprintf(right + n, sizeof(right) - n, ")");
 		for (k = PKG_MANUAL; k < PKG_KINDS; k++)
 			if (pg.ps.count[k] > 0 && n < sizeof(right))
 				n += (size_t)snprintf(right + n, sizeof(right) -
@@ -355,7 +376,8 @@ draw(struct tui *t, int y, int x, int h, int w)
 		kind_mark(t, y + 3 + r, left, p->kind, i == pg.sel);
 		c = 2 + marked(t, y + 3 + r, left + 2, nc - 3, i == pg.sel ?
 		    (int)(COLOR_PAIR(C_SEL) | A_BOLD) : 0, p->name);
-		snprintf(name, sizeof(name), "-%s", p->version);
+		snprintf(name, sizeof(name), "%s%s", p->version[0] != '\0' ?
+		    "-" : "", p->version);
 		tui_text(t, y + 3 + r, left + c, nc - 1 - c, i == pg.sel ?
 		    (int)COLOR_PAIR(C_SEL) : (int)COLOR_PAIR(C_DIM), "%s", name);
 		/* The order's key, when it is not the name. */
@@ -376,7 +398,7 @@ draw(struct tui *t, int y, int x, int h, int w)
 		tui_text(t, r, x + c, 1, COLOR_PAIR(C_DIM), "%s", t->sym->h);
 	if (pg.nhits > 0)
 		draw_detail(t, r + 1, left, iw, &pg.ps.p[pg.hits[pg.sel]]);
-	else if (pg.ps.manager != NULL)
+	else if (pg.ps.n > 0)
 		tui_text(t, r + 1, left, iw, COLOR_PAIR(C_DIM), "No package "
 		    "matches every word.");
 }

@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <spawn.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
@@ -41,6 +42,33 @@ buf_set(struct buf *b, const char *data, size_t len)
 	b->data[len] = '\0';
 	b->len = len;
 	return 0;
+}
+
+int
+buf_append(struct buf *b, const char *data, size_t len)
+{
+	if (buf_reserve(b, b->len + len + 1) == -1)
+		return -1;
+	memcpy(b->data + b->len, data, len);
+	b->len += len;
+	b->data[b->len] = '\0';
+	return 0;
+}
+
+int
+buf_append_file(struct buf *b, const char *path)
+{
+	char chunk[4096];
+	size_t n;
+	FILE *f;
+	int rc = 0;
+
+	if ((f = fopen(path, "r")) == NULL)
+		return -1;
+	while (rc == 0 && (n = fread(chunk, 1, sizeof(chunk), f)) > 0)
+		rc = buf_append(b, chunk, n);
+	fclose(f);
+	return rc;
 }
 
 void

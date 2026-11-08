@@ -1,0 +1,41 @@
+ nascheck  1 Disks  2 System  3 Packages                   CRITICAL · 4 disks · 2 pools · 4 with findings   live read
+┌─ Packages ────────────────────────────────────────────────── 4 installed (rpm) · 1 by hand · 1 dependency · 2 system ┐
+│ Search   type to search names and descriptions                                                                       │
+│ 4 packages · sorted by date                                               ● by hand  ○ dependency  ◆ system          │
+│ ● htop-3.4.1-2.fc43                     2026-11-18  Interactive process viewer                                       │
+│ ○ ncurses-libs-6.5-7.20250614.fc43      2026-11-18  Ncurses libraries                                                │
+│ ◆ kernel-core-6.17.7-300.fc43           2026-10-25  The Linux kernel                                                 │
+│ ◆ bash-5.3.0-2.fc43                     2026-06-04  The GNU Bourne Again shell                                       │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────│
+│ bash 5.3.0-2.fc43  · 8.5M installed  · installed on 2026-06-04                                                       │
+│ The GNU Bourne Again shell                                                                                           │
+│ ◆ part of the base system  · from anaconda                                                                           │
+│ Repositories updates, fedora                                                                                         │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ type to search  arrows select  S sort  Esc clear                                 F1-F3/Tab pages  F5 refresh  F10 quit
+exit 0

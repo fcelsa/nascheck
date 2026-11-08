@@ -1,0 +1,41 @@
+ nascheck  1 Disks  2 System  3 Packages                   CRITICAL · 4 disks · 2 pools · 4 with findings   live read
+┌─ Packages ──────────────────────────────── 8 installed (6 pacman, 2 flatpak) · 2 by hand · 2 dependencies · 4 system ┐
+│ Search   type to search names and descriptions                                                                       │
+│ 8 packages · sorted by date                                               ● by hand  ○ dependency  ◆ system          │
+│ ● htop-3.4.1-1                          2026-11-18  Interactive process viewer                                       │
+│ ◆ glibc-2.42+r3+gbc13db739377-1         2026-10-25  GNU C Library                                                    │
+│ ○ ncurses-6.5-4                         2026-09-21  System V Release 4.0 curses emulation library                    │
+│ ◆ base-3-2                              2026-06-04  Minimal package set to define a basic Arch Linux installation    │
+│ ◆ bash-5.3.3-2                          2026-06-04  The GNU Bourne Again shell                                       │
+│ ◆ pacman-7.0.0.r6.gc685ae6-1            2026-06-04  A library-based package manager with dependency support          │
+│ ● org.gimp.GIMP-3.0.6                            ?  Create images and edit photographs                               │
+│ ○ org.gnome.Platform-48                          ?  Shared libraries used by GNOME applications                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────│
+│ base 3-2  · ? installed  · installed on 2026-06-04                                                                   │
+│ Minimal package set to define a basic Arch Linux installation                                                        │
+│ ◆ part of the base system                                                                                            │
+│ Repositories cachyos-v3, core, extra                                                                                 │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ type to search  arrows select  S sort  Esc clear                                 F1-F3/Tab pages  F5 refresh  F10 quit
+exit 0

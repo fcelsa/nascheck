@@ -1,0 +1,18 @@
+%NAME%
+base
+
+%VERSION%
+3-2
+
+%DESC%
+Minimal package set to define a basic Arch Linux installation
+
+%INSTALLDATE%
+1780603807
+
+%DEPENDS%
+filesystem
+glibc>=2.40
+bash
+pacman
+

@@ -1,0 +1,41 @@
+ nascheck  1 Disks  2 System  3 Packages                   CRITICAL · 4 disks · 2 pools · 4 with findings   live read
+┌─ Packages ───────────────────────────────────── 9 installed (6 dpkg, 3 snap) · 4 by hand · 2 dependencies · 3 system ┐
+│ Search   type to search names and descriptions                                                                       │
+│ 9 packages · sorted by date                                               ● by hand  ○ dependency  ◆ system          │
+│ ● firefox-145.0-1                       2026-11-01  Mozilla Firefox web browser                                      │
+│ ● smartmontools-7.4-3                   2026-10-25  control and monitor storage systems using S.M.A.R.T.             │
+│ ● zfsutils-linux-2.3.2-2                2026-10-25  command-line tools to manage OpenZFS filesystems                 │
+│ ◆ base-files-13.8                       2026-06-04  Debian base system miscellaneous files                           │
+│ ○ core22-20250923                       2026-06-04  Runtime environment based on Ubuntu 22.04                        │
+│ ◆ coreutils-9.7-3                       2026-06-04  GNU core utilities                                               │
+│ ○ libsqlite3-0-3.46.1-7                 2026-06-04  SQLite 3 shared library                                          │
+│ ● openssh-server-1:10.0p1-7             2026-06-04  secure shell (SSH) server, for secure access from remote machine │
+│ ◆ snapd-2.72                                     ?                                                                   │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────│
+│ base-files 13.8  · 401K installed  · installed on 2026-06-04                                                         │
+│ Debian base system miscellaneous files                                                                               │
+│ ◆ part of the base system                                                                                            │
+│ Repositories download.example.org trixie, deb.debian.org trixie, security.debian.org trixie-security                 │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ type to search  arrows select  S sort  Esc clear                                 F1-F3/Tab pages  F5 refresh  F10 quit
+exit 0

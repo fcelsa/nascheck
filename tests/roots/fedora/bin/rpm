@@ -1,0 +1,9 @@
+#!/bin/sh
+# rpm -qa --qf FORMAT
+t=$(printf '\t')
+cat <<END
+kernel-core${t}6.17.7-300.fc43${t}66478512${t}1792956467${t}${t}${t}${t}${t}The Linux kernel
+bash${t}5.3.0-2.fc43${t}8541093${t}1780603807${t}${t}${t}${t}${t}The GNU Bourne Again shell
+htop${t}3.4.1-2.fc43${t}492181${t}1795000000${t}${t}${t}${t}${t}Interactive process viewer
+ncurses-libs${t}6.5-7.20250614.fc43${t}1052760${t}1795000000${t}${t}${t}${t}${t}Ncurses libraries
+END

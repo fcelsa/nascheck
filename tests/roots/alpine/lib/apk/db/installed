@@ -1,0 +1,36 @@
+C:Q1abc=
+P:alpine-base
+V:3.22.2-r0
+A:x86_64
+T:Meta package for minimal Alpine base
+I:4096
+D:alpine-baselayout alpine-conf alpine-release apk-tools busybox musl-utils
+
+P:busybox
+V:1.37.0-r19
+T:Size optimized toolbox of many common UNIX utilities
+I:817152
+D:so:libc.musl-x86_64.so.1
+
+P:musl
+V:1.2.5-r10
+T:the musl c library (libc) implementation
+I:741376
+
+P:apk-tools
+V:2.14.9-r3
+T:Alpine Package Keeper - package manager for alpine
+I:282624
+D:musl>=1.2.3 so:libc.musl-x86_64.so.1
+
+P:smartmontools
+V:7.5-r0
+T:Control and monitor storage systems using S.M.A.R.T.
+I:950272
+D:so:libc.musl-x86_64.so.1
+
+P:sqlite-libs
+V:3.49.2-r1
+T:Sqlite3 library
+I:1388544
+

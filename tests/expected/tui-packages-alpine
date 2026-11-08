@@ -1,0 +1,41 @@
+ nascheck  1 Disks  2 System  3 Packages                   CRITICAL · 4 disks · 2 pools · 4 with findings   live read
+┌─ Packages ──────────────────────────────────────────────── 6 installed (apk) · 1 by hand · 2 dependencies · 3 system ┐
+│ Search   type to search names and descriptions                                                                       │
+│ 6 packages · sorted by date                                               ● by hand  ○ dependency  ◆ system          │
+│ ◆ alpine-base-3.22.2-r0                          ?  Meta package for minimal Alpine base                             │
+│ ◆ apk-tools-2.14.9-r3                            ?  Alpine Package Keeper - package manager for alpine               │
+│ ◆ busybox-1.37.0-r19                             ?  Size optimized toolbox of many common UNIX utilities             │
+│ ○ musl-1.2.5-r10                                 ?  the musl c library (libc) implementation                         │
+│ ● smartmontools-7.5-r0                           ?  Control and monitor storage systems using S.M.A.R.T.             │
+│ ○ sqlite-libs-3.49.2-r1                          ?  Sqlite3 library                                                  │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│                                                                                                                      │
+│──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────│
+│ alpine-base 3.22.2-r0  · 4.1K installed  · installed on unknown                                                      │
+│ Meta package for minimal Alpine base                                                                                 │
+│ ◆ part of the base system                                                                                            │
+│ Repositories v3.22/main, v3.22/community, edge/testing                                                               │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ type to search  arrows select  S sort  Esc clear                                 F1-F3/Tab pages  F5 refresh  F10 quit
+exit 0

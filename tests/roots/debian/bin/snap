@@ -1,0 +1,9 @@
+#!/bin/sh
+# snap list
+[ "$1" = list ] || exit 2
+cat <<'END'
+Name     Version          Rev    Tracking         Publisher   Notes
+core22   20250923         2133   latest/stable    canonical✓  base
+firefox  145.0-1          7177   latest/stable/…  mozilla✓    -
+snapd    2.72             25577  latest/stable    canonical✓  snapd
+END

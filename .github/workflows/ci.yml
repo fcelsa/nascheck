@@ -17,6 +17,56 @@ jobs:
       - name: Sanitizers
         run: make CC=${{ matrix.cc }} sanitize
 
+  # Build and test on other Linux distributions, then show the packages
+  # page with the container's own package manager.
+  distros:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: archlinux:latest
+            deps: pacman -Syu --noconfirm git gcc make sqlite ncurses diffutils gawk
+            expect: "installed (pacman)"
+          - image: alpine:latest
+            deps: apk add git build-base sqlite-dev ncurses-dev ncurses-terminfo-base
+            expect: "installed (apk)"
+          - image: fedora:latest
+            deps: dnf -y install git gcc make sqlite-devel ncurses-devel diffutils gawk
+            expect: "by hand"
+          - image: rockylinux:9
+            deps: dnf -y install git gcc make sqlite-devel ncurses-devel diffutils gawk
+            expect: "by hand"
+          - image: debian:stable
+            deps: apt-get update && apt-get install -y git gcc make libsqlite3-dev libncurses-dev ncurses-term
+            expect: "installed (dpkg)"
+          - image: opensuse/tumbleweed
+            deps: zypper -n install git gcc make sqlite3-devel ncurses-devel diffutils gawk
+            expect: "installed (rpm)"
+    container: ${{ matrix.image }}
+    steps:
+      - name: Dependencies
+        run: ${{ matrix.deps }}
+      - name: Source
+        # git instead of actions/checkout, which needs a glibc node.
+        run: |
+          git config --global --add safe.directory '*'
+          git init -q .
+          git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+          git fetch -q --depth 1 origin "$GITHUB_SHA"
+          git checkout -q FETCH_HEAD
+      - name: Build and test
+        run: make CFLAGS="-O2 -Werror" test
+      - name: Packages page with the real package manager
+        run: |
+          cat /etc/os-release | head -2
+          env TERM=xterm-256color LC_ALL=C.UTF-8 LINES=40 COLUMNS=120 \
+              NASCHECK_SMARTCTL=tests/fake-smartctl \
+              NASCHECK_ZPOOL=tests/fake-zpool NASCHECK_ZFS=tests/fake-zfs \
+              NASCHECK_SYSCTL=tests/fake-sysctl NASCHECK_TUI_SNAPSHOT=@3SS \
+              ./nascheck -l -c tests/conf/base.conf | tee /tmp/page
+          grep -qF "${{ matrix.expect }}" /tmp/page
+
   freebsd:
     runs-on: ubuntu-latest
     steps:

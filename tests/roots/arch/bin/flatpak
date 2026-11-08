@@ -1,0 +1,8 @@
+#!/bin/sh
+# flatpak list --columns=ref,version,size,origin,description
+[ "$1" = list ] || exit 2
+t=$(printf '\t')
+cat <<END
+app/org.gimp.GIMP/x86_64/stable${t}3.0.6${t}1,2 GB${t}flathub${t}Create images and edit photographs
+runtime/org.gnome.Platform/x86_64/48${t}${t}980.4 MB${t}flathub${t}Shared libraries used by GNOME applications
+END

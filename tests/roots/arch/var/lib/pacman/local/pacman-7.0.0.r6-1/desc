@@ -1,0 +1,18 @@
+%NAME%
+pacman
+
+%VERSION%
+7.0.0.r6.gc685ae6-1
+
+%DESC%
+A library-based package manager with dependency support
+
+%INSTALLDATE%
+1780603807
+
+%SIZE%
+4719820
+
+%REASON%
+1
+
