@@ -53,9 +53,21 @@ jobs:
         uses: vmactions/freebsd-vm@v1
         with:
           release: "15.1"
-          prepare: pkg install -y sqlite3
           run: |
-            make static STATIC_LIBS="-lm -lthr"
+            # The sqlite3 package has no static library: build SQLite in
+            # from its amalgamation. The download page lists, for
+            # scripts, "PRODUCT,version,path,size,sha3-256".
+            set -- $(fetch -qo - https://www.sqlite.org/download.html |
+                awk -F, '/^PRODUCT,.*sqlite-amalgamation-[0-9]*\.zip,/ {
+                    print $3, $5; exit }')
+            fetch -qo sqlite.zip "https://www.sqlite.org/$1"
+            test "$(openssl dgst -sha3-256 -r sqlite.zip | cut -d' ' -f1)" = "$2"
+            unzip -q sqlite.zip
+            src=$PWD/$(basename "$1" .zip)
+            cc -O2 -DSQLITE_THREADSAFE=1 -DSQLITE_OMIT_LOAD_EXTENSION \
+                -c "$src/sqlite3.c" -o sqlite3.o
+            make static SQLITE_CPPFLAGS="-I$src" \
+                SQLITE_LIBS="$PWD/sqlite3.o" STATIC_LIBS="-lm -lthr"
             file nascheck
             ./nascheck -V
             make test

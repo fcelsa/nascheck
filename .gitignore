@@ -3,3 +3,6 @@ nascheck
 tests/*.out
 nascheck-*.tar.gz
 nascheck-*-*/
+sqlite.zip
+sqlite-amalgamation-*/
+sqlite3.o
