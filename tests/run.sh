@@ -83,7 +83,7 @@ check tui-small -l -c tests/conf/base.conf
 LC_ALL=C check tui-ascii -l -c tests/conf/base.conf
 # The system page depends on the host: only its layout is checked.
 NASCHECK_TUI_SNAPSHOT=2
-if "$prog" -l -c tests/conf/base.conf | grep -q 'Uptime .* minutes'; then
+if "$prog" -l -c tests/conf/base.conf | grep -q 'Uptime .* minute'; then
 	echo "ok   tui-system"
 else
 	echo "FAIL tui-system"
