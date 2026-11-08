@@ -1,0 +1,45 @@
+{
+  "json_format_version": [
+    1,
+    0
+  ],
+  "smartctl": {
+    "version": [
+      7,
+      5
+    ],
+    "pre_release": false,
+    "svn_revision": "5714",
+    "platform_info": "FreeBSD 15.1-RELEASE-p5 amd64",
+    "build_info": "(local build)",
+    "argv": [
+      "smartctl",
+      "-a",
+      "-j",
+      "-n",
+      "standby",
+      "/dev/ses0"
+    ],
+    "messages": [
+      {
+        "string": "Device is in SLEEP mode, exit(2)",
+        "severity": "information"
+      }
+    ],
+    "exit_status": 2
+  },
+  "local_time": {
+    "time_t": 1794139839,
+    "asctime": "Sun Nov  8 13:10:39 2026 CET"
+  },
+  "device": {
+    "name": "/dev/ses0",
+    "info_name": "/dev/ses0",
+    "type": "atacam",
+    "protocol": "ATA"
+  },
+  "power_mode": {
+    "ata_value": -1,
+    "name": "SLEEP"
+  }
+}

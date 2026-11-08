@@ -1,0 +1,102 @@
+{
+  "json_format_version": [
+    1,
+    0
+  ],
+  "smartctl": {
+    "version": [
+      7,
+      5
+    ],
+    "pre_release": false,
+    "svn_revision": "5714",
+    "platform_info": "FreeBSD 15.1-RELEASE-p5 amd64",
+    "build_info": "(local build)",
+    "argv": [
+      "smartctl",
+      "--scan",
+      "-j"
+    ],
+    "exit_status": 0
+  },
+  "devices": [
+    {
+      "name": "/dev/ada0",
+      "info_name": "/dev/ada0",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ada1",
+      "info_name": "/dev/ada1",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ada2",
+      "info_name": "/dev/ada2",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ada3",
+      "info_name": "/dev/ada3",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ada4",
+      "info_name": "/dev/ada4",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ada5",
+      "info_name": "/dev/ada5",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ada6",
+      "info_name": "/dev/ada6",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ada7",
+      "info_name": "/dev/ada7",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ada8",
+      "info_name": "/dev/ada8",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ada9",
+      "info_name": "/dev/ada9",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ada10",
+      "info_name": "/dev/ada10",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ada11",
+      "info_name": "/dev/ada11",
+      "type": "atacam",
+      "protocol": "ATA"
+    },
+    {
+      "name": "/dev/ses0",
+      "info_name": "/dev/ses0",
+      "type": "atacam",
+      "protocol": "ATA"
+    }
+  ]
+}
